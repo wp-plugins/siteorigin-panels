@@ -2,7 +2,7 @@
 /* jQuery UI Button */
 
 .ui-button,
-.ui-dialog .ui-dialog-titlebar-close{
+.ui-dialog.panels-admin-dialog .ui-dialog-titlebar-close{
     display: inline-block;
     position: relative;
     margin-right: .1em;
@@ -70,6 +70,8 @@
 .ui-dialog.panels-admin-dialog{
 	border: 1px solid #D0D0D0;
     background: white;
+    z-index: 300002 !important;
+    padding: 0 !important;
 
     -webkit-border-radius: 3px;
 	-moz-border-radius: 3px;

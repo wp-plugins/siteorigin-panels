@@ -15,7 +15,5 @@ jQuery(function($){
         
         // Remove themes that don't support the page builder very well
         $('h3:contains(Pitch)' ).closest('.available-theme' ).remove();
-        $('h3:contains(Origami)' ).closest('.available-theme' ).remove();
-        $('h3:contains(Snapshot)' ).closest('.available-theme' ).remove();
     }
 });

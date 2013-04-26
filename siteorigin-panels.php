@@ -1,16 +1,16 @@
 <?php
 /*
-Plugin Name: SiteOrigin Page Builder
+Plugin Name: Page Builder
 Plugin URI: http://siteorigin.com/page-builder/
 Description: A drag and drop, responsive page builder that makes building your website easier.
-Version: 1.1.1
+Version: 1.1.2
 Author: Greg Priday
 Author URI: http://siteorigin.com
 License: GPL3
 License URI: http://www.gnu.org/licenses/gpl.html
 */
 
-DEFINE('SITEORIGIN_PANELS_VERSION', '1.1.1');
+DEFINE('SITEORIGIN_PANELS_VERSION', '1.1.2');
 
 // A few default widgets to make things easier
 include plugin_dir_path(__FILE__).'inc/widgets.php';
@@ -684,7 +684,7 @@ add_filter('body_class', 'siteorigin_panels_body_class');
  * @param $suffix
  */
 function siteorigin_panels_siteorigin_themes_tab($suffix){
-	if($suffix == 'theme-install.php' || $suffix == 'themes.php'){
+	if( ($suffix == 'theme-install.php' || $suffix == 'themes.php') && !wp_script_is('siteorigin-admin-tab') ){
 		wp_enqueue_script('siteorigin-themes-tab', plugin_dir_url(__FILE__).'js/siteorigin.tab.js', array('jquery'), SITEORIGIN_PANELS_VERSION);
 		wp_localize_script('siteorigin-themes-tab', 'siteoriginAdminTab', array(
 			'text' => __('SiteOrigin Themes', 'siteorigin'),
@@ -692,7 +692,7 @@ function siteorigin_panels_siteorigin_themes_tab($suffix){
 		));
 	}
 }
-add_action('admin_enqueue_scripts', 'siteorigin_panels_siteorigin_themes_tab');
+add_action('admin_enqueue_scripts', 'siteorigin_panels_siteorigin_themes_tab', 11);
 
 /**
  * Enqueue the required styles

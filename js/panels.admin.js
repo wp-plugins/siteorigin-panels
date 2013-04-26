@@ -33,6 +33,7 @@ jQuery( function ( $ ) {
     // Create the add grid dialog
     var gridAddDialogButtons = {};
     gridAddDialogButtons[panels.i10n.buttons.add] = function () {
+        console.log('add');
         var num = Number( $( '#grid-add-dialog' ).find( 'input' ).val() );
 
         if ( num == NaN ) {
@@ -63,7 +64,7 @@ jQuery( function ( $ ) {
         .on('keydown', function(e) {
             if (e.keyCode == $.ui.keyCode.ENTER) {
                 // This is the same as clicking the add button
-                $(this ).closest('.ui-dialog').find('.ui-button:eq(0)').click();
+                $(this ).closest('.ui-dialog').find('.ui-dialog-buttonpane .ui-button:eq(0)').click();
             }
             else if (e.keyCode === $.ui.keyCode.ESCAPE) {
                 $(this ).dialog('close');

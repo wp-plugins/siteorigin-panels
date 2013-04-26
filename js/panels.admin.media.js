@@ -64,37 +64,39 @@ jQuery(function($){
     }
 
     // When the user clicks on the select button, we need to display the gallery editing
-    $('.so-gallery-widget-select-attachments' ).live('click', function(event){
-        // Make sure the media gallery API exists
-        if ( typeof wp === 'undefined' || ! wp.media || ! wp.media.gallery ) return;
-        event.preventDefault();
+    $('body').on({
+        click: function(){
+            // Make sure the media gallery API exists
+            if ( typeof wp === 'undefined' || ! wp.media || ! wp.media.gallery ) return;
+            event.preventDefault();
 
-        // Activate the media editor
-        var $$ = $(this);
-        
-        var dialog = $('.panels-admin-dialog:visible' );
-        var val = dialog.find('*[name$="[ids]"]').val();
-        if(val.indexOf('{demo') === 0 || val.indexOf('{default') === 0) val = '-'; // This removes the demo or default content
-        if(val == '' && $('#post_ID' ).val() == null) val = '-';
+            // Activate the media editor
+            var $$ = $(this);
 
-        // Close the gallery dialog so it doesn't interfere with wp.media.gallery
-        dialog.find('.ui-dialog-content' ).dialog('close');
+            var dialog = $('.panels-admin-dialog:visible' );
+            var val = dialog.find('*[name$="[ids]"]').val();
+            if(val.indexOf('{demo') === 0 || val.indexOf('{default') === 0) val = '-'; // This removes the demo or default content
+            if(val == '' && $('#post_ID' ).val() == null) val = '-';
 
-        var frame = wp.media.gallery.edit('[gallery ids="' + val + '"]');
-        
-        // When the gallery-edit state is updated, copy the attachment ids across
-        frame.state('gallery-edit').on( 'update', function( selection ) {
-            dialog.find('.ui-dialog-content' ).dialog('open');
-            var ids = selection.models.map(function(e){ return e.id });
+            // Close the gallery dialog so it doesn't interfere with wp.media.gallery
+            dialog.find('.ui-dialog-content' ).dialog('close');
 
-            dialog.find('input[name$="[ids]"]' ).val(ids.join(','));
-        });
+            var frame = wp.media.gallery.edit('[gallery ids="' + val + '"]');
 
-        frame.on('escape', function(){
-            // Reopen the dialog
-            dialog.find('.ui-dialog-content' ).dialog('open');
-        });
+            // When the gallery-edit state is updated, copy the attachment ids across
+            frame.state('gallery-edit').on( 'update', function( selection ) {
+                dialog.find('.ui-dialog-content' ).dialog('open');
+                var ids = selection.models.map(function(e){ return e.id });
 
-        return false;
-    });
+                dialog.find('input[name$="[ids]"]' ).val(ids.join(','));
+            });
+
+            frame.on('escape', function(){
+                // Reopen the dialog
+                dialog.find('.ui-dialog-content' ).dialog('open');
+            });
+
+            return false;
+        }
+    }, '.so-gallery-widget-select-attachments');
 });

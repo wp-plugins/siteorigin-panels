@@ -1,8 +1,8 @@
-=== SiteOrigin Page Builder ===
+=== Page Builder ===
 Contributors: gpriday
 Tags: page-builder, responsive, widgets
 Requires at least: 3.5
-Tested up to: 3.5.1
+Tested up to: 3.6 Beta 1
 Stable tag: trunk
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl.html
@@ -11,9 +11,9 @@ Build responsive page layouts using the widgets you know and love using this sim
 
 == Description ==
 
-Over the years, WordPress has evolved into a fully functional CMS. SiteOrigin Page Builder completes the transition by giving you a way to create responsive column layouts using the widgets you know and love.
-
 [vimeo http://vimeo.com/59561067]
+
+Over the years, WordPress has evolved into a fully functional CMS. SiteOrigin Page Builder completes the transition by giving you a way to create responsive column layouts using the widgets you know and love.
 
 = Use Your Widgets =
 
@@ -35,6 +35,11 @@ To get you started, we've include a few widgets.
 * Image widget for inserting standard images.
 * Self hosted video widget for embedding your own videos.
 * Post Loop to display a list of posts. This requires that your theme supports it.
+
+== Installation ==
+
+1. Upload and install Page Builder in the same way you'd install any other plugin.
+2. Read the [usage documentation](http://siteorigin.com/page-builder/documentation/) on SiteOrigin.
 
 == Screenshots ==
 
@@ -60,3 +65,6 @@ To get you started, we've include a few widgets.
 
 = 1.1.1 =
 * Minor changes in preparation for inclusion on the WordPress plugin directory.
+
+= 1.1.2 =
+* Minor changes to make Page Builder compatible with WordPress 3.6.

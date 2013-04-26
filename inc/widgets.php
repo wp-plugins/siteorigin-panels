@@ -490,12 +490,14 @@ function siteorigin_panels_video_shortcode($atts){
 	 */
 	$instance = shortcode_atts( array(
 		'url' => '',
+		'src' => '',
 		'poster' => plugin_dir_url(__FILE__).'../video/poster.jpg',
 		'skin' => 'siteorigin',
 		'ratio' => 1.777,
 		'autoplay' => 0,
 	), $atts );
-	
+
+	if(!empty($instance['src'])) $instance['url'] = $instance['src'];
 	if(empty($instance['url'])) return;
 	
 	ob_start();
