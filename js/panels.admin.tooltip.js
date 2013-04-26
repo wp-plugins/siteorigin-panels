@@ -7,14 +7,14 @@
 
 jQuery( function ( $ ) {
 
-    $('#panels').on({
+    $('body').on({
         mouseenter: function(){
             $( this ).showTooltip();
         },
         mouseleave : function(){
             $( this ).removeTooltip();
         }
-    },'[data-tooltip]');
+    }, '*[data-tooltip]');
 
     $.fn.showTooltip = function () {
         this.each( function () {

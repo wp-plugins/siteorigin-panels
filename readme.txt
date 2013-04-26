@@ -1,6 +1,6 @@
 === Page Builder ===
 Contributors: gpriday
-Tags: page-builder, responsive, widgets
+Tags: page builder, responsive, widget, builder, page, admin, gallery, content, cms
 Requires at least: 3.5
 Tested up to: 3.6 Beta 1
 Stable tag: trunk
@@ -67,4 +67,7 @@ To get you started, we've include a few widgets.
 * Minor changes in preparation for inclusion on the WordPress plugin directory.
 
 = 1.1.2 =
-* Minor changes to make Page Builder compatible with WordPress 3.6.
+* Changes to make Page Builder compatible with WordPress 3.6.
+
+= 1.1.3 =
+* A fix to the CSS issue effecting WP 3.5.

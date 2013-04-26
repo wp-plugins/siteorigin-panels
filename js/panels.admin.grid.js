@@ -83,6 +83,7 @@
                                 text: false
                             } )
                             .attr( 'data-tooltip', panels.i10n.buttons['delete'] )
+                            .addClass( 'tooltip' )
                             .click( function () {
                                 $( this ).removeTooltip();
 
