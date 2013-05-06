@@ -58,7 +58,7 @@
                 'title-field': $$.attr( 'data-title-field' ),
                 'title':       $$.attr( 'data-title' )
             } )
-            .find( 'h4' ).click( function () {
+            .find( 'h4, h5' ).click( function () {
                 dialog.dialog( 'open' );
                 return false;
             } )
@@ -133,6 +133,7 @@
                 modal:       true,
                 title:       panels.i10n.messages.editWidget.replace( '%s', $$.attr( 'data-title' ) ),
                 minWidth:    700,
+                maxHeight:   Math.round($(window).height() * 0.925),
                 create:      function(event, ui){
                     $(this ).closest('.ui-dialog' ).find('.show-in-panels' ).show();
                 },
@@ -253,19 +254,9 @@
      */
     $.fn.panelsSetPanelTitle = function ( ) {
         return $(this ).each(function(){
-            var titleField = $(this ).data( 'title-field' );
-            var titleValue;
-
-            if ( titleField != undefined ) {
-                titleValue = $(this ).find( '*[name$="[' + titleField + ']"]' ).val();
-            }
-
-            if ( titleValue == '' || titleValue == undefined ) {
-                $(this ).find( 'h4' ).html( $(this ).data( 'title' ) );
-            }
-            else {
-                $(this ).find( 'h4' ).html( $(this ).data( 'title' ) + ': ' + titleValue );
-            }
+            // var titleField = $(this ).data( 'title-field' );
+            var titleValue = $(this ).find( 'input[type="text"]').eq(0).val();
+            $(this ).find( 'h4' ).html( $(this ).data( 'title' ) + '<span>' + titleValue + '</span>' );
         });
     }
 

@@ -6,7 +6,7 @@ function siteorigin_panels_options_admin_menu() {
 add_action( 'admin_menu', 'siteorigin_panels_options_admin_menu' );
 
 function siteorigin_panels_options_page(){
-	include plugin_dir_path(__FILE__) . '../tpl/options.php';
+	include plugin_dir_path(__DIR__.'/../siteorigin-panels.php') . '../tpl/options.php';
 }
 
 function siteorigin_panels_options_init() {

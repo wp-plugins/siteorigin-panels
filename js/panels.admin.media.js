@@ -11,7 +11,7 @@ jQuery(function($){
     wp.media.editor.insert = function(h){
         // Check that panels tab is active
         if(!$('#wp-content-wrap').hasClass('panels-active')) return originalInsert(h);
-        
+
         if(h.indexOf('[gallery') !== -1) {
             // Get the IDs of the gallery
             var attachments = wp.media.gallery.attachments( wp.shortcode.next( 'gallery', h ).shortcode );
@@ -58,7 +58,17 @@ jQuery(function($){
             
             return;
         }
-        
+        else {
+            // Create a new gallery panel
+            var panel = $('#panels-dialog').panelsCreatePanel('WP_Widget_Text', {
+                'text' : h
+            });
+
+            // The panel couldn't be created. Possible the widgets gallery isn't being used.
+            if(panel == null) originalInsert(h);
+            else panels.addPanel(panel, null, null, true);
+        }
+
         // Incase we've added any new panels
         originalInsert(h);
     }

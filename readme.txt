@@ -71,3 +71,7 @@ To get you started, we've include a few widgets.
 
 = 1.1.3 =
 * A fix to the CSS issue effecting WP 3.5.
+
+= 1.1.4 =
+* Various UI improvements.
+* Transition from theme version.

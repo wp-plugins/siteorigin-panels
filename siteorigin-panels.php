@@ -2,15 +2,15 @@
 /*
 Plugin Name: Page Builder
 Plugin URI: http://siteorigin.com/page-builder/
-Description: A drag and drop, responsive page builder that makes building your website easier.
-Version: 1.1.3
+Description: A drag and drop, responsive page builder that simplifies building your website.
+Version: 1.1.4
 Author: SiteOrigin
 Author URI: http://siteorigin.com
 License: GPL3
 License URI: http://www.gnu.org/licenses/gpl.html
 */
 
-DEFINE('SITEORIGIN_PANELS_VERSION', '1.1.3');
+DEFINE('SITEORIGIN_PANELS_VERSION', '1.1.4');
 
 // A few default widgets to make things easier
 include plugin_dir_path(__FILE__).'inc/widgets.php';
@@ -21,13 +21,16 @@ include plugin_dir_path(__FILE__).'inc/options.php';
 /**
  * Get the settings
  */
-function siteorigin_panels_setting($option = false){
+function siteorigin_panels_setting($key = false){
 	static $settings;
 
 	if(empty($settings)){
 		$display_settings = get_option('siteorigin_panels_display', array());
 
-		$settings = apply_filters('sitesiteorigin_panels_settings', array(
+		$settings = get_theme_support('siteorigin-panels');
+		if(!empty($settings)) $settings = $settings[0];
+
+		$settings = wp_parse_args($settings, array(
 			'home-page' => false,                   // Is the home page supported
 			'home-page-default' => false,           // What's the default for the home page?
 			'home-template' => 'home-panels.php',   // The file used to render a home page.
@@ -38,10 +41,14 @@ function siteorigin_panels_setting($option = false){
 
 			'margin-bottom' => !isset($display_settings['margin-bottom']) ? 30 : $display_settings['margin-bottom'],	// Bottom margin of a cell
 			'margin-sides' => !isset($display_settings['margin-sides']) ? 30 : $display_settings['margin-sides'],		// Spacing between 2 cells
+			'affiliate-id' => false,																					// Set your affiliate ID: http://siteorigin.com/orders/
 		));
+
+		// Filter these settings
+		$settings = apply_filters('sitesiteorigin_panels_settings', $settings);
 	}
 
-	if(!empty($option)) return $settings[$option];
+	if(!empty($key)) return isset($settings[$key]) ? $settings[$key] : null;
 	return $settings;
 }
 
@@ -80,6 +87,9 @@ function siteorigin_panels_metaboxes() {
 
 add_action( 'add_meta_boxes', 'siteorigin_panels_metaboxes' );
 
+/**
+ * Save home page
+ */
 function siteorigin_panels_save_home_page(){
 	if(!isset($_POST['_sopanels_home_nonce']) || !wp_verify_nonce($_POST['_sopanels_home_nonce'], 'save')) return;
 	if(!current_user_can('edit_theme_options')) return;
@@ -91,6 +101,22 @@ function siteorigin_panels_save_home_page(){
 	if($_POST['siteorigin_panels_home_enabled'] == 'true') update_option('show_on_front', 'posts');
 }
 add_action('admin_init', 'siteorigin_panels_save_home_page');
+
+/**
+ * Transfer theme data into new settings
+ */
+function siteorigin_panels_transfer_home_page(){
+	if(get_option('siteorigin_panels_home_page', false) === false && get_theme_mod('panels_home_page', false) !== false) {
+		// Transfer settings from theme mods into settings
+		update_option('siteorigin_panels_home_page', get_theme_mod('panels_home_page', false));
+		update_option('siteorigin_panels_home_page_enabled', get_theme_mod('panels_home_page_enabled', false));
+
+		// Remove the theme mod data
+		remove_theme_mod('panels_home_page');
+		remove_theme_mod('panels_home_page_enabled');
+	}
+}
+add_action('admin_init', 'siteorigin_panels_transfer_home_page');
 
 /**
  * Modify the front page template
@@ -167,16 +193,16 @@ function siteorigin_panels_admin_enqueue_scripts($prefix) {
 		wp_enqueue_script( 'jquery-ui-dialog' );
 		wp_enqueue_script( 'jquery-ui-button' );
 		
-		wp_enqueue_script( 'so-undomanager', plugin_dir_url(__FILE__) . 'js/undomanager.js', array( ), 'fb30d7f' );
+		wp_enqueue_script( 'so-undomanager', plugin_dir_url(__FILE__) . '/js/undomanager.min.js', array( ), 'fb30d7f' );
 
-		wp_enqueue_script( 'so-panels-admin', plugin_dir_url(__FILE__) . 'js/panels.admin.js', array( 'jquery' ), SITEORIGIN_PANELS_VERSION );
-		wp_enqueue_script( 'so-panels-admin-panels', plugin_dir_url(__FILE__) . 'js/panels.admin.panels.js', array( 'jquery' ), SITEORIGIN_PANELS_VERSION );
-		wp_enqueue_script( 'so-panels-admin-grid', plugin_dir_url(__FILE__) . 'js/panels.admin.grid.js', array( 'jquery' ), SITEORIGIN_PANELS_VERSION );
-		wp_enqueue_script( 'so-panels-admin-prebuilt', plugin_dir_url(__FILE__) . 'js/panels.admin.prebuilt.js', array( 'jquery' ), SITEORIGIN_PANELS_VERSION );
-		wp_enqueue_script( 'so-panels-admin-tooltip', plugin_dir_url(__FILE__) . 'js/panels.admin.tooltip.js', array( 'jquery' ), SITEORIGIN_PANELS_VERSION );
-		wp_enqueue_script( 'so-panels-admin-media', plugin_dir_url(__FILE__) . 'js/panels.admin.media.js', array( 'jquery' ), SITEORIGIN_PANELS_VERSION );
+		wp_enqueue_script( 'so-panels-admin', plugin_dir_url(__FILE__) . '/js/panels.admin.min.js', array( 'jquery' ), SITEORIGIN_PANELS_VERSION );
+		wp_enqueue_script( 'so-panels-admin-panels', plugin_dir_url(__FILE__) . '/js/panels.admin.panels.min.js', array( 'jquery' ), SITEORIGIN_PANELS_VERSION );
+		wp_enqueue_script( 'so-panels-admin-grid', plugin_dir_url(__FILE__) . '/js/panels.admin.grid.min.js', array( 'jquery' ), SITEORIGIN_PANELS_VERSION );
+		wp_enqueue_script( 'so-panels-admin-prebuilt', plugin_dir_url(__FILE__) . '/js/panels.admin.prebuilt.min.js', array( 'jquery' ), SITEORIGIN_PANELS_VERSION );
+		wp_enqueue_script( 'so-panels-admin-tooltip', plugin_dir_url(__FILE__) . '/js/panels.admin.tooltip.min.js', array( 'jquery' ), SITEORIGIN_PANELS_VERSION );
+		wp_enqueue_script( 'so-panels-admin-media', plugin_dir_url(__FILE__) . '/js/panels.admin.media.min.js', array( 'jquery' ), SITEORIGIN_PANELS_VERSION );
 		
-		wp_enqueue_script( 'so-panels-chosen', plugin_dir_url(__FILE__) . 'js/chosen/chosen.jquery.min.js', array( 'jquery' ), SITEORIGIN_PANELS_VERSION );
+		wp_enqueue_script( 'so-panels-chosen', plugin_dir_url(__FILE__) . '/js/chosen/chosen.jquery.min.min.js', array( 'jquery' ), SITEORIGIN_PANELS_VERSION );
 
 		wp_localize_script( 'so-panels-admin', 'panels', array(
 			'previewUrl' => wp_nonce_url(add_query_arg('siteorigin_panels_preview', 'true', get_home_url()), 'siteorigin-panels-preview'),
@@ -685,9 +711,9 @@ add_filter('body_class', 'siteorigin_panels_body_class');
  */
 function siteorigin_panels_siteorigin_themes_tab($suffix){
 	if( ($suffix == 'theme-install.php' || $suffix == 'themes.php') && !wp_script_is('siteorigin-admin-tab') ){
-		wp_enqueue_script('siteorigin-themes-tab', plugin_dir_url(__FILE__).'js/siteorigin.tab.js', array('jquery'), SITEORIGIN_PANELS_VERSION);
+		wp_enqueue_script('siteorigin-themes-tab', plugin_dir_url(__FILE__) . '/js/siteorigin.tab.min.js', array('jquery'), SITEORIGIN_PANELS_VERSION);
 		wp_localize_script('siteorigin-themes-tab', 'siteoriginAdminTab', array(
-			'text' => __('SiteOrigin Themes', 'siteorigin'),
+			'text' => __('SiteOrigin Themes', 'so-panels'),
 			'url' => admin_url('theme-install.php?tab=search&type=author&s=gpriday')
 		));
 	}

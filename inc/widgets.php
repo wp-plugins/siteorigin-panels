@@ -297,7 +297,7 @@ class SiteOrigin_Panels_Widgets_PostLoop extends WP_Widget{
 		?>
 		<p>
 			<label for="<?php echo $this->get_field_id( 'title' ) ?>"><?php _e( 'Title', 'so-panels' ) ?></label>
-			<input class="widefat" name="<?php echo $this->get_field_name( 'title' ) ?>" id="<?php echo $this->get_field_id( 'title' ) ?>" value="<?php echo esc_attr( $instance['title'] ) ?>">
+			<input type="text" class="widefat" name="<?php echo $this->get_field_name( 'title' ) ?>" id="<?php echo $this->get_field_id( 'title' ) ?>" value="<?php echo esc_attr( $instance['title'] ) ?>">
 		</p>
 		<p>
 			<label for="<?php echo $this->get_field_id('template') ?>"><?php _e('Template', 'so-panels') ?></label>
@@ -390,15 +390,15 @@ class SiteOrigin_Panels_Widgets_Video extends WP_Widget {
 		));
 		
 		// Enqueue jPlayer scripts and intializer
-		wp_enqueue_script( 'siteorigin-panels-video-jplayer', plugin_dir_url(__FILE__).'../video/jplayer/jquery.jplayer.min.js', array('jquery'), SITEORIGIN_PANELS_VERSION, true);
-		wp_enqueue_script( 'siteorigin-panels-video', plugin_dir_url(__FILE__).'../video/panels.video.jquery.js', array('jquery'), SITEORIGIN_PANELS_VERSION, true);
+		wp_enqueue_script( 'siteorigin-panels-video-jplayer', plugin_dir_url(__DIR__.'/../siteorigin-panels.php') . '/video/jplayer/jquery.jplayer.min.min.js', array('jquery'), SITEORIGIN_PANELS_VERSION, true);
+		wp_enqueue_script( 'siteorigin-panels-video', plugin_dir_url(__DIR__.'/../siteorigin-panels.php') . '/video/panels.video.jquery.min.js', array('jquery'), SITEORIGIN_PANELS_VERSION, true);
 		
 		// Enqueue the SiteOrigin jPlayer skin
 		$skin = sanitize_file_name($instance['skin']);
-		wp_enqueue_style('siteorigin-panels-video-jplayer-skin', plugin_dir_url(__FILE__).'../video/jplayer/skins/'.$skin.'/jplayer.'.$skin.'.css', array(), SITEORIGIN_PANELS_VERSION);
+		wp_enqueue_style('siteorigin-panels-video-jplayer-skin', plugin_dir_url(__DIR__.'/../siteorigin-panels.php').'video/jplayer/skins/'.$skin.'/jplayer.'.$skin.'.css', array(), SITEORIGIN_PANELS_VERSION);
 
 		$file = $instance['url'];
-		$poster = !empty($instance['poster']) ? $instance['poster'] :  plugin_dir_url(__FILE__).'../video/poster.jpg';
+		$poster = !empty($instance['poster']) ? $instance['poster'] :  plugin_dir_url(__DIR__.'/../siteorigin-panels.php').'video/poster.jpg';
 		$instance['ratio'] = floatval($instance['ratio']);
 		if(empty($instance['ratio'])) $instance['ratio'] = 1.777;
 		
@@ -412,7 +412,7 @@ class SiteOrigin_Panels_Widgets_Video extends WP_Widget {
 				     data-poster="<?php echo esc_url($poster) ?>"
 				     data-ratio="<?php echo floatval($instance['ratio']) ?>"
 				     data-autoplay="<?php echo esc_attr($instance['autoplay']) ?>"
-				     data-swfpath="<?php echo plugin_dir_url(__FILE__).'../video/jplayer/' ?>"
+				     data-swfpath="<?php echo plugin_dir_url(__DIR__.'/../siteorigin-panels.php').'video/jplayer/' ?>"
 				     data-mobile="<?php echo wp_is_mobile() ? 'true' : 'false' ?>"></div>
 				
 				<?php $this->display_gui($instance['skin']) ?>
@@ -425,8 +425,8 @@ class SiteOrigin_Panels_Widgets_Video extends WP_Widget {
 	}
 	
 	function display_gui($skin){
-		$file = plugin_dir_path(__FILE__).'../video/jplayer/skins/'.$skin.'/gui.php';
-		if(file_exists($file)) include plugin_dir_path(__FILE__).'../video/jplayer/skins/'.$skin.'/gui.php';
+		$file = plugin_dir_path(dirname(__FILE__).'../').'video/jplayer/skins/'.$skin.'/gui.php';
+		if(file_exists($file)) include plugin_dir_path(__DIR__.'/../siteorigin-panels.php').'video/jplayer/skins/'.$skin.'/gui.php';
 	}
 
 	function update( $new, $old ) {
@@ -491,7 +491,7 @@ function siteorigin_panels_video_shortcode($atts){
 	$instance = shortcode_atts( array(
 		'url' => '',
 		'src' => '',
-		'poster' => plugin_dir_url(__FILE__).'../video/poster.jpg',
+		'poster' => plugin_dir_url(__DIR__.'/../siteorigin-panels.php').'video/poster.jpg',
 		'skin' => 'siteorigin',
 		'ratio' => 1.777,
 		'autoplay' => 0,

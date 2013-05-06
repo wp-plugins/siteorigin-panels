@@ -82,6 +82,7 @@ jQuery( function ( $ ) {
             modal:       true,
             title:       $( '#panels-dialog' ).attr( 'data-title' ),
             minWidth:    960,
+            maxHeight:   Math.round($(window).height() * 0.925),
             close:       function () {
                 $( '#panels-container .panel.new-panel' ).hide().slideDown( 1000 ).removeClass( 'new-panel' );
             }
@@ -101,13 +102,13 @@ jQuery( function ( $ ) {
     } )
 
     // The button for adding a panel
-    $( '#panels .panels-add' )
+    $( '#panels .panels-add')
         .button( {
             icons: {primary: 'ui-icon-add'},
             text:  false
         } )
         .click( function () {
-            $('#panels-text-filter-input' ).val('' ).keyup();
+            $('#panels-text-filter-input' ).val('').keyup();
             $( '#panels-dialog' ).dialog( 'open' );
             return false;
         } );
@@ -123,6 +124,9 @@ jQuery( function ( $ ) {
             return false;
         } );
 
+    // Set the default text of the SiteOrigin link
+    $('#siteorigin-widgets-link').data('text', $('#siteorigin-widgets-link').html() );
+
     // Handle filtering in the panels dialog
     $( '#panels-text-filter-input' )
         .keyup( function (e) {
@@ -134,6 +138,22 @@ jQuery( function ( $ ) {
             }
 
             var value = $( this ).val();
+
+            if(value != '') {
+                // Change the text
+                $('#siteorigin-widgets-link')
+                    .html(
+                        $('#siteorigin-widgets-link').data('text').replace('More', '"'+value+'"')
+                    )
+                    .attr('href', $('#siteorigin-widgets-link').data('search').replace('{search}', encodeURIComponent(value)));
+            }
+            else {
+                // Change the text
+                $('#siteorigin-widgets-link')
+                    .html($('#siteorigin-widgets-link').data('text'))
+                    .attr('href',$('#siteorigin-widgets-link').data('original'));
+            }
+
             // Filter the panels
             $( '#panels-dialog .panel-type-list .panel-type' )
                 .show()
