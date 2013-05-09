@@ -35,7 +35,6 @@ jQuery(function($){
                 }
                 
                 // Check if we're using autoplay
-                console.log(Number($(this).attr('data-autoplay')));
                 if(Number($(this).attr('data-autoplay')) == 1){ $$.jPlayer("play"); }
                 
                 $(this).jPlayer( { size: {height: Math.floor($(this).closest('.widget' ).outerWidth() / ratio)} } );

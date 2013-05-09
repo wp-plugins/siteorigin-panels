@@ -366,6 +366,53 @@ class SiteOrigin_Panels_Widgets_PostLoop extends WP_Widget{
 	}
 }
 
+/**
+ * A panel that lets you embed video.
+ */
+class SiteOrigin_Panels_Widgets_EmbeddedVideo extends WP_Widget {
+	function __construct() {
+		parent::__construct(
+			'siteorigin-panels-embedded-video',
+			__( 'Embedded Video', 'so-panels' ),
+			array(
+				'description' => __( 'Embeds a video.', 'so-panels' ),
+			)
+		);
+	}
+
+	/**
+	 * Display the video using
+	 *
+	 * @param array $args
+	 * @param array $instance
+	 */
+	function widget( $args, $instance ) {
+		$embed = new WP_Embed();
+
+		echo $args['before_widget'];
+		?><div class="fitvid"><?php echo $embed->run_shortcode( '[embed]' . $instance['video'] . '[/embed]' ) ?></div><?php
+		echo $args['after_widget'];
+	}
+
+	function form( $instance ) {
+		$instance = wp_parse_args( $instance, array(
+			'video' => '',
+		) )
+
+		?>
+		<p>
+			<label for="<?php echo $this->get_field_id( 'video' ) ?>"><?php _e( 'Video', 'so-panels' ) ?></label>
+			<input type="text" class="widefat" name="<?php echo $this->get_field_name( 'video' ) ?>" id="<?php echo $this->get_field_id( 'video' ) ?>" <?php echo esc_attr( $instance['video'] ) ?>>
+		</p>
+	<?php
+	}
+
+	function update( $new, $old ) {
+		$new['video'] = str_replace( 'https://', 'http://', $new['video'] );
+		return $new;
+	}
+}
+
 class SiteOrigin_Panels_Widgets_Video extends WP_Widget {
 	function __construct() {
 		parent::__construct(
@@ -516,6 +563,7 @@ function origin_page_builder_widgets_init(){
 	register_widget('SiteOrigin_Panels_Widgets_PostContent');
 	register_widget('SiteOrigin_Panels_Widgets_Image');
 	register_widget('SiteOrigin_Panels_Widgets_PostLoop');
+	register_widget('SiteOrigin_Panels_Widgets_EmbeddedVideo');
 	register_widget('SiteOrigin_Panels_Widgets_Video');
 }
 add_action('widgets_init', 'origin_page_builder_widgets_init');

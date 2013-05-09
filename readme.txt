@@ -75,3 +75,7 @@ To get you started, we've include a few widgets.
 = 1.1.4 =
 * Various UI improvements.
 * Transition from theme version.
+
+= 1.1.5 =
+* Text content of Page Builder is now saved to post_content to improve compatibility with SEO/search plugins.
+* Added an embedded video widget.

@@ -166,7 +166,6 @@
                     return false;
                 }
                 else if (e.keyCode === $.ui.keyCode.ESCAPE) {
-                    console.log('here');
                     $(this ).closest('.ui-dialog' ).dialog('close');
                 }
             });

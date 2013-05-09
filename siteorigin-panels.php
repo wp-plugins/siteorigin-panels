@@ -3,14 +3,14 @@
 Plugin Name: Page Builder
 Plugin URI: http://siteorigin.com/page-builder/
 Description: A drag and drop, responsive page builder that simplifies building your website.
-Version: 1.1.4
+Version: 1.1.5
 Author: SiteOrigin
 Author URI: http://siteorigin.com
 License: GPL3
 License URI: http://www.gnu.org/licenses/gpl.html
 */
 
-DEFINE('SITEORIGIN_PANELS_VERSION', '1.1.4');
+DEFINE('SITEORIGIN_PANELS_VERSION', '1.1.5');
 
 // A few default widgets to make things easier
 include plugin_dir_path(__FILE__).'inc/widgets.php';
@@ -29,6 +29,7 @@ function siteorigin_panels_setting($key = false){
 
 		$settings = get_theme_support('siteorigin-panels');
 		if(!empty($settings)) $settings = $settings[0];
+		else $settings = array();
 
 		$settings = wp_parse_args($settings, array(
 			'home-page' => false,                   // Is the home page supported
@@ -321,14 +322,45 @@ function siteorigin_panels_add_help_tab_content(){
  *
  * @action save_post
  */
-function siteorigin_panels_save_post( $post_id ) {
+function siteorigin_panels_save_post( $post_id, $post ) {
 	if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) return;
 	if ( empty( $_POST['_sopanels_nonce'] ) || !wp_verify_nonce( $_POST['_sopanels_nonce'], 'save' ) ) return;
 	if ( !current_user_can( 'edit_post', $post_id ) ) return;
-	
+
+	$panels_data = siteorigin_panels_get_panels_data_from_post($_POST);
 	update_post_meta( $post_id, 'panels_data', siteorigin_panels_get_panels_data_from_post($_POST) );
+
+	if(!empty($panels_data['widgets'])) {
+		remove_action('save_post', 'siteorigin_panels_save_post');
+
+		// Save the panels data into post_content for SEO and search plugins
+		$content = siteorigin_panels_render($post_id);
+		$content = preg_replace(
+			array(
+			  // Remove invisible content
+				'@<head[^>]*?>.*?</head>@siu',
+				'@<style[^>]*?>.*?</style>@siu',
+				'@<script[^>]*?.*?</script>@siu',
+				'@<object[^>]*?.*?</object>@siu',
+				'@<embed[^>]*?.*?</embed>@siu',
+				'@<applet[^>]*?.*?</applet>@siu',
+				'@<noframes[^>]*?.*?</noframes>@siu',
+				'@<noscript[^>]*?.*?</noscript>@siu',
+				'@<noembed[^>]*?.*?</noembed>@siu',
+			),
+			array(' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ',),
+			$content
+		);
+		$content = strip_tags($content, '<img><h1><h2><h3><h4><h5><h6><a><p><em><strong>');
+		$content = explode("\n", $content);
+		$content = array_map('trim', $content);
+		$content = implode("\n", $content);
+
+		$post->post_content = $content;
+		wp_update_post($post);
+	}
 }
-add_action( 'save_post', 'siteorigin_panels_save_post' );
+add_action( 'save_post', 'siteorigin_panels_save_post', 10, 2 );
 
 /**
  * Convert form post data into more efficient panels data.

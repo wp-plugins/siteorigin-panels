@@ -33,7 +33,6 @@ jQuery( function ( $ ) {
     // Create the add grid dialog
     var gridAddDialogButtons = {};
     gridAddDialogButtons[panels.i10n.buttons.add] = function () {
-        console.log('add');
         var num = Number( $( '#grid-add-dialog' ).find( 'input' ).val() );
 
         if ( num == NaN ) {
