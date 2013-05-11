@@ -3,14 +3,15 @@
 Plugin Name: Page Builder
 Plugin URI: http://siteorigin.com/page-builder/
 Description: A drag and drop, responsive page builder that simplifies building your website.
-Version: 1.1.5
+Version: 1.1.6
 Author: SiteOrigin
 Author URI: http://siteorigin.com
 License: GPL3
 License URI: http://www.gnu.org/licenses/gpl.html
 */
 
-DEFINE('SITEORIGIN_PANELS_VERSION', '1.1.5');
+define('SITEORIGIN_PANELS_VERSION', '1.1.6');
+define('SITEORIGIN_PANELS_BASE_FILE', __FILE__);
 
 // A few default widgets to make things easier
 include plugin_dir_path(__FILE__).'inc/widgets.php';
@@ -194,16 +195,16 @@ function siteorigin_panels_admin_enqueue_scripts($prefix) {
 		wp_enqueue_script( 'jquery-ui-dialog' );
 		wp_enqueue_script( 'jquery-ui-button' );
 		
-		wp_enqueue_script( 'so-undomanager', plugin_dir_url(__FILE__) . '/js/undomanager.min.js', array( ), 'fb30d7f' );
+		wp_enqueue_script( 'so-undomanager', plugin_dir_url(__FILE__) . 'js/undomanager.min.js', array( ), 'fb30d7f' );
 
-		wp_enqueue_script( 'so-panels-admin', plugin_dir_url(__FILE__) . '/js/panels.admin.min.js', array( 'jquery' ), SITEORIGIN_PANELS_VERSION );
-		wp_enqueue_script( 'so-panels-admin-panels', plugin_dir_url(__FILE__) . '/js/panels.admin.panels.min.js', array( 'jquery' ), SITEORIGIN_PANELS_VERSION );
-		wp_enqueue_script( 'so-panels-admin-grid', plugin_dir_url(__FILE__) . '/js/panels.admin.grid.min.js', array( 'jquery' ), SITEORIGIN_PANELS_VERSION );
-		wp_enqueue_script( 'so-panels-admin-prebuilt', plugin_dir_url(__FILE__) . '/js/panels.admin.prebuilt.min.js', array( 'jquery' ), SITEORIGIN_PANELS_VERSION );
-		wp_enqueue_script( 'so-panels-admin-tooltip', plugin_dir_url(__FILE__) . '/js/panels.admin.tooltip.min.js', array( 'jquery' ), SITEORIGIN_PANELS_VERSION );
-		wp_enqueue_script( 'so-panels-admin-media', plugin_dir_url(__FILE__) . '/js/panels.admin.media.min.js', array( 'jquery' ), SITEORIGIN_PANELS_VERSION );
+		wp_enqueue_script( 'so-panels-admin', plugin_dir_url(__FILE__) . 'js/panels.admin.min.js', array( 'jquery' ), SITEORIGIN_PANELS_VERSION );
+		wp_enqueue_script( 'so-panels-admin-panels', plugin_dir_url(__FILE__) . 'js/panels.admin.panels.min.js', array( 'jquery' ), SITEORIGIN_PANELS_VERSION );
+		wp_enqueue_script( 'so-panels-admin-grid', plugin_dir_url(__FILE__) . 'js/panels.admin.grid.min.js', array( 'jquery' ), SITEORIGIN_PANELS_VERSION );
+		wp_enqueue_script( 'so-panels-admin-prebuilt', plugin_dir_url(__FILE__) . 'js/panels.admin.prebuilt.min.js', array( 'jquery' ), SITEORIGIN_PANELS_VERSION );
+		wp_enqueue_script( 'so-panels-admin-tooltip', plugin_dir_url(__FILE__) . 'js/panels.admin.tooltip.min.js', array( 'jquery' ), SITEORIGIN_PANELS_VERSION );
+		wp_enqueue_script( 'so-panels-admin-media', plugin_dir_url(__FILE__) . 'js/panels.admin.media.min.js', array( 'jquery' ), SITEORIGIN_PANELS_VERSION );
 		
-		wp_enqueue_script( 'so-panels-chosen', plugin_dir_url(__FILE__) . '/js/chosen/chosen.jquery.min.min.js', array( 'jquery' ), SITEORIGIN_PANELS_VERSION );
+		wp_enqueue_script( 'so-panels-chosen', plugin_dir_url(__FILE__) . 'js/chosen/chosen.jquery.min.min.js', array( 'jquery' ), SITEORIGIN_PANELS_VERSION );
 
 		wp_localize_script( 'so-panels-admin', 'panels', array(
 			'previewUrl' => wp_nonce_url(add_query_arg('siteorigin_panels_preview', 'true', get_home_url()), 'siteorigin-panels-preview'),
@@ -743,7 +744,7 @@ add_filter('body_class', 'siteorigin_panels_body_class');
  */
 function siteorigin_panels_siteorigin_themes_tab($suffix){
 	if( ($suffix == 'theme-install.php' || $suffix == 'themes.php') && !wp_script_is('siteorigin-admin-tab') ){
-		wp_enqueue_script('siteorigin-themes-tab', plugin_dir_url(__FILE__) . '/js/siteorigin.tab.min.js', array('jquery'), SITEORIGIN_PANELS_VERSION);
+		wp_enqueue_script('siteorigin-themes-tab', plugin_dir_url(__FILE__) . 'js/siteorigin.tab.min.js', array('jquery'), SITEORIGIN_PANELS_VERSION);
 		wp_localize_script('siteorigin-themes-tab', 'siteoriginAdminTab', array(
 			'text' => __('SiteOrigin Themes', 'so-panels'),
 			'url' => admin_url('theme-install.php?tab=search&type=author&s=gpriday')

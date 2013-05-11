@@ -79,3 +79,6 @@ To get you started, we've include a few widgets.
 = 1.1.5 =
 * Text content of Page Builder is now saved to post_content to improve compatibility with SEO/search plugins.
 * Added an embedded video widget.
+
+= 1.1.6 =
+* Fixed a PHP 5.2 issue that broke certain widgets and the settings page.

@@ -138,21 +138,6 @@ jQuery( function ( $ ) {
 
             var value = $( this ).val();
 
-            if(value != '') {
-                // Change the text
-                $('#siteorigin-widgets-link')
-                    .html(
-                        $('#siteorigin-widgets-link').data('text').replace('More', '"'+value+'"')
-                    )
-                    .attr('href', $('#siteorigin-widgets-link').data('search').replace('{search}', encodeURIComponent(value)));
-            }
-            else {
-                // Change the text
-                $('#siteorigin-widgets-link')
-                    .html($('#siteorigin-widgets-link').data('text'))
-                    .attr('href',$('#siteorigin-widgets-link').data('original'));
-            }
-
             // Filter the panels
             $( '#panels-dialog .panel-type-list .panel-type' )
                 .show()

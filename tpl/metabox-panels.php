@@ -76,21 +76,6 @@ $layouts = apply_filters('siteorigin_panels_prebuilt_layouts', array());
 			</ul>
 
 			<?php do_action('siteorigin_panels_after_widgets'); ?>
-
-			<div id="siteorigin-widgets-link-wrapper">
-				<?php
-				$widgets_url = apply_filters('siteorigin_panels_widgets_url', 'http://siteorigin.com/product-tag/widget/');
-				$settings = siteorigin_panels_setting();
-
-				// Let themes enter their SiteOrigin affiliate ID
-				if(!empty($settings['affiliate-id'])){
-					$siteorigin_url = add_query_arg('ref', $settings['affiliate-id'], $widgets_url);
-				}
-				?>
-				<a href="<?php echo esc_url($widgets_url) ?>" data-original="<?php echo esc_url($widgets_url) ?>" data-search="<?php echo add_query_arg('search', '{search}', $widgets_url) ?>" id="siteorigin-widgets-link" target="_blank">
-					<?php _e('Find More Page Builder Widgets', 'so-panels') ?>
-				</a>
-			</div>
 		</div>
 		
 	</div>
