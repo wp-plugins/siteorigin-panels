@@ -64,9 +64,16 @@
             }
         }
 
+        /*
         var weightSum = weights.reduce( function ( a, b ) {
             return a + b;
         } );
+        */
+
+        var weightSum = 0;
+        for (var index in weights) {
+            weightSum += weights[index];
+        }
 
         // Create a new grid container
         var container = $( '<div />' ).addClass( 'grid-container' ).appendTo( '#panels-container' );

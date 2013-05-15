@@ -29,12 +29,18 @@ There are loads free and premium themes that work with the Page Builder, we have
 
 = Bundled Widgets =
 
-To get you started, we've include a few widgets.
-
+To get you started, we've include a few widgets:
 * Gallery widget for inserting image galleries.
 * Image widget for inserting standard images.
 * Self hosted video widget for embedding your own videos.
 * Post Loop to display a list of posts. This requires that your theme supports it.
+
+As well as some essential page elements widgets:
+* Button
+* Call to Action
+* List
+* Price Box
+* Animated Image
 
 == Installation ==
 
@@ -82,3 +88,8 @@ To get you started, we've include a few widgets.
 
 = 1.1.6 =
 * Fixed a PHP 5.2 issue that broke certain widgets and the settings page.
+
+= 1.2 =
+* Added several website element widgets as well as a framework for extending them.
+* Fixed IE8 issue.
+* Improved embedded video widget.

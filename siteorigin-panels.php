@@ -3,18 +3,18 @@
 Plugin Name: Page Builder
 Plugin URI: http://siteorigin.com/page-builder/
 Description: A drag and drop, responsive page builder that simplifies building your website.
-Version: 1.1.6
+Version: 1.2
 Author: SiteOrigin
 Author URI: http://siteorigin.com
 License: GPL3
 License URI: http://www.gnu.org/licenses/gpl.html
 */
 
-define('SITEORIGIN_PANELS_VERSION', '1.1.6');
+define('SITEORIGIN_PANELS_VERSION', '1.2');
 define('SITEORIGIN_PANELS_BASE_FILE', __FILE__);
 
 // A few default widgets to make things easier
-include plugin_dir_path(__FILE__).'inc/widgets.php';
+include plugin_dir_path(__FILE__).'widgets/widgets.php';
 
 // Theme Options
 include plugin_dir_path(__FILE__).'inc/options.php';
@@ -138,7 +138,8 @@ function siteorigin_panels_filter_home_template($template){
 add_filter('home_template', 'siteorigin_panels_filter_home_template');
 
 function siteorigin_panels_is_home(){
-	return !empty($GLOBALS['siteorigin_panels_is_panels_home']);
+	//if(isset($GLOBALS['siteorigin_panels_is_panels_home'])) return $GLOBALS['siteorigin_panels_is_panels_home'];
+	return (is_home() && get_option('siteorigin_panels_home_page_enabled', siteorigin_panels_setting('home-page-default')));
 }
 
 /**
@@ -545,6 +546,23 @@ function siteorigin_panels_css() {
 }
 add_action( 'wp_head', 'siteorigin_panels_css', 15 );
 
+/**
+ * Prepare the panels data early so widgets can enqueue their scripts and styles for the header.
+ */
+function siteorigin_panels_prepare_content( ) {
+	global $siteorigin_panels_cache;
+	if(empty($siteorigin_panels_cache)) $siteorigin_panels_cache = array();
+
+	if( siteorigin_panels_is_home() ) {
+		$html = siteorigin_panels_render( 'home' );
+		$siteorigin_panels_cache['home'] = $html;
+	}
+	else if( is_singular() && siteorigin_panels_is_panel() ) {
+		$html = siteorigin_panels_render( get_the_ID() );
+		$siteorigin_panels_cache[get_the_ID()] = $html;
+	}
+}
+add_action('wp_enqueue_scripts', 'siteorigin_panels_prepare_content', 11);
 
 /**
  * Filter the content of the panel, adding all the widgets.
@@ -575,6 +593,13 @@ add_filter( 'the_content', 'siteorigin_panels_filter_content' );
  * @return string
  */
 function siteorigin_panels_render( $post_id = false ) {
+	if(empty($post_id)) $post_id = get_the_ID();
+
+	// Try get the cached panel from in memory cache.
+	global $siteorigin_panels_cache;
+	if(!empty($siteorigin_panels_cache) && !empty($siteorigin_panels_cache[$post_id]))
+		return $siteorigin_panels_cache[$post_id];
+
 	if($post_id == 'home'){
 		$panels_data = get_option('siteorigin_panels_home_page', null);
 		if(is_null($panels_data)){
@@ -584,11 +609,7 @@ function siteorigin_panels_render( $post_id = false ) {
 		}
 	}
 	else{
-		if ( empty( $post_id ) ) {
-			global $post;
-		}
-		else $post = get_post( $post_id );
-		$panels_data = get_post_meta( $post->ID, 'panels_data', true );
+		$panels_data = get_post_meta( $post_id, 'panels_data', true );
 	}
 	
 	if ( empty( $panels_data ) ) return '';
@@ -694,9 +715,7 @@ function siteorigin_panels_preview(){
 	if(isset($_GET['siteorigin_panels_preview']) && wp_verify_nonce($_GET['_wpnonce'], 'siteorigin-panels-preview')){
 		// Set the panels home state to true
 		if(empty($_POST['post_id'])) $GLOBALS['siteorigin_panels_is_panels_home'] = true;
-		
 		add_action('option_siteorigin_panels_home_page', 'siteorigin_panels_preview_load_data');
-
 		locate_template(siteorigin_panels_setting('home-template'), true);
 		exit();
 	}
