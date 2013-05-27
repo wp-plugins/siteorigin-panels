@@ -390,10 +390,10 @@ class SiteOrigin_Panels_Widgets_EmbeddedVideo extends WP_Widget {
 		$embed = new WP_Embed();
 
 		if(!wp_script_is('fitvids'))
-			wp_enqueue_script('fitvids', plugin_dir_url(__FILE__).'/js/jquery.fitvids.js', array('jquery'), SITEORIGIN_PANELS_VERSION);
+			wp_enqueue_script('fitvids', plugin_dir_url(SITEORIGIN_PANELS_BASE_FILE) . 'widgets/js/jquery.fitvids.min.js', array('jquery'), SITEORIGIN_PANELS_VERSION);
 
 		if(!wp_script_is('siteorigin-panels-embedded-video'))
-			wp_enqueue_script('siteorigin-panels-embedded-video', plugin_dir_url(__FILE__).'/js/embedded-video.js', array('jquery', 'fitvids'), SITEORIGIN_PANELS_VERSION);
+			wp_enqueue_script('siteorigin-panels-embedded-video', plugin_dir_url(SITEORIGIN_PANELS_BASE_FILE) . 'widgets/js/embedded-video.min.js', array('jquery', 'fitvids'), SITEORIGIN_PANELS_VERSION);
 
 		echo $args['before_widget'];
 		?><div class="siteorigin-fitvids"><?php echo $embed->run_shortcode( '[embed]' . $instance['video'] . '[/embed]' ) ?></div><?php

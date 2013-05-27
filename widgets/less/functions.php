@@ -46,9 +46,9 @@ function origin_widgets_less_texture($texture){
 		if($arg[0] == 'keyword') {
 			$t = $arg[1];
 			if($t == 'none') continue;
-			foreach(SiteOrigin_Panels_Widget::get_widget_folders() as $folder => $folder_url) {
-				if(file_exists($folder.'/img/textures/'.$t.'.png')) {
-					$return .= 'url('.esc_url($folder_url.'/img/textures/'.$t.'.png').') repeat ';
+			foreach(SiteOrigin_Panels_Widget::get_image_folders() as $folder => $folder_url) {
+				if(file_exists($folder.'/textures/'.$t.'.png')) {
+					$return .= 'url('.esc_url($folder_url.'/textures/'.$t.'.png').') repeat ';
 					break;
 				}
 			}
@@ -78,12 +78,11 @@ function origin_widgets_less_widgetimage($url){
 	}
 
 	// Search for the appropriate image
-	foreach(SiteOrigin_Panels_Widget::get_widget_folders() as $folder => $folder_url) {
-		if(file_exists($folder.'/img/'.$the_url)) {
-			return esc_url($folder_url.'/img/'.$the_url);
+	foreach(SiteOrigin_Panels_Widget::get_image_folders() as $folder => $folder_url) {
+		if(file_exists($folder.'/'.$the_url)) {
+			return esc_url($folder_url.'/'.$the_url);
 		}
 	}
 
-
-	return plugin_dir_url(SITEORIGIN_PANELS_BASE_FILE).'widgets/img/'.$the_url;
+	return '';
 }

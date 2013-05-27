@@ -83,8 +83,9 @@
         container
             .append(
                 $( '<div class="controls" />' )
+                    // Add the remove button
                     .append(
-                        $( '<button />' )
+                        $( '<div />' )
                             .button( {
                                 icons:{primary:'ui-icon-remove'},
                                 text: false
@@ -181,6 +182,7 @@
                             } )
 
                     )
+                    // Add the move/reorder button
                     .append(
                         $( '<div class="ui-button ui-button-icon-only grid-handle"><div class="ui-icon ui-icon-move"></div></div>' )
                     )

@@ -91,6 +91,12 @@
 	z-index: 300002;
 }
 
+.ui-dialog.panels-admin-dialog .ui-dialog-buttonpane {
+	background: #f1f1f1;
+	border: none;
+	border-top: 1px solid #dddddd;
+}
+
 .ui-dialog.panels-admin-dialog .ui-dialog-titlebar {
 	position: relative;
 	

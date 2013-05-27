@@ -3,14 +3,14 @@
 Plugin Name: Page Builder
 Plugin URI: http://siteorigin.com/page-builder/
 Description: A drag and drop, responsive page builder that simplifies building your website.
-Version: 1.2
+Version: 1.2.1
 Author: SiteOrigin
 Author URI: http://siteorigin.com
 License: GPL3
 License URI: http://www.gnu.org/licenses/gpl.html
 */
 
-define('SITEORIGIN_PANELS_VERSION', '1.2');
+define('SITEORIGIN_PANELS_VERSION', '1.2.1');
 define('SITEORIGIN_PANELS_BASE_FILE', __FILE__);
 
 // A few default widgets to make things easier
@@ -654,8 +654,8 @@ function siteorigin_panels_render( $post_id = false ) {
 /**
  * Render the widget. 
  * 
- * @param $widget
- * @param $instance
+ * @param string $widget The widget class name.
+ * @param array $instance The widget instance
  * @param $grid
  * @param $cell
  * @param $panel

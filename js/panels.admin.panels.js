@@ -19,7 +19,6 @@
         var data = {};
 
         $$.find( '.form *[name]' ).not( '[data-info-field]' ).each( function () {
-
             var name = /widgets\[[0-9]+\]\[([a-z0-9_]+)\]/.exec($(this).attr('name'));
             name = name[1];
             if ( $$.attr( 'type' ) == 'checkbox' ) data[name] = $( this ).is( ':checked' )

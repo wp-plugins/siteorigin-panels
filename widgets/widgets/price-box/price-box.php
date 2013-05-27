@@ -24,11 +24,12 @@ class SiteOrigin_Panels_Widget_Price_Box extends SiteOrigin_Panels_Widget  {
 				),
 				'information' => array(
 					'type' => 'text',
-					'label' => __('Features Text', 'so-panels'),
+					'label' => __('Information Text', 'so-panels'),
 				),
 				'features' => array(
 					'type' => 'textarea',
-					'label' => __('Information Text', 'so-panels'),
+					'label' => __('Features Text', 'so-panels'),
+					'description' => __('Start each new point with an astrix (*)', 'so-panels'),
 				),
 				'button_text' => array(
 					'type' => 'text',

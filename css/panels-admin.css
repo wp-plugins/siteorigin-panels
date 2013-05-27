@@ -699,3 +699,19 @@ html {
 	outline: none;
 }
 
+.panel-dialog h2.nav-tab-wrapper {
+	margin-top: 0;
+}
+
+.panel-dialog h2.nav-tab-wrapper a.nav-tab {
+	font-size: 11.5px;
+	font-weight: bold;
+	margin-right: 4px;
+	padding: 4px 8px;
+}
+
+.panel-dialog h2.nav-tab-wrapper a.add-new {
+	float: right;
+	text-decoration: none;
+}
+

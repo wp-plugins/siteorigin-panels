@@ -22,6 +22,11 @@ function origin_widgets_init(){
 }
 add_action('widgets_init', 'origin_widgets_init');
 
+function origin_widgets_enqueue($prefix){
+	if($prefix == 'widgets.php') wp_enqueue_script('origin-widgets-admin-script', plugin_dir_url(SITEORIGIN_PANELS_BASE_FILE) . 'widgets/js/admin.min.js', array('jquery'), SITEORIGIN_PANELS_VERSION);
+}
+add_action('admin_enqueue_scripts', 'origin_widgets_enqueue');
+
 /**
  * Class SiteOrigin_Panels_Widget
  */
@@ -67,7 +72,7 @@ abstract class SiteOrigin_Panels_Widget extends WP_Widget{
 	 * @param array $new
 	 * @return array
 	 */
-	function update($old, $new) {
+	function update($new, $old) {
 		// Remove the old CSS file
 		if(!empty($old['origin_style'])) {
 			list($style, $preset) = explode(':', $old['origin_style']);
@@ -112,6 +117,9 @@ abstract class SiteOrigin_Panels_Widget extends WP_Widget{
 					if(empty($field_args['height'])) $field_args['height'] = 6;
 					?><textarea class="widefat" name="<?php echo $this->get_field_name( $field_id ); ?>" rows="<?php echo intval($field_args['height']) ?>"><?php echo esc_textarea($instance[$field_id]) ?></textarea><?php
 					break;
+				case 'number' :
+					?><input type="number" class="small-text" name="<?php echo $this->get_field_name( $field_id ); ?>" value="<?php echo floatval($instance[$field_id]) ?>" /><?php
+					break;
 				case 'select' :
 					?>
 					<select name="<?php echo $this->get_field_name( $field_id ); ?>">
@@ -127,6 +135,7 @@ abstract class SiteOrigin_Panels_Widget extends WP_Widget{
 			?><p><?php
 		}
 
+		if(!empty($this->widget_options['multi'])) echo '</div>';
 		if(!isset($instance['origin_style'])) $instance['origin_style'] = !empty($this->widget_options['default_style']) ? $this->widget_options['default_style'] : false;
 
 		// Now, lets add the style options.
@@ -197,25 +206,35 @@ abstract class SiteOrigin_Panels_Widget extends WP_Widget{
 		$paths = $this->get_widget_paths();
 
 		foreach($paths as $path) {
-			if(file_exists($path.'/tpl/'.$template.'.php')) {
-				$template_file = $path.'/tpl/'.$template.'.php';
+			if(file_exists($path.'/'.$this->origin_id.'/tpl/'.$template.'.php')) {
+				$template_file = $path.'/'.$this->origin_id.'/tpl/'.$template.'.php';
 				break;
 			}
 		}
-		if(empty($template_file)) die('Template not found');
+		if(empty($template_file)) {
+			echo $args['before_widget'];
+			echo 'Template not found';
+			echo $args['after_widget'];
+			return false;
+		}
 
 
 		// Enqueue the CSS
 		if(!empty($instance['origin_style'])) {
 			$filename = $this->origin_id.'-'.$style.'-'.$preset;
 			$css_files = get_option('origin_css_files', array());
-			if( empty( $css_files[$filename] ) || !file_exists($css_files[$filename]['file']) || ( SITEORIGIN_PANELS_VERSION == '1.2' ) ) {
+			if( empty( $css_files[$filename] ) || !file_exists($css_files[$filename]['file']) || ( SITEORIGIN_PANELS_VERSION == '1.2.1' ) ) {
 				// Recreate the CSS file
 				$css_files[$filename] = $this->cache_css($style, $preset);
-				update_option('origin_css_files', $css_files);
+				if($css_files[$filename] === false) {
+					// We're unable to upload the file
+				}
+				else {
+					update_option('origin_css_files', $css_files);
+				}
 			}
 
-			if(!wp_script_is('origin-widget-'.$filename)) {
+			if(!wp_script_is('origin-widget-'.$filename) && !empty($css_files[$filename]['url'])) {
 				wp_enqueue_style('origin-widget-'.$filename, $css_files[$filename]['url'], array());
 			}
 		}
@@ -275,8 +294,8 @@ abstract class SiteOrigin_Panels_Widget extends WP_Widget{
 
 		// Find the file - exit if it can't be found.
 		foreach($paths as $path) {
-			if(file_exists($path.'/styles/'.$style.'.less')) {
-				$style_file = $path.'/styles/'.$style.'.less';
+			if(file_exists($path.'/'.$this->origin_id.'/styles/'.$style.'.less')) {
+				$style_file = $path.'/'.$this->origin_id.'/styles/'.$style.'.less';
 				break;
 			}
 		}
@@ -342,9 +361,8 @@ abstract class SiteOrigin_Panels_Widget extends WP_Widget{
 	 * @return mixed
 	 */
 	public function cache_css($style, $preset){
-		$css = $this->create_css($style,$preset);
-
 		$filename = $this->origin_id.'-'.$style.'-'.$preset;
+		$css = $this->create_css($style,$preset);
 		$css_files = get_option('origin_css_files', array());
 
 		// Remove the old file from cache if it's there
@@ -367,19 +385,42 @@ abstract class SiteOrigin_Panels_Widget extends WP_Widget{
 	 * @return array
 	 */
 	function get_widget_paths(){
-		return array(
-			get_stylesheet_directory().'/widgets/'.$this->origin_id,
-			get_template_directory().'/widgets/'.$this->origin_id,
-			plugin_dir_path(__FILE__).'widgets/'.$this->origin_id,
-		);
+		static $paths = array();
+
+		if(empty($paths)) {
+			$paths = array_keys($this->get_widget_folders());
+		}
+
+		return $paths;
 	}
 
 	static function get_widget_folders(){
-		return array(
-			get_stylesheet_directory().'/widgets' => get_stylesheet_directory_uri().'/widgets',
-			get_template_directory().'/widgets' => get_template_directory_uri().'/widgets',
-			plugin_dir_path(SITEORIGIN_PANELS_BASE_FILE).'widgets' => plugin_dir_url(SITEORIGIN_PANELS_BASE_FILE).'widgets',
-		);
+		static $folders = array();
+
+		if(empty($folders)) {
+			$folders = array(
+				get_stylesheet_directory().'/widgets' => get_stylesheet_directory_uri().'/widgets/widgets',
+				get_template_directory().'/widgets' => get_template_directory_uri().'/widgets',
+				plugin_dir_path(SITEORIGIN_PANELS_BASE_FILE).'widgets/widgets' => plugin_dir_url(SITEORIGIN_PANELS_BASE_FILE).'widgets/widgets',
+			);
+			$folders = apply_filters('siteorigin_widget_folders', $folders);
+		}
+
+		return $folders;
+	}
+
+	static function get_image_folders(){
+		static $folders = array();
+		if(empty($folders)) {
+			$folders = array(
+				get_stylesheet_directory().'/widgets/img' => get_stylesheet_directory_uri().'/widgets/img',
+				get_template_directory().'/widgets/img' => get_template_directory_uri().'/widgets/img',
+				plugin_dir_path(SITEORIGIN_PANELS_BASE_FILE).'widgets/img' => plugin_dir_url(SITEORIGIN_PANELS_BASE_FILE).'widgets/img',
+			);
+			$folders = apply_filters('siteorigin_widget_image_folders', $folders);
+		}
+
+		return $folders;
 	}
 
 	/**
@@ -393,7 +434,7 @@ abstract class SiteOrigin_Panels_Widget extends WP_Widget{
 			foreach($this->get_widget_paths() as $path) {
 				if(!is_dir($path)) continue;
 
-				foreach(glob($path.'/styles/*.less') as $file) {
+				foreach(glob($path.'/'.$this->origin_id.'/styles/*.less') as $file) {
 					$p = pathinfo($file);
 					$this->styles[$p['filename']] = $this->get_style_data($p['filename']);
 				}
@@ -427,11 +468,11 @@ abstract class SiteOrigin_Panels_Widget extends WP_Widget{
 	 */
 	public function get_style_data($name) {
 		$paths = $this->get_widget_paths();
-		array_reverse($paths);
 
 		foreach($paths as $path) {
-			$filename = $path.'/styles/'.sanitize_file_name($name).'.less';
+			$filename = $path.'/'.$this->origin_id.'/styles/'.sanitize_file_name($name).'.less';
 			if(!file_exists($filename)) continue;
+
 			$data = get_file_data($filename, array(
 				'Name' => 'Name',
 				'Template' => 'Template',
@@ -452,7 +493,116 @@ abstract class SiteOrigin_Panels_Widget extends WP_Widget{
 		$this->widget($args, $this->demo);
 	}
 
+	/**
+	 * Register a widget that we'll be using inside this widget.
+	 *
+	 * @param $id
+	 * @param $name
+	 * @param $class
+	 */
 	function add_sub_widget($id, $name, $class){
 		$this->sub_widgets[$id] = array($name, $class);
+	}
+
+	function add_post_query_fields(){
+		// Add the posts type field
+		$post_types = get_post_types(array('public' => true));
+		$post_types = array_values($post_types);
+		$this->form_args['query_post_type'] = array(
+			'type' => 'select',
+			'options' => $post_types,
+			'label' => __('Post Type', 'so-panels')
+		);
+
+		// Add the posts per page field
+		$this->form_args['query_posts_per_page'] = array(
+			'type' => 'number',
+			'default' => 10,
+			'label' => __('Posts Per Page', 'so-panels'),
+		);
+
+		$this->form_args['query_orderby'] = array(
+			'type' => 'select',
+			'label' => __('Order By', 'so-panels'),
+			'options' => array(
+				'none'  => __('None', 'so-panels'),
+				'ID'  => __('Post ID', 'so-panels'),
+				'author'  => __('Author', 'so-panels'),
+				'name'  => __('Name', 'so-panels'),
+				'name'  => __('Name', 'so-panels'),
+				'date'  => __('Date', 'so-panels'),
+				'modified'  => __('Modified', 'so-panels'),
+				'parent'  => __('Parent', 'so-panels'),
+				'rand'  => __('Random', 'so-panels'),
+				'comment_count'  => __('Comment Count', 'so-panels'),
+				'menu_order'  => __('Menu Order', 'so-panels'),
+			)
+		);
+
+		$this->form_args['query_order'] = array(
+			'type' => 'select',
+			'label' => __('Order', 'so-panels'),
+			'options' => array(
+				'ASC'  => __('Ascending', 'so-panels'),
+				'DESC'  => __('Descending', 'so-panels'),
+			)
+		);
+
+		$this->form_args['query_sticky'] = array(
+			'type' => 'select',
+			'label' => __('Sticky Posts', 'so-panels'),
+			'options' => array(
+				''  => __('Default', 'so-panels'),
+				'ignore'  => __('Ignore Sticky', 'so-panels'),
+				'exclude'  => __('Exclude Sticky', 'so-panels'),
+				'only'  => __('Only Sticky', 'so-panels'),
+			)
+		);
+
+		$this->form_args['query_additional'] = array(
+			'type' => 'text',
+			'label' => __('Additional Arguments', 'so-panels'),
+			'description' => sprintf(__('Additional query arguments. See <a href="%s" target="_blank">query_posts</a>.', 'so-panels'), 'http://codex.wordpress.org/Function_Reference/query_posts'),
+		);
+	}
+
+	/**
+	 * Get all the posts for the current query
+	 *
+	 * @param $instance
+	 * @return WP_Query
+	 */
+	static function get_query_posts($instance) {
+		$query_args = array();
+		foreach($instance as $k => $v){
+			if(strpos($k, 'query_') === 0) {
+				$query_args[preg_replace('/query_/', '', $k, 1)] = $v;
+			}
+		}
+		$query = $query_args;
+		unset($query['additional']);
+		unset($query['sticky']);
+
+		// Add the additional arguments
+		$query = wp_parse_args($query_args['additional'], $query);
+
+		// Add the sticky posts if required
+		switch($query_args['sticky']){
+			case 'ignore' :
+				$query['ignore_sticky_posts'] = 1;
+				break;
+			case 'only' :
+				$query['post__in'] = get_option( 'sticky_posts' );
+				break;
+			case 'exclude' :
+				$query['post__not_in'] = get_option( 'sticky_posts' );
+				break;
+		}
+
+		// Add the current page
+		global $wp_query;
+		$query['paged'] = $wp_query->get('paged');
+
+		return new WP_Query($query);
 	}
 }
