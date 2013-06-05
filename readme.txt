@@ -100,3 +100,7 @@ As well as some essential page elements widgets:
 = 1.2.1 =
 * Added several bundled widgets.
 * Improved compatibility with latest WordPress beta.
+
+= 1.2.2 =
+* Fixed plugin conflict.
+* Minor performance improvements.

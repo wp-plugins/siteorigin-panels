@@ -3,14 +3,14 @@
 Plugin Name: Page Builder
 Plugin URI: http://siteorigin.com/page-builder/
 Description: A drag and drop, responsive page builder that simplifies building your website.
-Version: 1.2.1
+Version: 1.2.2
 Author: SiteOrigin
 Author URI: http://siteorigin.com
 License: GPL3
 License URI: http://www.gnu.org/licenses/gpl.html
 */
 
-define('SITEORIGIN_PANELS_VERSION', '1.2.1');
+define('SITEORIGIN_PANELS_VERSION', '1.2.2');
 define('SITEORIGIN_PANELS_BASE_FILE', __FILE__);
 
 // A few default widgets to make things easier
@@ -138,8 +138,8 @@ function siteorigin_panels_filter_home_template($template){
 add_filter('home_template', 'siteorigin_panels_filter_home_template');
 
 function siteorigin_panels_is_home(){
-	//if(isset($GLOBALS['siteorigin_panels_is_panels_home'])) return $GLOBALS['siteorigin_panels_is_panels_home'];
-	return (is_home() && get_option('siteorigin_panels_home_page_enabled', siteorigin_panels_setting('home-page-default')));
+	$home = (is_home() && get_option('siteorigin_panels_home_page_enabled', siteorigin_panels_setting('home-page-default')));
+	return apply_filters('siteorigin_panels_is_home', $home);
 }
 
 /**
@@ -321,6 +321,7 @@ function siteorigin_panels_add_help_tab_content(){
  * Save the panels data
  *
  * @param $post_id
+ * @param $post
  *
  * @action save_post
  */
@@ -330,11 +331,9 @@ function siteorigin_panels_save_post( $post_id, $post ) {
 	if ( !current_user_can( 'edit_post', $post_id ) ) return;
 
 	$panels_data = siteorigin_panels_get_panels_data_from_post($_POST);
-	update_post_meta( $post_id, 'panels_data', siteorigin_panels_get_panels_data_from_post($_POST) );
+	update_post_meta( $post_id, 'panels_data', $panels_data );
 
 	if(!empty($panels_data['widgets'])) {
-		remove_action('save_post', 'siteorigin_panels_save_post');
-
 		// Save the panels data into post_content for SEO and search plugins
 		$content = siteorigin_panels_render($post_id);
 		$content = preg_replace(
@@ -357,9 +356,12 @@ function siteorigin_panels_save_post( $post_id, $post ) {
 		$content = explode("\n", $content);
 		$content = array_map('trim', $content);
 		$content = implode("\n", $content);
-
 		$post->post_content = $content;
+
+		// Update the post, removing this action first so we don't infinite loop.
+		remove_action('save_post', 'siteorigin_panels_save_post');
 		wp_update_post($post);
+		add_action( 'save_post', 'siteorigin_panels_save_post', 10, 2 );
 	}
 }
 add_action( 'save_post', 'siteorigin_panels_save_post', 10, 2 );

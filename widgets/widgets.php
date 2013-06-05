@@ -223,7 +223,7 @@ abstract class SiteOrigin_Panels_Widget extends WP_Widget{
 		if(!empty($instance['origin_style'])) {
 			$filename = $this->origin_id.'-'.$style.'-'.$preset;
 			$css_files = get_option('origin_css_files', array());
-			if( empty( $css_files[$filename] ) || !file_exists($css_files[$filename]['file']) || ( SITEORIGIN_PANELS_VERSION == '1.2.1' ) ) {
+			if( empty( $css_files[$filename] ) || !file_exists($css_files[$filename]['file']) || ( SITEORIGIN_PANELS_VERSION == 'trunk' ) ) {
 				// Recreate the CSS file
 				$css_files[$filename] = $this->cache_css($style, $preset);
 				if($css_files[$filename] === false) {
