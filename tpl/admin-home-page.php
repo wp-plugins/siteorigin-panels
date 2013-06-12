@@ -1,7 +1,7 @@
 <?php $settings = siteorigin_panels_setting(); ?>
 
 <div class="wrap" id="panels-home-page">
-	<form action="<?php echo add_query_arg('page', 'so_panels_home_page') ?>" class="hide-if-no-js" method="post">
+	<form action="<?php echo add_query_arg('page', 'so_panels_home_page') ?>" class="hide-if-no-js" method="post" id="panels-home-page-form">
 		<div id="icon-index" class="icon32"><br></div>
 		<h2>
 			<?php esc_html_e('Custom Home Page', 'so-panels') ?>
@@ -27,7 +27,7 @@
 					<?php wp_editor('', 'content') ?>
 					<?php do_meta_boxes('appearance_page_so_panels_home_page', 'advanced', false) ?>
 
-					<p><input type="submit" class="button button-primary" value="<?php esc_attr_e('Save Home Page', 'so-panels') ?>" /></p>
+					<p><input type="submit" class="button button-primary" id="panels-save-home-page" value="<?php esc_attr_e('Save Home Page', 'so-panels') ?>" /></p>
 				</div>
 			</div>
 		</div>

@@ -12,7 +12,7 @@
     var cellId = 0;
 
     /**
-     * Resize all the cells
+     * Visually resize all the cells, this should happen after a new panel is added.
      */
     $.fn.panelsResizeCells = function(){
 
@@ -46,7 +46,8 @@
 
             // Resize all the grids and cell wrappers
             $$.find( '.grid, .grid .cell, .grid .cell .cell-wrapper' ).css( 'height', Math.max( maxHeight, 68 ) );
-        })
+        });
+
     }
 
     /**
@@ -54,6 +55,7 @@
      *
      * @param cells
      * @param weights
+     *
      * @return {*}
      */
     panels.createGrid = function ( cells, weights ) {
@@ -63,12 +65,6 @@
                 weights[i] = 1;
             }
         }
-
-        /*
-        var weightSum = weights.reduce( function ( a, b ) {
-            return a + b;
-        } );
-        */
 
         var weightSum = 0;
         for (var index in weights) {
@@ -327,8 +323,9 @@
 
                 $( '#panels-container .panel' ).each( function () {
                     var container = $( this ).closest( '.grid-container' );
-                    $( this ).find( 'input[name$="[info][grid]"]' ).val( $( '#panels-container .grid-container' ).index( container ) );
-                    $( this ).find( 'input[name$="[info][cell]"]' ).val( container.find( '.cell' ).index( $( this ).closest( '.cell' ) ) );
+
+                    $( this).data('dialog').find( 'input[name$="[info][grid]"]' ).val( $( '#panels-container .grid-container' ).index( container ) );
+                    $( this ).data('dialog').find( 'input[name$="[info][cell]"]' ).val( container.find( '.cell' ).index( $( this ).closest( '.cell' ) ) );
                 } );
 
                 $( '#panels-container .cell' ).each( function () {

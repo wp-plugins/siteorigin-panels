@@ -192,6 +192,11 @@ class SiteOrigin_Panels_Widgets_Image extends WP_Widget {
 	}
 }
 
+/**
+ * Display a loop of posts.
+ *
+ * Class SiteOrigin_Panels_Widgets_PostLoop
+ */
 class SiteOrigin_Panels_Widgets_PostLoop extends WP_Widget{
 	function __construct() {
 		parent::__construct(
@@ -203,6 +208,12 @@ class SiteOrigin_Panels_Widgets_PostLoop extends WP_Widget{
 		);
 	}
 
+	/**
+	 *
+	 *
+	 * @param array $args
+	 * @param array $instance
+	 */
 	function widget( $args, $instance ) {
 		if(empty($instance['template'])) return;
 
@@ -237,7 +248,17 @@ class SiteOrigin_Panels_Widgets_PostLoop extends WP_Widget{
 		query_posts($query_args);
 
 		echo $args['before_widget'];
-		locate_template($instance['template'], true, false);
+
+		if(strpos('/'.$instance['template'], '/content') !== false) {
+			while(have_posts()) {
+				the_post();
+				locate_template($instance['template'], true, false);
+			}
+		}
+		else {
+			locate_template($instance['template'], true, false);
+		}
+
 		echo $args['after_widget'];
 
 		// Reset everything
@@ -249,23 +270,43 @@ class SiteOrigin_Panels_Widgets_PostLoop extends WP_Widget{
 		return $new;
 	}
 
+	/**
+	 * Get all the existing files
+	 *
+	 * @return array
+	 */
 	function get_loop_templates(){
 		$templates = array();
 
-		$files = glob(get_template_directory().'/loop*.php');
-		foreach($files as $file){
-			$templates[] = basename($file);
+		$template_files = array(
+			'loop*.php',
+			'*/loop*.php',
+			'content*.php',
+			'*/content*.php',
+		);
+
+		$template_dirs = array(get_template_directory(), get_stylesheet_directory());
+		$template_dirs = array_unique($template_dirs);
+		foreach($template_dirs  as $dir ){
+			foreach($template_files as $template_file) {
+				foreach(glob($dir.'/'.$template_file) as $file) {
+					$templates[] = str_replace($dir.'/', '', $file);
+				}
+			}
 		}
-		$files = glob(get_stylesheet_directory().'/loop*.php');
-		foreach($files as $file){
-			$templates[] = basename($file);
-		}
+
 		$templates = array_unique($templates);
 		sort($templates);
 
 		return $templates;
 	}
 
+	/**
+	 * Display the form for the post loop.
+	 *
+	 * @param array $instance
+	 * @return string|void
+	 */
 	function form( $instance ) {
 		$instance = wp_parse_args($instance, array(
 			'title' => '',
@@ -534,6 +575,7 @@ class SiteOrigin_Panels_Widgets_Video extends WP_Widget {
  * A shortcode for self hosted video.
  *
  * @param array $atts
+ * @return string
  */
 function siteorigin_panels_video_shortcode($atts){
 	/**
@@ -559,6 +601,7 @@ function siteorigin_panels_video_shortcode($atts){
 
 }
 add_shortcode('self_video', 'siteorigin_panels_video_shortcode');
+
 
 /**
  * Register the widgets

@@ -8,7 +8,7 @@ foreach($wp_widget_factory->widgets as $class => $info){
 	
 	$widget = new $class();
 	$widget->id = 'temp';
-	$widget->number = $i++;
+	$widget->number = '{$id}';
 	
 	ob_start();
 	$widget->form(array());
@@ -55,7 +55,7 @@ $layouts = apply_filters('siteorigin_panels_prebuilt_layouts', array());
 			<div class="panels-text-filter">
 				<input type="search" class="widefat" placeholder="Filter" id="panels-text-filter-input" />
 			</div>
-			
+
 			<ul class="panel-type-list">
 				<?php $i = 0; foreach($panel_widgets as $widget) : $i++; ?>
 					<li class="panel-type"
@@ -100,7 +100,7 @@ $layouts = apply_filters('siteorigin_panels_prebuilt_layouts', array());
 			</p>
 		</div>
 	<?php endif; ?>
-	
+
 	<?php wp_nonce_field('save', '_sopanels_nonce') ?>
 	
 	<?php if(defined('WP_DEBUG') && WP_DEBUG && !empty($GLOBALS['post'])) : ?>

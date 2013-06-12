@@ -9,13 +9,15 @@ jQuery(function($){
     var originalInsert = wp.media.editor.insert;
     
     wp.media.editor.insert = function(h){
-        // Check that panels tab is active
-        if(!$('#wp-content-wrap').hasClass('panels-active')) return originalInsert(h);
+        // Check that panels tab is active and that no dialogs are open.
+        if( !$('#wp-content-wrap').hasClass('panels-active') ) return originalInsert(h);
+        if( $('.panel-dialog:visible').length > 0 ) return originalInsert(h);
 
         if(h.indexOf('[gallery') !== -1) {
             // Get the IDs of the gallery
             var attachments = wp.media.gallery.attachments( wp.shortcode.next( 'gallery', h ).shortcode );
             var ids = attachments.models.map(function(e){ return e.id });
+
             
             // Create a new gallery panel
             var panel = $('#panels-dialog').panelsCreatePanel('SiteOrigin_Panels_Widgets_Gallery', {

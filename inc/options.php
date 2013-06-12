@@ -1,20 +1,29 @@
 <?php
 
+/**
+ * Add the options page
+ */
 function siteorigin_panels_options_admin_menu() {
 	add_options_page( __('SiteOrigin Page Builder', 'so-panels'), __('Page Builder', 'so-panels'), 'manage_options', 'siteorigin_panels', 'siteorigin_panels_options_page' );
 }
 add_action( 'admin_menu', 'siteorigin_panels_options_admin_menu' );
 
+/**
+ * Display the admin page.
+ */
 function siteorigin_panels_options_page(){
 	include plugin_dir_path(SITEORIGIN_PANELS_BASE_FILE) . '/tpl/options.php';
 }
 
+/**
+ * Register all the settings fields.
+ */
 function siteorigin_panels_options_init() {
 	register_setting( 'siteorigin-panels', 'siteorigin_panels_post_types', 'siteorigin_panels_options_sanitize_post_types' );
 	register_setting( 'siteorigin-panels', 'siteorigin_panels_display', 'siteorigin_panels_options_sanitize_display' );
 
-	add_settings_section( 'general', __('General', 'so-panels'), 'siteorigin_panels_options_section', 'siteorigin-panels' );
-	add_settings_section( 'display', __('Display', 'so-panels'), 'siteorigin_panels_options_section', 'siteorigin-panels' );
+	add_settings_section( 'general', __('General', 'so-panels'), '__return_false', 'siteorigin-panels' );
+	add_settings_section( 'display', __('Display', 'so-panels'), '__return_false', 'siteorigin-panels' );
 
 	add_settings_field( 'post-types', __('Post Types', 'so-panels'), 'siteorigin_panels_options_field_post_types', 'siteorigin-panels', 'general' );
 
@@ -26,10 +35,11 @@ function siteorigin_panels_options_init() {
 }
 add_action( 'admin_init', 'siteorigin_panels_options_init' );
 
-function siteorigin_panels_options_section($args){
-
-}
-
+/**
+ * Display the field for selecting the post types
+ *
+ * @param $args
+ */
 function siteorigin_panels_options_field_post_types($args){
 	$panels_post_types = siteorigin_panels_setting('post-types');
 
@@ -55,6 +65,11 @@ function siteorigin_panels_options_field_post_types($args){
 	?><p class="description"><?php _e('Post types that will have the page builder available', 'so-panels') ?></p><?php
 }
 
+/**
+ * Display the fields for the other settings.
+ *
+ * @param $args
+ */
 function siteorigin_panels_options_field_display($args){
 	$settings = siteorigin_panels_setting();
 	switch($args['type']) {
@@ -69,6 +84,12 @@ function siteorigin_panels_options_field_display($args){
 	}
 }
 
+/**
+ * Check that we have valid post types
+ *
+ * @param $types
+ * @return array
+ */
 function siteorigin_panels_options_sanitize_post_types($types){
 	$all_post_types = get_post_types(array('_builtin' => false));
 	$all_post_types = array_merge(array('post' => 'post', 'page' => 'page'), $all_post_types);
@@ -81,6 +102,12 @@ function siteorigin_panels_options_sanitize_post_types($types){
 	return array_keys(array_filter($types));
 }
 
+/**
+ * Sanitize the other options fields
+ *
+ * @param $vals
+ * @return mixed
+ */
 function siteorigin_panels_options_sanitize_display($vals){
 	foreach($vals as $f => $v){
 		switch($f){

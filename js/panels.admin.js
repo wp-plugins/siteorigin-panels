@@ -40,14 +40,14 @@ jQuery( function ( $ ) {
             return false;
         }
 
-        num = Math.round( num );
-        num = Math.max( 1, num );
-        num = Math.min( 10, num );
+        // Make sure the number is between 1 and 10.
+        num = Math.min( 10, Math.max( 1, Math.round( num ) ) );
         var gridContainer = window.panels.createGrid( num );
         gridContainer.hide().slideDown();
         $( '#grid-add-dialog' ).dialog( 'close' );
     };
 
+    // Create the dialog that we use to add new grids
     $( '#grid-add-dialog' )
         .show()
         .dialog( {
@@ -115,7 +115,7 @@ jQuery( function ( $ ) {
     // The button for adding a grid
     $( '#panels .grid-add' )
         .button( {
-            icons: {primary: 'ui-icon-columns'},
+            icons: { primary: 'ui-icon-columns' },
             text:  false
         } )
         .click( function () {
@@ -174,7 +174,7 @@ jQuery( function ( $ ) {
         $( '.panels-admin-dialog' ).filter( ':data(dialog)' ).dialog( 'option', 'position', 'center' );
     } );
 
-    // This is the part where we move the panels box into a tab of the content editor
+    // Handle switching between the page builder and other tabs
     $( '#wp-content-editor-tools' )
         .find( '.wp-switch-editor' )
         .click(function () {
@@ -218,7 +218,7 @@ jQuery( function ( $ ) {
     $('#panels-home-page #post-body' ).show();
     $('#panels-home-page #post-body-wrapper' ).css('background', 'none');
 
-    // Reposition the panels box
+    // Move the panels box into a tab of the content editor
     $( '#so-panels-panels' )
         .insertAfter( '#wp-content-editor-container' )
         .addClass( 'wp-editor-container' )
@@ -260,13 +260,31 @@ jQuery( function ( $ ) {
 
         // Handle the previews
         $('#post-preview' ).click(function(event){
-            // If we're currently displaying Panels
-            if($('#wp-content-wrap' ).hasClass('panels-active')){
-                var form = $('#panels-container' ).closest('form');
-                var originalAction = form.attr('action');
-                form.attr('action', panels.previewUrl ).attr('target', '_blank').submit().attr('action', originalAction).attr('target', '_self');
-                event.preventDefault();
-            }
+            var form = $('#panels-container' ).closest('form');
+            var originalAction = form.attr('action');
+            form.attr('action', panels.previewUrl ).attr('target', '_blank').submit().attr('action', originalAction).attr('target', '_self');
+            clearFormCloned();
+            event.preventDefault();
         });
+    }
+
+    var cloned = [];
+    $('form#post, form#panels-home-page-form').submit( function(e){
+        var $form = $(this);
+
+        clearFormCloned();
+
+        // Clear the old form wrapper and copy across all the dialog forms so they're included when we submit
+        $('.panel-dialog').each(function(){
+            // Copy the form element over to the panels form wrapper
+            cloned.push($(this).clone().hide().appendTo($form));
+        });
+    } );
+
+    var clearFormCloned = function(){
+        $.each(cloned, function(i, el){
+            el.remove();
+        });
+        cloned = [];
     }
 } );

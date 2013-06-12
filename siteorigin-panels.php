@@ -3,14 +3,14 @@
 Plugin Name: Page Builder
 Plugin URI: http://siteorigin.com/page-builder/
 Description: A drag and drop, responsive page builder that simplifies building your website.
-Version: 1.2.2
+Version: 1.2.4
 Author: SiteOrigin
 Author URI: http://siteorigin.com
 License: GPL3
 License URI: http://www.gnu.org/licenses/gpl.html
 */
 
-define('SITEORIGIN_PANELS_VERSION', '1.2.2');
+define('SITEORIGIN_PANELS_VERSION', '1.2.4');
 define('SITEORIGIN_PANELS_BASE_FILE', __FILE__);
 
 // A few default widgets to make things easier
@@ -20,9 +20,20 @@ include plugin_dir_path(__FILE__).'widgets/widgets.php';
 include plugin_dir_path(__FILE__).'inc/options.php';
 
 /**
- * Get the settings
+ * Initialize the language files
  */
-function siteorigin_panels_setting($key = false){
+function siteorigin_panels_init_lang(){
+	load_plugin_textdomain('so-panels', false, 'siteorigin-panels/lang');
+}
+add_action('admin_init', 'siteorigin_panels_init_lang');
+
+/**
+ * Get the settings
+ *
+ * @param string $key Only get a specific key.
+ * @return mixed
+ */
+function siteorigin_panels_setting($key = ''){
 	static $settings;
 
 	if(empty($settings)){
@@ -32,25 +43,25 @@ function siteorigin_panels_setting($key = false){
 		if(!empty($settings)) $settings = $settings[0];
 		else $settings = array();
 
-		$settings = wp_parse_args($settings, array(
+		$settings = wp_parse_args( $settings, array(
 			'home-page' => false,                   // Is the home page supported
 			'home-page-default' => false,           // What's the default for the home page?
 			'home-template' => 'home-panels.php',   // The file used to render a home page.
 			'post-types' => get_option('siteorigin_panels_post_types', array('page')),	// Post types that can be edited using panels.
 
-			'responsive' => !isset($display_settings['responsive']) ? false : $display_settings['responsive'],			// Should we use a responsive layout
-			'mobile-width' => !isset($display_settings['mobile-width']) ? 780 : $display_settings['mobile-width'],		// What is considered a mobile width?
+			'responsive' => !isset( $display_settings['responsive'] ) ? false : $display_settings['responsive'],			// Should we use a responsive layout
+			'mobile-width' => !isset( $display_settings['mobile-width'] ) ? 780 : $display_settings['mobile-width'],		// What is considered a mobile width?
 
-			'margin-bottom' => !isset($display_settings['margin-bottom']) ? 30 : $display_settings['margin-bottom'],	// Bottom margin of a cell
-			'margin-sides' => !isset($display_settings['margin-sides']) ? 30 : $display_settings['margin-sides'],		// Spacing between 2 cells
+			'margin-bottom' => !isset( $display_settings['margin-bottom'] ) ? 30 : $display_settings['margin-bottom'],	// Bottom margin of a cell
+			'margin-sides' => !isset( $display_settings['margin-sides'] ) ? 30 : $display_settings['margin-sides'],		// Spacing between 2 cells
 			'affiliate-id' => false,																					// Set your affiliate ID: http://siteorigin.com/orders/
-		));
+		) );
 
 		// Filter these settings
 		$settings = apply_filters('sitesiteorigin_panels_settings', $settings);
 	}
 
-	if(!empty($key)) return isset($settings[$key]) ? $settings[$key] : null;
+	if( !empty( $key ) ) return isset( $settings[$key] ) ? $settings[$key] : null;
 	return $settings;
 }
 
@@ -61,8 +72,8 @@ function siteorigin_panels_admin_menu(){
 	if(!siteorigin_panels_setting('home-page')) return;
 	
 	add_theme_page(
-		__('Custom Home Page Builder', 'so-panels'),
-		__('Home Page', 'so-panels'),
+		__( 'Custom Home Page Builder', 'so-panels' ),
+		__( 'Home Page', 'so-panels' ),
 		'edit_theme_options',
 		'so_panels_home_page',
 		'siteorigin_panels_render_admin_home_page'
@@ -82,7 +93,7 @@ function siteorigin_panels_render_admin_home_page(){
  * Callback to register the Panels Metaboxes
  */
 function siteorigin_panels_metaboxes() {
-	foreach(siteorigin_panels_setting('post-types') as $type){
+	foreach( siteorigin_panels_setting( 'post-types' ) as $type ){
 		add_meta_box( 'so-panels-panels', __( 'Page Builder', 'so-panels' ), 'siteorigin_panels_metabox_render', $type, 'advanced', 'high' );
 	}
 }
@@ -99,8 +110,8 @@ function siteorigin_panels_save_home_page(){
 	update_option('siteorigin_panels_home_page', siteorigin_panels_get_panels_data_from_post($_POST));
 	update_option('siteorigin_panels_home_page_enabled', $_POST['siteorigin_panels_home_enabled'] == 'true' ? true : false);
 	
-	// If we've enabled the panels home page, change show_on_front to posts, this is reqired for the home page to work properly
-	if($_POST['siteorigin_panels_home_enabled'] == 'true') update_option('show_on_front', 'posts');
+	// If we've enabled the panels home page, change show_on_front to posts, this is required for the home page to work properly
+	if( $_POST['siteorigin_panels_home_enabled'] == 'true' ) update_option( 'show_on_front', 'posts' );
 }
 add_action('admin_init', 'siteorigin_panels_save_home_page');
 
@@ -137,6 +148,9 @@ function siteorigin_panels_filter_home_template($template){
 }
 add_filter('home_template', 'siteorigin_panels_filter_home_template');
 
+/**
+ * @return mixed|void Are we currently viewing the home page
+ */
 function siteorigin_panels_is_home(){
 	$home = (is_home() && get_option('siteorigin_panels_home_page_enabled', siteorigin_panels_setting('home-page-default')));
 	return apply_filters('siteorigin_panels_is_home', $home);
@@ -144,9 +158,11 @@ function siteorigin_panels_is_home(){
 
 /**
  * Disable home page panels when we change show_on_front to something other than posts.
- * @param $option
+ *
  * @param $old
  * @param $new
+ *
+ * @action update_option_show_on_front
  */
 function siteorigin_panels_disable_on_front_page_change($old, $new){
 	if($new != 'posts'){
@@ -173,7 +189,6 @@ function siteorigin_panels_is_panel($can_edit = false){
  * Render a panel metabox.
  *
  * @param $post
- * @param $args
  */
 function siteorigin_panels_metabox_render( $post ) {
 	include plugin_dir_path(__FILE__).'tpl/metabox-panels.php';
@@ -185,6 +200,7 @@ function siteorigin_panels_metabox_render( $post ) {
  *
  * @action admin_print_scripts-post-new.php
  * @action admin_print_scripts-post.php
+ * @action admin_print_scripts-appearance_page_so_panels_home_page
  */
 function siteorigin_panels_admin_enqueue_scripts($prefix) {
 	$screen = get_current_screen();
@@ -198,6 +214,7 @@ function siteorigin_panels_admin_enqueue_scripts($prefix) {
 		
 		wp_enqueue_script( 'so-undomanager', plugin_dir_url(__FILE__) . 'js/undomanager.min.js', array( ), 'fb30d7f' );
 
+		wp_enqueue_script( 'so-panels-clonefix', plugin_dir_url(__FILE__) . 'js/jquery.fix.clone.min.js', array( 'jquery' ), SITEORIGIN_PANELS_VERSION );
 		wp_enqueue_script( 'so-panels-admin', plugin_dir_url(__FILE__) . 'js/panels.admin.min.js', array( 'jquery' ), SITEORIGIN_PANELS_VERSION );
 		wp_enqueue_script( 'so-panels-admin-panels', plugin_dir_url(__FILE__) . 'js/panels.admin.panels.min.js', array( 'jquery' ), SITEORIGIN_PANELS_VERSION );
 		wp_enqueue_script( 'so-panels-admin-grid', plugin_dir_url(__FILE__) . 'js/panels.admin.grid.min.js', array( 'jquery' ), SITEORIGIN_PANELS_VERSION );
@@ -214,6 +231,7 @@ function siteorigin_panels_admin_enqueue_scripts($prefix) {
 					'insert' => __( 'Insert', 'so-panels' ),
 					'cancel' => __( 'cancel', 'so-panels' ),
 					'delete' => __( 'Delete', 'so-panels' ),
+					'edit' => __( 'Edit', 'so-panels' ),
 					'done' => __( 'Done', 'so-panels' ),
 					'undo' => __( 'Undo', 'so-panels' ),
 					'add' => __( 'Add', 'so-panels' ),
@@ -604,6 +622,7 @@ function siteorigin_panels_render( $post_id = false ) {
 
 	if($post_id == 'home'){
 		$panels_data = get_option('siteorigin_panels_home_page', null);
+
 		if(is_null($panels_data)){
 			// Load the default layout
 			$layouts = apply_filters('siteorigin_panels_prebuilt_layouts', array());
@@ -715,6 +734,8 @@ add_action('admin_bar_menu', 'siteorigin_panels_admin_bar_menu', 100);
  */
 function siteorigin_panels_preview(){
 	if(isset($_GET['siteorigin_panels_preview']) && wp_verify_nonce($_GET['_wpnonce'], 'siteorigin-panels-preview')){
+		global $siteorigin_panels_is_preview;
+		$siteorigin_panels_is_preview = true;
 		// Set the panels home state to true
 		if(empty($_POST['post_id'])) $GLOBALS['siteorigin_panels_is_panels_home'] = true;
 		add_action('option_siteorigin_panels_home_page', 'siteorigin_panels_preview_load_data');
@@ -723,6 +744,11 @@ function siteorigin_panels_preview(){
 	}
 }
 add_action('template_redirect', 'siteorigin_panels_preview');
+
+function siteorigin_panels_is_preview(){
+	global $siteorigin_panels_is_preview;
+	return (bool) $siteorigin_panels_is_preview;
+}
 
 /**
  * Hide the admin bar for panels previews.

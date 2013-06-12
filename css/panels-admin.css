@@ -385,7 +385,6 @@ html {
 	color: white;
 	font-size: 11px; /* Higher than the admin bar */ 
 	padding: 4px 8px;
-	z-index: 9999;
 	z-index: 999999;
 }
 
@@ -713,5 +712,17 @@ html {
 .panel-dialog h2.nav-tab-wrapper a.add-new {
 	float: right;
 	text-decoration: none;
+}
+
+/* Make sure the modals  */
+
+.media-modal,
+.appearance_page_so_panels_home_page .media-modal {
+	z-index: 300010;
+}
+
+.media-modal-backdrop,
+.appearance_page_so_panels_home_page .media-modal-backdrop {
+	z-index: 300009;
 }
 

@@ -45,6 +45,12 @@ As well as some essential page elements widgets:
 * Animated Image
 * Testimonial
 
+= 3rd Party Widgets =
+
+Most standard widgets work with Page Builder, but here are some of our favorites.
+
+* [Black Studio TinyMCE](http://wordpress.org/plugins/black-studio-tinymce-widget/) for a visual content editing widget. Works with Page Builder as of version 1.2.1.
+
 == Installation ==
 
 1. Upload and install Page Builder in the same way you'd install any other plugin.
@@ -104,3 +110,13 @@ As well as some essential page elements widgets:
 = 1.2.2 =
 * Fixed plugin conflict.
 * Minor performance improvements.
+
+= 1.2.3 =
+* Various Javascript fixes.
+* Added translation files.
+* Improved Post Loop widget.
+
+= 1.2.4 =
+* Improved performance.
+* Made efforts to improve compatibility with 3rd party widgets.
+* Fixed preview with bundled widgets.

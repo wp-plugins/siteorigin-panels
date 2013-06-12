@@ -73,20 +73,25 @@ abstract class SiteOrigin_Panels_Widget extends WP_Widget{
 	 * @return array
 	 */
 	function update($new, $old) {
-		// Remove the old CSS file
-		if(!empty($old['origin_style'])) {
-			list($style, $preset) = explode(':', $old['origin_style']);
-			$this->clear_css_cache($style, $preset);
-		}
 
-		// Clear the cache for all sub widgets
-		if(!empty($this->sub_widgets)){
-			global $wp_widget_factory;
-			foreach($this->sub_widgets as $id => $sub) {
-				if(empty($old['origin_style_'.$id])) continue;
-				$the_widget = $wp_widget_factory->widgets[$sub[1]];
-				list($style, $preset) = explode(':', $old['origin_style_'.$id]);
-				$the_widget->clear_css_cache($style, $preset);
+		// We wont clear cache if this is a preview
+		if(!siteorigin_panels_is_preview()){
+
+			// Remove the old CSS file
+			if(!empty($old['origin_style'])) {
+				list($style, $preset) = explode(':', $old['origin_style']);
+				$this->clear_css_cache($style, $preset);
+			}
+
+			// Clear the cache for all sub widgets
+			if(!empty($this->sub_widgets)){
+				global $wp_widget_factory;
+				foreach($this->sub_widgets as $id => $sub) {
+					if(empty($old['origin_style_'.$id])) continue;
+					$the_widget = $wp_widget_factory->widgets[$sub[1]];
+					list($style, $preset) = explode(':', $old['origin_style_'.$id]);
+					$the_widget->clear_css_cache($style, $preset);
+				}
 			}
 		}
 
@@ -135,12 +140,13 @@ abstract class SiteOrigin_Panels_Widget extends WP_Widget{
 			?><p><?php
 		}
 
-		if(!empty($this->widget_options['multi'])) echo '</div>';
-		if(!isset($instance['origin_style'])) $instance['origin_style'] = !empty($this->widget_options['default_style']) ? $this->widget_options['default_style'] : false;
+		if(!isset($instance['origin_style'])) {
+			$instance['origin_style'] = !empty($this->widget_options['default_style']) ? $this->widget_options['default_style'] : false;
+		}
 
 		// Now, lets add the style options.
 		$styles = $this->get_styles();
-		if(empty($styles)) return;
+		if( empty( $styles ) ) return;
 
 		?>
 		<p>
@@ -185,6 +191,7 @@ abstract class SiteOrigin_Panels_Widget extends WP_Widget{
 	 *
 	 * @param array $args
 	 * @param array $instance
+	 * @return bool|void
 	 */
 	function widget($args, $instance){
 		if(!empty($instance['origin_style'])) {
@@ -223,7 +230,7 @@ abstract class SiteOrigin_Panels_Widget extends WP_Widget{
 		if(!empty($instance['origin_style'])) {
 			$filename = $this->origin_id.'-'.$style.'-'.$preset;
 			$css_files = get_option('origin_css_files', array());
-			if( empty( $css_files[$filename] ) || !file_exists($css_files[$filename]['file']) || ( SITEORIGIN_PANELS_VERSION == 'trunk' ) ) {
+			if( empty( $css_files[$filename] ) || !file_exists($css_files[$filename]['file']) || ( SITEORIGIN_PANELS_VERSION == 'trunk' && !siteorigin_panels_is_panel() ) ) {
 				// Recreate the CSS file
 				$css_files[$filename] = $this->cache_css($style, $preset);
 				if($css_files[$filename] === false) {
@@ -343,8 +350,6 @@ abstract class SiteOrigin_Panels_Widget extends WP_Widget{
 		$css_files = get_option('origin_css_files', array());
 
 		if(!empty($css_files[$filename]) && file_exists($css_files[$filename]['file'])) {
-			error_log('Clearing:'.$filename);
-
 			// Delete the old file
 			unlink($css_files[$filename]['file']);
 			unset($css_files[$filename]);
@@ -394,6 +399,11 @@ abstract class SiteOrigin_Panels_Widget extends WP_Widget{
 		return $paths;
 	}
 
+	/**
+	 * Get all the folders where we'll look for widgets
+	 *
+	 * @return mixed|void
+	 */
 	static function get_widget_folders(){
 		static $folders = array();
 
@@ -409,6 +419,11 @@ abstract class SiteOrigin_Panels_Widget extends WP_Widget{
 		return $folders;
 	}
 
+	/**
+	 * Get all the folders where we'll look for widget images
+	 *
+	 * @return mixed|void
+	 */
 	static function get_image_folders(){
 		static $folders = array();
 		if(empty($folders)) {

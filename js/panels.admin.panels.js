@@ -37,19 +37,22 @@
      * @return {*}
      */
     $.fn.panelsCreatePanel = function ( type, data ) {
-        var dialogWrapper = $(this );
+        newPanelId++;
+
+        var dialogWrapper = $( this );
         var $$ = dialogWrapper.find('.panel-type[data-class="' + type + '"]' );
 
         if($$.length == 0) return null;
 
         // Hide the undo message
         $('#panels-undo-message' ).fadeOut(function(){ $(this ).remove() });
+        var panel = $( '<div class="panel new-panel"><div class="panel-wrapper"><div class="title"><h4></h4><span class="actions"></span></div><small class="description"></small></div></div>' )
+            .attr('data-type', type);
 
-        var panel = $( '<div class="panel new-panel"><div class="panel-wrapper"><div class="title"><h4></h4><span class="actions"></span></div><small class="description"></small><div class="form"></div></div></div>' ).attr('data-type', type);
         var dialog;
 
         var formHtml = $$.attr( 'data-form' );
-        formHtml = formHtml.replace( /\{\$id\}/g, newPanelId++ );
+        formHtml = formHtml.replace( /\{\$id\}/g, newPanelId );
 
         panel
             .data( {
@@ -61,8 +64,7 @@
                 dialog.dialog( 'open' );
                 return false;
             } )
-            .end().find( '.description' ).html( $$.find( '.description' ).html() )
-            .end().find( '.form' ).html( formHtml );
+            .end().find( '.description' ).html( $$.find( '.description' ).html() );
 
         // Create the dialog buttons
         var dialogButtons = {};
@@ -98,6 +100,8 @@
             ;
 
             panel.slideUp( function () {
+                // Remove the dialog too
+                $( this).data('dialog').dialog('destroy').remove();
                 $( this ).remove();
                 $( '#panels-container .panels-container' ).trigger( 'refreshcells' );
             } );
@@ -107,16 +111,6 @@
         // The done button
         dialogButtons[panels.i10n.buttons['done']] = function () {
             $( this ).trigger( 'panelsdone' );
-
-            // Transfer the dialog values across
-            dialog.find( '*[name]' ).not( '[data-info-field]' ).each( function () {
-                var f = panel.find( '.form *[name="' + $( this ).attr( 'name' ) + '"]' );
-
-                if ( f.attr( 'type' ) == 'checkbox' ) {
-                    f.prop( "checked", $( this ).is( ':checked' ) );
-                }
-                else f.val( $( this ).val() );
-            } );
 
             // Change the title of the panel
             panel.panelsSetPanelTitle();
@@ -137,16 +131,6 @@
                     $(this ).closest('.ui-dialog' ).find('.show-in-panels' ).show();
                 },
                 open:        function () {
-                    // Transfer the values of the form to the dialog
-                    panel.find( '.form *[name]' ).not( '[data-info-field]' ).each( function () {
-                        var f = dialog.find( '*[name="' + $( this ).attr( 'name' ) + '"]' );
-
-                        if ( f.attr( 'type' ) == 'checkbox' ) {
-                            f.prop( "checked", $( this ).is( ':checked' ) )
-                        }
-                        else f.val( $( this ).val() );
-                    } );
-
                     // This gives panel types a chance to influence the form
                     $( this ).trigger( 'panelsopen' );
 
@@ -168,32 +152,20 @@
                     $(this ).closest('.ui-dialog' ).dialog('close');
                 }
             });
-        
-        panel.data('dialog', dialog);
 
-        dialog.find( 'label' ).each( function () {
-            // Make labels work as expected
-            var f = $( '#' + $( this ).attr( 'for' ) );
-            $( this ).disableSelection();
-
-            $( this ).click( function () {
-                // Toggle the checked value
-                if ( f.attr( 'type' ) == 'checkbox' ) f.prop( 'checked', !f.prop( 'checked' ) );
-                else f.focus();
-            } );
-        } );
-        panel.disableSelection();
+        // This is so we can access the dialog (and its forms) later.
+        panel.data('dialog', dialog).disableSelection();
 
         // Add the action buttons
         panel.find('.title .actions')
             .append(
-                $('<a>edit<a>' ).addClass('edit' ).click(function(){
+                $('<a>' + panels.i10n.buttons.edit + '<a>' ).addClass('edit' ).click(function(){
                     dialog.dialog('open');
                     return false;
                 })
             )
             .append(
-                $('<a>delete<a>' ).addClass('delete').click(function(){
+                $('<a>' + panels.i10n.buttons.delete + '<a>' ).addClass('delete').click(function(){
                     deleteFunction();
                     return false;
                 })
@@ -226,6 +198,14 @@
         return panel;
     }
 
+    /**
+     * Add a new Panel (well, widget)
+     *
+     * @param panel
+     * @param container
+     * @param position
+     * @param booll animate Should we animate the panel
+     */
     panels.addPanel = function(panel, container, position, animate){
         if(container == null) container = $( '#panels-container .cell.cell-selected .panels-container' ).eq(0);
         if(container.length == 0) container = $( '#panels-container .cell .panels-container' ).eq(0);
@@ -252,8 +232,7 @@
      */
     $.fn.panelsSetPanelTitle = function ( ) {
         return $(this ).each(function(){
-            // var titleField = $(this ).data( 'title-field' );
-            var titleValue = $(this ).find( 'input[type="text"]').eq(0).val();
+            var titleValue = $(this).data('dialog').find( 'input[type="text"]').eq(0).val();
             $(this ).find( 'h4' ).html( $(this ).data( 'title' ) + '<span>' + titleValue + '</span>' );
         });
     }
@@ -305,4 +284,5 @@
             $( this ).panelsResizeCells();
         } );
     }
+
 })(jQuery);

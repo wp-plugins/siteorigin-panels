@@ -16,6 +16,11 @@ jQuery( function ( $ ) {
         }
     }, '*[data-tooltip]');
 
+    /**
+     * Show the tooltip.
+     *
+     * @returns {*}
+     */
     $.fn.showTooltip = function () {
         this.each( function () {
             var $$ = $( this );
@@ -31,6 +36,11 @@ jQuery( function ( $ ) {
         return this;
     }
 
+    /**
+     * Remove the tooltip.
+     *
+     * @returns {*}
+     */
     $.fn.removeTooltip = function () {
         this.each( function () {
             var $$ = $( this );
