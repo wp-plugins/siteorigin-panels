@@ -98,7 +98,7 @@ jQuery( function ( $ ) {
         setTimeout( function () {
             $( window ).resize();
         }, 150 );
-    } )
+    } );
 
     // The button for adding a panel
     $( '#panels .panels-add')
@@ -196,7 +196,8 @@ jQuery( function ( $ ) {
                     // Hide all the standard content editor stuff
                     $( '#wp-content-editor-container, #post-status-info' ).hide();
 
-                    $( '#so-panels-panels' ).show();
+                    // Show panels and the inside div
+                    $( '#so-panels-panels' ).show().find('> .inside').show();
                     $( '#wp-content-wrap' ).addClass( 'panels-active' );
 
                     // Triggers full refresh

@@ -120,3 +120,6 @@ Most standard widgets work with Page Builder, but here are some of our favorites
 * Improved performance.
 * Made efforts to improve compatibility with 3rd party widgets.
 * Fixed preview with bundled widgets.
+
+= 1.2.5 =
+* Fixed issue with hidden Page Builder interface.
