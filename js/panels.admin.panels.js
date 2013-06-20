@@ -18,7 +18,7 @@
         var $$ = $(this);
         var data = {};
 
-        $$.find( '.form *[name]' ).not( '[data-info-field]' ).each( function () {
+        $$.data('dialog').find( '*[name]' ).not( '[data-info-field]' ).each( function () {
             var name = /widgets\[[0-9]+\]\[([a-z0-9_]+)\]/.exec($(this).attr('name'));
             name = name[1];
             if ( $$.attr( 'type' ) == 'checkbox' ) data[name] = $( this ).is( ':checked' )
@@ -175,15 +175,12 @@
             // Populate the form values
             for ( c in data ) {
                 if ( c != 'info' ) {
-                    var pe = panel.find( '.form *[name$="[' + c + ']"]' );
                     var de = dialog.find( '*[name$="[' + c + ']"]' );
 
-                    if ( pe.attr( 'type' ) == 'checkbox' ) {
-                        pe.prop( 'checked', Boolean( data[c] ) );
+                    if ( de.attr( 'type' ) == 'checkbox' ) {
                         de.prop( 'checked', Boolean( data[c] ) );
                     }
                     else {
-                        pe.val( data[c] );
                         de.val( data[c] );
                     }
                 }

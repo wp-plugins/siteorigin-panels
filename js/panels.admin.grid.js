@@ -168,7 +168,14 @@
 
                                 // Finally, remove the grid container
                                 container.slideUp( function () {
+                                    // Remove all the panel dialogs
+                                    container.find('.panel').each(function(){
+                                        $(this).data('dialog').dialog('destroy').remove();
+                                    });
+                                    // Remove the container
                                     container.remove();
+
+                                    // Refresh everything
                                     $( '#panels-container' )
                                         .sortable( "refresh" )
                                         .find( '.panels-container' ).trigger( 'refreshcells' );

@@ -606,7 +606,7 @@ add_shortcode('self_video', 'siteorigin_panels_video_shortcode');
 /**
  * Register the widgets
  */
-function origin_page_builder_widgets_init(){
+function siteorigin_panels_widgets_init(){
 	register_widget('SiteOrigin_Panels_Widgets_Gallery');
 	register_widget('SiteOrigin_Panels_Widgets_PostContent');
 	register_widget('SiteOrigin_Panels_Widgets_Image');
@@ -614,4 +614,11 @@ function origin_page_builder_widgets_init(){
 	register_widget('SiteOrigin_Panels_Widgets_EmbeddedVideo');
 	register_widget('SiteOrigin_Panels_Widgets_Video');
 }
-add_action('widgets_init', 'origin_page_builder_widgets_init');
+add_action('widgets_init', 'siteorigin_panels_widgets_init');
+
+function siteorigin_panels_comatibility_init(){
+	if(is_plugin_active('black-studio-tinymce-widget/black-studio-tinymce-widget.php')){
+		include plugin_dir_path(__FILE__).'/compat/black-studio-tinymce/black-studio-tinymce.php';
+	}
+}
+add_action('admin_init', 'siteorigin_panels_comatibility_init', 5);

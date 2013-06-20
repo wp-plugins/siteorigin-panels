@@ -49,7 +49,9 @@ As well as some essential page elements widgets:
 
 Most standard widgets work with Page Builder, but here are some of our favorites.
 
-* [Black Studio TinyMCE](http://wordpress.org/plugins/black-studio-tinymce-widget/) for a visual content editing widget. Works with Page Builder as of version 1.2.1.
+* [Black Studio TinyMCE](http://wordpress.org/plugins/black-studio-tinymce-widget/) for a visual content editing widget.
+
+[Contact me](mailto:greg@siteorigin.com) if you've created a widget that would work well with Page Builder so I can add it to our recommended plugins list. Your plugin will also be recommended within Page Builder itself.
 
 == Installation ==
 
@@ -123,3 +125,8 @@ Most standard widgets work with Page Builder, but here are some of our favorites
 
 = 1.2.5 =
 * Fixed issue with hidden Page Builder interface.
+
+= 1.2.6 =
+* Added compatibility with Black Studio TinyMCE widget.
+* Fixed bug with checkboxes in forms.
+* Fixed delete undo.
