@@ -273,13 +273,13 @@ jQuery( function ( $ ) {
     $('form#post, form#panels-home-page-form').submit( function(e){
         var $form = $(this);
 
-        clearFormCloned();
-
         // Clear the old form wrapper and copy across all the dialog forms so they're included when we submit
-        $('.panel-dialog').each(function(){
-            // Copy the form element over to the panels form wrapper
-            cloned.push($(this).clone().hide().appendTo($form));
-        });
+        clearFormCloned();
+        $('#panels .panel').each( function(){
+            var dialog = $(this).data('dialog');
+            cloned.push( dialog.clone().hide().appendTo($form) );
+        } );
+        
     } );
 
     var clearFormCloned = function(){

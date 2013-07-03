@@ -41,7 +41,7 @@ $layouts = apply_filters('siteorigin_panels_prebuilt_layouts', array());
 	
 	<div id="add-to-panels">
 		<button class="panels-add tooltip" data-tooltip="<?php esc_attr_e('Add Widget','so-panels') ?>"><?php _e('Add Widget', 'so-panels') ?></button>
-		<button class="grid-add tooltip" data-tooltip="<?php esc_attr_e('Add Columns','so-panels') ?>"><?php _e('Add Columns', 'so-panels') ?></button>
+		<button class="grid-add tooltip" data-tooltip="<?php esc_attr_e('Add Row','so-panels') ?>"><?php _e('Add Row', 'so-panels') ?></button>
 		<?php if(!empty($layouts)) : ?>
 			<button class="prebuilt-set tooltip" data-tooltip="<?php esc_attr_e('Prebuilt Layouts','so-panels') ?>"><?php _e('Prebuilt Layouts', 'so-panels') ?></button>
 		<?php endif; ?>
@@ -80,7 +80,7 @@ $layouts = apply_filters('siteorigin_panels_prebuilt_layouts', array());
 		
 	</div>
 	
-	<div id="grid-add-dialog" data-title="<?php esc_attr_e('Add Columns','so-panels') ?>" class="panels-admin-dialog">
+	<div id="grid-add-dialog" data-title="<?php esc_attr_e('Add Row','so-panels') ?>" class="panels-admin-dialog">
 		<p><label><strong><?php _e('Columns', 'so-panels') ?></strong></label></p>
 		<p><input type="text" id="grid-add-dialog-input" name="column_count" class="small-text" value="3" /></p>
 	</div>

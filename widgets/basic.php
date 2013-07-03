@@ -58,9 +58,9 @@ class SiteOrigin_Panels_Widgets_Gallery extends WP_Widget {
 				<option value="medium" <?php selected('medium', $instance['image_size']) ?>><?php esc_html_e( 'Medium', 'so-panels' ) ?></option>
 				<option value="thumbnail" <?php selected('thumbnail', $instance['image_size']) ?>><?php esc_html_e( 'Thumbnail', 'so-panels' ) ?></option>
 				<option value="full" <?php selected('full', $instance['image_size']) ?>><?php esc_html_e( 'Full', 'so-panels' ) ?></option>
-				<?php foreach ( $_wp_additional_image_sizes as $name => $info ) : ?>
+				<?php if(!empty($_wp_additional_image_sizes)) : foreach ( $_wp_additional_image_sizes as $name => $info ) : ?>
 					<option value="<?php echo esc_attr( $name ) ?>" <?php selected($name, $instance['image_size']) ?>><?php echo esc_html( $name ) ?></option>
-				<?php endforeach ?>
+				<?php endforeach; endif; ?>
 			</select>
 		</p>
 
@@ -604,7 +604,7 @@ add_shortcode('self_video', 'siteorigin_panels_video_shortcode');
 
 
 /**
- * Register the widgets
+ * Register the widgets.
  */
 function siteorigin_panels_widgets_init(){
 	register_widget('SiteOrigin_Panels_Widgets_Gallery');
@@ -616,6 +616,9 @@ function siteorigin_panels_widgets_init(){
 }
 add_action('widgets_init', 'siteorigin_panels_widgets_init');
 
+/**
+ * Enqueue widget compatibility files.
+ */
 function siteorigin_panels_comatibility_init(){
 	if(is_plugin_active('black-studio-tinymce-widget/black-studio-tinymce-widget.php')){
 		include plugin_dir_path(__FILE__).'/compat/black-studio-tinymce/black-studio-tinymce.php';

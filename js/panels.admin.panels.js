@@ -21,8 +21,8 @@
         $$.data('dialog').find( '*[name]' ).not( '[data-info-field]' ).each( function () {
             var name = /widgets\[[0-9]+\]\[([a-z0-9_]+)\]/.exec($(this).attr('name'));
             name = name[1];
-            if ( $$.attr( 'type' ) == 'checkbox' ) data[name] = $( this ).is( ':checked' )
-            else data[name] = $( this ).val();
+            //if ( $$.attr( 'type' ) == 'checkbox' ) data[name] = $( this ).is( ':checked' )
+            data[name] = $( this ).val();
         } );
 
         return data;
@@ -110,11 +110,10 @@
 
         // The done button
         dialogButtons[panels.i10n.buttons['done']] = function () {
-            $( this ).trigger( 'panelsdone' );
+            $( this ).trigger( 'panelsdone', panel, dialog );
 
             // Change the title of the panel
             panel.panelsSetPanelTitle();
-
             dialog.dialog( 'close' );
         }
 
@@ -132,7 +131,7 @@
                 },
                 open:        function () {
                     // This gives panel types a chance to influence the form
-                    $( this ).trigger( 'panelsopen' );
+                    $( this ).trigger( 'panelsopen', panel, dialog );
 
                     // This fixes a weird a focus issue
                     $(this ).closest('.ui-dialog' ).find('a' ).blur();
@@ -191,7 +190,8 @@
 
         // This is to refresh the dialog positions
         $( window ).resize();
-        
+        $(document).trigger('panelssetup', panel, dialog);
+
         return panel;
     }
 
@@ -229,8 +229,13 @@
      */
     $.fn.panelsSetPanelTitle = function ( ) {
         return $(this ).each(function(){
-            var titleValue = $(this).data('dialog').find( 'input[type="text"]').eq(0).val();
-            $(this ).find( 'h4' ).html( $(this ).data( 'title' ) + '<span>' + titleValue + '</span>' );
+            var titleValue = '';
+            $(this).data('dialog').find( 'input[type="text"], textarea').each(function(){
+                titleValue = $(this).val();
+                if(titleValue != '') return false;
+            });
+
+            $(this ).find( 'h4' ).html( $(this ).data( 'title' ) + '<span>' + titleValue.substring(0, 80) + '</span>' );
         });
     }
 

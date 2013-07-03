@@ -153,11 +153,11 @@ abstract class SiteOrigin_Panels_Widget extends WP_Widget{
 			<label for="<?php echo $this->get_field_id('origin_style') ?>"><?php _e('Style', 'so-panels') ?></label>
 			<select name="<?php echo $this->get_field_name('origin_style') ?>" id="<?php echo $this->get_field_id('origin_style') ?>">
 				<?php foreach($this->get_styles() as $style_id => $style_info) : $presets = $this->get_style_presets($style_id); ?>
-					<?php foreach($presets as $preset_id => $preset) : ?>
+					<?php if(!empty($presets)) : foreach($presets as $preset_id => $preset) : ?>
 						<option value="<?php echo esc_attr($style_id.':'.$preset_id) ?>" <?php selected($style_id.':'.$preset_id, $instance['origin_style']) ?>>
 							<?php echo esc_html($style_info['Name'].' - '.$preset_id) ?>
 						</option>
-					<?php endforeach ?>
+					<?php endforeach; endif; ?>
 				<?php endforeach ?>
 			</select>
 		</p>
@@ -174,11 +174,11 @@ abstract class SiteOrigin_Panels_Widget extends WP_Widget{
 				<label for="<?php echo $this->get_field_id('origin_style_'.$id) ?>"><?php printf(__('%s Style', 'so-panels'), $sub[0]) ?></label>
 				<select name="<?php echo $this->get_field_name('origin_style_'.$id) ?>" id="<?php echo $this->get_field_id('origin_style_'.$id) ?>">
 					<?php foreach($the_widget->get_styles() as $style_id => $style_info) : $presets = $the_widget->get_style_presets($style_id); ?>
-						<?php foreach($presets as $preset_id => $preset) : ?>
+						<?php if(!empty($presets)) : foreach($presets as $preset_id => $preset) : ?>
 							<option value="<?php echo esc_attr($style_id.':'.$preset_id) ?>" <?php selected($style_id.':'.$preset_id, $instance['origin_style_'.$id]) ?>>
 								<?php echo esc_html($style_info['Name'].' - '.$preset_id) ?>
 							</option>
-						<?php endforeach ?>
+						<?php endforeach; endif; ?>
 					<?php endforeach ?>
 				</select>
 			</p>

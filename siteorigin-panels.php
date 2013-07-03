@@ -3,14 +3,14 @@
 Plugin Name: Page Builder
 Plugin URI: http://siteorigin.com/page-builder/
 Description: A drag and drop, responsive page builder that simplifies building your website.
-Version: 1.2.6
+Version: 1.2.7
 Author: SiteOrigin
 Author URI: http://siteorigin.com
 License: GPL3
 License URI: http://www.gnu.org/licenses/gpl.html
 */
 
-define('SITEORIGIN_PANELS_VERSION', '1.2.6');
+define('SITEORIGIN_PANELS_VERSION', '1.2.7');
 define('SITEORIGIN_PANELS_BASE_FILE', __FILE__);
 
 // A few default widgets to make things easier
@@ -52,13 +52,14 @@ function siteorigin_panels_setting($key = ''){
 			'responsive' => !isset( $display_settings['responsive'] ) ? false : $display_settings['responsive'],			// Should we use a responsive layout
 			'mobile-width' => !isset( $display_settings['mobile-width'] ) ? 780 : $display_settings['mobile-width'],		// What is considered a mobile width?
 
-			'margin-bottom' => !isset( $display_settings['margin-bottom'] ) ? 30 : $display_settings['margin-bottom'],	// Bottom margin of a cell
-			'margin-sides' => !isset( $display_settings['margin-sides'] ) ? 30 : $display_settings['margin-sides'],		// Spacing between 2 cells
-			'affiliate-id' => false,																					// Set your affiliate ID: http://siteorigin.com/orders/
+			'margin-bottom' => !isset( $display_settings['margin-bottom'] ) ? 30 : $display_settings['margin-bottom'],		// Bottom margin of a cell
+			'margin-sides' => !isset( $display_settings['margin-sides'] ) ? 30 : $display_settings['margin-sides'],			// Spacing between 2 cells
+			'affiliate-id' => false,																						// Set your affiliate ID
+			'copy-content' => !isset( $display_settings['copy-content'] ) ? true : $display_settings['copy-content'],		// Should we copy across content
 		) );
 
 		// Filter these settings
-		$settings = apply_filters('sitesiteorigin_panels_settings', $settings);
+		$settings = apply_filters('siteorigin_panels_settings', $settings);
 	}
 
 	if( !empty( $key ) ) return isset( $settings[$key] ) ? $settings[$key] : null;
@@ -211,7 +212,7 @@ function siteorigin_panels_admin_enqueue_scripts($prefix) {
 		wp_enqueue_script( 'jquery-ui-tabs' );
 		wp_enqueue_script( 'jquery-ui-dialog' );
 		wp_enqueue_script( 'jquery-ui-button' );
-		
+
 		wp_enqueue_script( 'so-undomanager', plugin_dir_url(__FILE__) . 'js/undomanager.min.js', array( ), 'fb30d7f' );
 
 		wp_enqueue_script( 'so-panels-clonefix', plugin_dir_url(__FILE__) . 'js/jquery.fix.clone.min.js', array( 'jquery' ), SITEORIGIN_PANELS_VERSION );
@@ -221,7 +222,7 @@ function siteorigin_panels_admin_enqueue_scripts($prefix) {
 		wp_enqueue_script( 'so-panels-admin-prebuilt', plugin_dir_url(__FILE__) . 'js/panels.admin.prebuilt.min.js', array( 'jquery' ), SITEORIGIN_PANELS_VERSION );
 		wp_enqueue_script( 'so-panels-admin-tooltip', plugin_dir_url(__FILE__) . 'js/panels.admin.tooltip.min.js', array( 'jquery' ), SITEORIGIN_PANELS_VERSION );
 		wp_enqueue_script( 'so-panels-admin-media', plugin_dir_url(__FILE__) . 'js/panels.admin.media.min.js', array( 'jquery' ), SITEORIGIN_PANELS_VERSION );
-		
+
 		wp_enqueue_script( 'so-panels-chosen', plugin_dir_url(__FILE__) . 'js/chosen/chosen.jquery.min.min.js', array( 'jquery' ), SITEORIGIN_PANELS_VERSION );
 
 		wp_localize_script( 'so-panels-admin', 'panels', array(
@@ -278,9 +279,6 @@ function siteorigin_panels_admin_enqueue_scripts($prefix) {
 
 		// This gives panels a chance to enqueue scripts too, without having to check the screen ID.
 		do_action( 'siteorigin_panel_enqueue_admin_scripts' );
-		
-		// Incase any widgets have special scripts
-		do_action( 'admin_enqueue_scripts' , 'widgets.php');
 	}
 }
 add_action( 'admin_print_scripts-post-new.php', 'siteorigin_panels_admin_enqueue_scripts' );
@@ -351,7 +349,7 @@ function siteorigin_panels_save_post( $post_id, $post ) {
 	$panels_data = siteorigin_panels_get_panels_data_from_post($_POST);
 	update_post_meta( $post_id, 'panels_data', $panels_data );
 
-	if(!empty($panels_data['widgets'])) {
+	if( !empty($panels_data['widgets']) && siteorigin_panels_setting('copy-content') ) {
 		// Save the panels data into post_content for SEO and search plugins
 		$content = siteorigin_panels_render($post_id);
 		$content = preg_replace(
@@ -804,7 +802,9 @@ add_action('admin_enqueue_scripts', 'siteorigin_panels_siteorigin_themes_tab', 1
  * Enqueue the required styles
  */
 function siteorigin_panels_enqueue_styles(){
-	wp_enqueue_style('siteorigin-panels', plugin_dir_url(__FILE__) . 'css/front.css', array(), SITEORIGIN_PANELS_VERSION );
+	if(siteorigin_panels_is_panel()){
+		wp_enqueue_style('siteorigin-panels', plugin_dir_url(__FILE__) . 'css/front.css', array(), SITEORIGIN_PANELS_VERSION );
+	}
 }
 add_action('wp_enqueue_scripts', 'siteorigin_panels_enqueue_styles');
 
@@ -846,3 +846,34 @@ function siteorigin_panels_recommended_widgets(){
 	?><p><a href="<?php echo admin_url('plugin-install.php?tab=favorites&user=siteorigin-pagebuilder') ?>" target="_blank"><?php _e('Recommended Plugins and Widgets') ?></a></p><?php
 }
 add_action('siteorigin_panels_after_widgets', 'siteorigin_panels_recommended_widgets');
+
+/**
+ * Add a filter to import panels_data meta key. This fixes serialized PHP.
+ */
+function siteorigin_panels_wp_import_post_meta($post_meta){
+	foreach($post_meta as $i => $meta) {
+		if($meta['key'] == 'panels_data') {
+			$value = $meta['value'];
+			$value = preg_replace("/[\r\n]/", "<<<br>>>", $value);
+			$value = preg_replace('!s:(\d+):"(.*?)";!e', "'s:'.strlen('$2').':\"$2\";'", $value);
+			$value = unserialize($value);
+			$value = array_map('siteorigin_panels_wp_import_post_meta_map', $value);
+
+			$post_meta[$i]['value'] = $value;
+		}
+	}
+
+	return $post_meta;
+}
+add_filter('wp_import_post_meta', 'siteorigin_panels_wp_import_post_meta');
+
+/**
+ * A callback that replaces temporary break tag with actual line breaks.
+ *
+ * @param $val
+ * @return array|mixed
+ */
+function siteorigin_panels_wp_import_post_meta_map($val) {
+	if(is_string($val)) return str_replace('<<<br>>>', "\n", $val);
+	else return array_map('siteorigin_panels_wp_import_post_meta_map', $val);
+}

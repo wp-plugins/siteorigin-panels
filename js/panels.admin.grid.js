@@ -306,7 +306,6 @@
 
                     // Refresh all the cell sizes after we stop sorting
                     this.lastContainer = thisContainer;
-
                 },
                 helper: function(e, el){
                     return el.clone().css('opacity', 0.9).addClass('panel-being-dragged');

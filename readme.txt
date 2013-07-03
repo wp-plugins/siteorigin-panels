@@ -69,10 +69,77 @@ Most standard widgets work with Page Builder, but here are some of our favorites
 
 [Documentation](http://siteorigin.com/page-builder/documentation/) is available on SiteOrigin.
 
+== Frequently Asked Questions ==
+
+= Can I bundle Page Builder with my theme? =
+
+Yes, provided your theme is licensed under GPL or a compatible license. If you're publishing your theme on ThemeForest, you must select the GPL license instead of their regular license.
+
+Page Builder is actively developed and updated, so generally I'd recommend that you have your users install the actual plugin so they can receive updates.
+
+= Will plugin X work with Page Builder? =
+
+I've tried to ensure that Page Builder is compatible with most plugin widgets. It's best to just download Page Builder and test for yourself.
+
 == Changelog ==
 
-= 1.0 =
-* Initial release.
+= 1.2.7 =
+* Added German translation.
+* Improved Page Builder content import.
+* Performance enhancements and bug fixes.
+* Added option to prevent copying content to post content.
+* Improved compatibility with WordPress import/export.
+
+= 1.2.6 =
+* Added compatibility with Black Studio TinyMCE widget.
+* Fixed bug with checkboxes in forms.
+* Fixed delete undo.
+
+= 1.2.5 =
+* Fixed issue with hidden Page Builder interface.
+
+= 1.2.4 =
+* Improved performance.
+* Made efforts to improve compatibility with 3rd party widgets.
+* Fixed preview with bundled widgets.
+
+= 1.2.3 =
+* Various Javascript fixes.
+* Added translation files.
+* Improved Post Loop widget.
+
+= 1.2.2 =
+* Fixed plugin conflict.
+* Minor performance improvements.
+
+= 1.2.1 =
+* Added several bundled widgets.
+* Improved compatibility with latest WordPress beta.
+
+= 1.2 =
+* Added several website element widgets as well as a framework for extending them.
+* Fixed IE8 issue.
+* Improved embedded video widget.
+
+= 1.1.6 =
+* Fixed a PHP 5.2 issue that broke certain widgets and the settings page.
+
+= 1.1.5 =
+* Text content of Page Builder is now saved to post_content to improve compatibility with SEO/search plugins.
+* Added an embedded video widget.
+
+= 1.1.4 =
+* Various UI improvements.
+* Transition from theme version.
+
+= 1.1.3 =
+* A fix to the CSS issue effecting WP 3.5.
+
+= 1.1.2 =
+* Changes to make Page Builder compatible with WordPress 3.6.
+
+= 1.1.1 =
+* Minor changes in preparation for inclusion on the WordPress plugin directory.
 
 = 1.1 =
 * Added self hosted video player widget and shortcode.
@@ -80,53 +147,26 @@ Most standard widgets work with Page Builder, but here are some of our favorites
 * Added settings to control display.
 * Several bug fixes and improvements.
 
-= 1.1.1 =
-* Minor changes in preparation for inclusion on the WordPress plugin directory.
+= 1.0 =
+* Initial release.
 
-= 1.1.2 =
-* Changes to make Page Builder compatible with WordPress 3.6.
 
-= 1.1.3 =
-* A fix to the CSS issue effecting WP 3.5.
 
-= 1.1.4 =
-* Various UI improvements.
-* Transition from theme version.
 
-= 1.1.5 =
-* Text content of Page Builder is now saved to post_content to improve compatibility with SEO/search plugins.
-* Added an embedded video widget.
 
-= 1.1.6 =
-* Fixed a PHP 5.2 issue that broke certain widgets and the settings page.
 
-= 1.2 =
-* Added several website element widgets as well as a framework for extending them.
-* Fixed IE8 issue.
-* Improved embedded video widget.
 
-= 1.2.1 =
-* Added several bundled widgets.
-* Improved compatibility with latest WordPress beta.
 
-= 1.2.2 =
-* Fixed plugin conflict.
-* Minor performance improvements.
 
-= 1.2.3 =
-* Various Javascript fixes.
-* Added translation files.
-* Improved Post Loop widget.
 
-= 1.2.4 =
-* Improved performance.
-* Made efforts to improve compatibility with 3rd party widgets.
-* Fixed preview with bundled widgets.
 
-= 1.2.5 =
-* Fixed issue with hidden Page Builder interface.
 
-= 1.2.6 =
-* Added compatibility with Black Studio TinyMCE widget.
-* Fixed bug with checkboxes in forms.
-* Fixed delete undo.
+
+
+
+
+
+
+
+
+

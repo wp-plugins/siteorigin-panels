@@ -26,6 +26,7 @@ function siteorigin_panels_options_init() {
 	add_settings_section( 'display', __('Display', 'so-panels'), '__return_false', 'siteorigin-panels' );
 
 	add_settings_field( 'post-types', __('Post Types', 'so-panels'), 'siteorigin_panels_options_field_post_types', 'siteorigin-panels', 'general' );
+	add_settings_field( 'copy-content', __('Copy Content to Post Content', 'so-panels'), 'siteorigin_panels_options_field_display', 'siteorigin-panels', 'general', array( 'type' => 'copy-content' ));
 
 	// The display fields
 	add_settings_field( 'post-types', __('Responsive', 'so-panels'), 'siteorigin_panels_options_field_display', 'siteorigin-panels', 'display', array( 'type' => 'responsive' ));
@@ -74,6 +75,7 @@ function siteorigin_panels_options_field_display($args){
 	$settings = siteorigin_panels_setting();
 	switch($args['type']) {
 		case 'responsive' :
+		case 'copy-content' :
 			?><label><input type="checkbox" name="siteorigin_panels_display[<?php echo esc_attr($args['type']) ?>]" <?php checked($settings[$args['type']]) ?> /> <?php _e('Enabled', 'so-panels') ?></label><?php
 			break;
 		case 'margin-bottom' :
@@ -112,6 +114,7 @@ function siteorigin_panels_options_sanitize_display($vals){
 	foreach($vals as $f => $v){
 		switch($f){
 			case 'responsive' :
+			case 'copy-content' :
 				$vals[$f] = !empty($vals[$f]);
 				break;
 			case 'margin-bottom' :
@@ -122,5 +125,6 @@ function siteorigin_panels_options_sanitize_display($vals){
 		}
 	}
 	$vals['responsive'] = !empty($vals['responsive']);
+	$vals['copy-content'] = !empty($vals['copy-content']);
 	return $vals;
 }

@@ -17,7 +17,7 @@ class SiteOrigin_Panels_Widget_List extends SiteOrigin_Panels_Widget  {
 				'text' => array(
 					'type' => 'textarea',
 					'label' => __('Text', 'so-panels'),
-					'description' => __('Start each new point with an astrix (*)', 'so-panels'),
+					'description' => __('Start each new point with an asterisk (*)', 'so-panels'),
 				),
 			)
 		);
