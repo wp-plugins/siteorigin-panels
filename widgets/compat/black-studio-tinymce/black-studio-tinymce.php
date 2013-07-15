@@ -33,6 +33,7 @@ function siteorigin_panels_black_studio_tinymce_admin_enqueue($page) {
 	$screen = get_current_screen();
 	if ( ( $screen->base == 'post' && in_array( $screen->id, siteorigin_panels_setting('post-types') ) ) || $screen->base == 'appearance_page_so_panels_home_page') {
 		wp_enqueue_script('black-studio-tinymce-widget-siteorigin-panels', plugin_dir_url(SITEORIGIN_PANELS_BASE_FILE) . 'widgets/compat/black-studio-tinymce/black-studio-tinymce-widget-siteorigin-panels.min.js', array('jquery'), SITEORIGIN_PANELS_VERSION);
+		wp_enqueue_style('black-studio-tinymce-widget-siteorigin-panels', plugin_dir_url(SITEORIGIN_PANELS_BASE_FILE).'widgets/compat/black-studio-tinymce/black-studio-tinymce-widget-siteorigin-panels.css', array(), SITEORIGIN_PANELS_VERSION);
 
 		global $black_studio_tinymce_widget_version;
 		if(version_compare($black_studio_tinymce_widget_version, '1.2.0', '<=')) {

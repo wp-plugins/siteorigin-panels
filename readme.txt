@@ -83,6 +83,10 @@ I've tried to ensure that Page Builder is compatible with most plugin widgets. I
 
 == Changelog ==
 
+= 1.2.8 =
+* Improved Black Studio TinyMCE compatibility.
+* Fixed issue with html in widgets breaking builder layout.
+
 = 1.2.7 =
 * Added German translation.
 * Improved Page Builder content import.

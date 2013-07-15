@@ -118,13 +118,16 @@
         }
 
         dialog = $( '<div class="panel-dialog dialog-form"></div>' )
+            .addClass('widget-dialog-' + type.toLowerCase())
             .html( formHtml )
             .dialog( {
                 dialogClass: 'panels-admin-dialog',
                 autoOpen:    false,
-                modal:       true,
+                modal:       false, // Disable modal so we don't mess with media editor. We'll create our own overlay.
+                draggable:   false,
+                resizable:   false,
                 title:       panels.i10n.messages.editWidget.replace( '%s', $$.attr( 'data-title' ) ),
-                minWidth:    700,
+                minWidth:    760,
                 maxHeight:   Math.round($(window).height() * 0.925),
                 create:      function(event, ui){
                     $(this ).closest('.ui-dialog' ).find('.show-in-panels' ).show();
@@ -135,6 +138,12 @@
 
                     // This fixes a weird a focus issue
                     $(this ).closest('.ui-dialog' ).find('a' ).blur();
+
+                    var overlay = $('<div class="ui-widget-overlay ui-front"></div>').css('z-index', 1000);
+                    $(this).data('overlay', overlay).closest('.ui-dialog').before(overlay);
+                },
+                close: function(){
+                    $(this).data('overlay').remove();
                 },
                 buttons:     dialogButtons
             } )
@@ -235,7 +244,7 @@
                 if(titleValue != '') return false;
             });
 
-            $(this ).find( 'h4' ).html( $(this ).data( 'title' ) + '<span>' + titleValue.substring(0, 80) + '</span>' );
+            $(this ).find( 'h4' ).html( $(this ).data( 'title' ) + '<span>' + titleValue.substring(0, 80).replace(/(<([^>]+)>)/ig,"") + '</span>' );
         });
     }
 
