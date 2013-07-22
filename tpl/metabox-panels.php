@@ -35,7 +35,7 @@ $layouts = apply_filters('siteorigin_panels_prebuilt_layouts', array());
 
 ?>
 
-<div id="panels">
+<div id="panels" data-animations="<?php echo siteorigin_panels_setting('animations') ? 'true' : 'false' ?>">
 	<div id="panels-container">
 	</div>
 	

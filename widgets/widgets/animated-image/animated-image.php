@@ -3,7 +3,7 @@
 class SiteOrigin_Panels_Widget_Animated_Image extends SiteOrigin_Panels_Widget  {
 	function __construct() {
 		parent::__construct(
-			__('Animated Image', 'so-panels'),
+			__('Animated Image (PB)', 'so-panels'),
 			array(
 				'description' => __('An image that animates in when it enters the screen.', 'so-panels'),
 				'default_style' => 'simple',

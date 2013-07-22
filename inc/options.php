@@ -27,6 +27,10 @@ function siteorigin_panels_options_init() {
 
 	add_settings_field( 'post-types', __('Post Types', 'so-panels'), 'siteorigin_panels_options_field_post_types', 'siteorigin-panels', 'general' );
 	add_settings_field( 'copy-content', __('Copy Content to Post Content', 'so-panels'), 'siteorigin_panels_options_field_display', 'siteorigin-panels', 'general', array( 'type' => 'copy-content' ));
+	add_settings_field( 'animations', __('Animations', 'so-panels'), 'siteorigin_panels_options_field_display', 'siteorigin-panels', 'general', array(
+		'type' => 'animations',
+		'description' => __('Disable animations to improve Page Builder interface performance', 'so-panels'),
+	));
 
 	// The display fields
 	add_settings_field( 'post-types', __('Responsive', 'so-panels'), 'siteorigin_panels_options_field_display', 'siteorigin-panels', 'display', array( 'type' => 'responsive' ));
@@ -76,6 +80,7 @@ function siteorigin_panels_options_field_display($args){
 	switch($args['type']) {
 		case 'responsive' :
 		case 'copy-content' :
+		case 'animations' :
 			?><label><input type="checkbox" name="siteorigin_panels_display[<?php echo esc_attr($args['type']) ?>]" <?php checked($settings[$args['type']]) ?> /> <?php _e('Enabled', 'so-panels') ?></label><?php
 			break;
 		case 'margin-bottom' :
@@ -83,6 +88,10 @@ function siteorigin_panels_options_field_display($args){
 		case 'mobile-width' :
 			?><input type="text" name="siteorigin_panels_display[<?php echo esc_attr($args['type']) ?>]" value="<?php echo esc_attr($settings[$args['type']]) ?>" class="small-text" /> <?php _e('px', 'so-panels') ?><?php
 			break;
+	}
+
+	if(!empty($args['description'])) {
+		?><p class="description"><?php echo esc_html($args['description']) ?></p><?php
 	}
 }
 
@@ -115,6 +124,7 @@ function siteorigin_panels_options_sanitize_display($vals){
 		switch($f){
 			case 'responsive' :
 			case 'copy-content' :
+			case 'animations' :
 				$vals[$f] = !empty($vals[$f]);
 				break;
 			case 'margin-bottom' :
@@ -126,5 +136,6 @@ function siteorigin_panels_options_sanitize_display($vals){
 	}
 	$vals['responsive'] = !empty($vals['responsive']);
 	$vals['copy-content'] = !empty($vals['copy-content']);
+	$vals['animations'] = !empty($vals['animations']);
 	return $vals;
 }

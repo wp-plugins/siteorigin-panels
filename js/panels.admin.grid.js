@@ -146,7 +146,9 @@
                                         // We don't want to animate the new widgets
                                         $( '#panels-container .panel' ).removeClass( 'new-panel' );
 
-                                        gridContainer.hide().slideDown();
+                                        if(panels.animations) gridContainer.hide().slideDown();
+                                        else gridContainer.show();
+
                                     },
                                     [containerData, container.index()],
                                     'Remove Columns'
@@ -167,7 +169,7 @@
                                 ;
 
                                 // Finally, remove the grid container
-                                container.slideUp( function () {
+                                var remove = function () {
                                     // Remove all the panel dialogs
                                     container.find('.panel').each(function(){
                                         $(this).data('dialog').dialog('destroy').remove();
@@ -179,7 +181,13 @@
                                     $( '#panels-container' )
                                         .sortable( "refresh" )
                                         .find( '.panels-container' ).trigger( 'refreshcells' );
-                                } );
+                                };
+
+                                if(panels.animations) container.slideUp( remove );
+                                else {
+                                    container.hide();
+                                    remove();
+                                }
 
                                 return false;
                             } )
@@ -308,7 +316,7 @@
                     this.lastContainer = thisContainer;
                 },
                 helper: function(e, el){
-                    return el.clone().css('opacity', 0.9).addClass('panel-being-dragged');
+                    return el.clone().css('opacity', panels.animations ? 0.9 : 1).addClass('panel-being-dragged');
                 },
                 stop:       function (ui, el) {
                     // Refresh all the cell sizes after we stop sorting

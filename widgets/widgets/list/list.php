@@ -3,7 +3,7 @@
 class SiteOrigin_Panels_Widget_List extends SiteOrigin_Panels_Widget  {
 	function __construct() {
 		parent::__construct(
-			__('List', 'so-panels'),
+			__('List (PB)', 'so-panels'),
 			array(
 				'description' => __('Displays a bullet list of elements', 'so-panels'),
 				'default_style' => 'simple',

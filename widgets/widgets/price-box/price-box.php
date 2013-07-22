@@ -3,7 +3,7 @@
 class SiteOrigin_Panels_Widget_Price_Box extends SiteOrigin_Panels_Widget  {
 	function __construct() {
 		parent::__construct(
-			__('Price Box', 'so-panels'),
+			__('Price Box (PB)', 'so-panels'),
 			array(
 				'description' => __('Displays a bullet list of elements', 'so-panels'),
 				'default_style' => 'simple',

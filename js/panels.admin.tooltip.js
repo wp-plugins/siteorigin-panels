@@ -29,7 +29,8 @@ jQuery( function ( $ ) {
             tooltip.css( {
                 top: $$.offset().top - 12 - $$.outerHeight(),
                 left:$$.offset().left - tooltip.outerWidth() / 2 + $$.outerWidth() / 2
-            } ).hide().fadeIn( 100 );
+            } );
+            if(panels.animations) tooltip.hide().fadeIn( 100 );
 
             $$.data( 'tooltip', tooltip );
         } );
@@ -47,9 +48,12 @@ jQuery( function ( $ ) {
             var tooltip = $$.data( 'tooltip' );
             if ( tooltip != undefined ) {
                 $$.data( 'tooltip', undefined );
-                tooltip.fadeOut( 100, function () {
-                    tooltip.remove();
-                } );
+                if(panels.animations){
+                    tooltip.fadeOut( 100, function () {
+                        tooltip.remove();
+                    } );
+                }
+                else tooltip.remove();
             }
         } );
         return this;

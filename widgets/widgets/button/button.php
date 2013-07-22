@@ -3,7 +3,7 @@
 class SiteOrigin_Panels_Widget_Button extends SiteOrigin_Panels_Widget  {
 	function __construct() {
 		parent::__construct(
-			__('Button', 'so-panels'),
+			__('Button (PB)', 'so-panels'),
 			array(
 				'description' => __('A simple button', 'so-panels'),
 				'default_style' => 'simple',

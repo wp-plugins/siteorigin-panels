@@ -6,6 +6,7 @@
  */
 
 jQuery( function ( $ ) {
+    panels.animations = $('#panels').data('animations');
 
     $( window ).bind( 'resize', function ( event ) {
         // ui-resizable elements trigger resize
@@ -35,7 +36,7 @@ jQuery( function ( $ ) {
     gridAddDialogButtons[panels.i10n.buttons.add] = function () {
         var num = Number( $( '#grid-add-dialog' ).find( 'input' ).val() );
 
-        if ( num == NaN ) {
+        if ( isNaN( num ) ) {
             alert( 'Invalid Number' );
             return false;
         }
@@ -43,7 +44,10 @@ jQuery( function ( $ ) {
         // Make sure the number is between 1 and 10.
         num = Math.min( 10, Math.max( 1, Math.round( num ) ) );
         var gridContainer = window.panels.createGrid( num );
-        gridContainer.hide().slideDown();
+
+        if(panels.animations) gridContainer.hide().slideDown();
+        else gridContainer.show();
+
         $( '#grid-add-dialog' ).dialog( 'close' );
     };
 
@@ -83,7 +87,8 @@ jQuery( function ( $ ) {
             minWidth:    960,
             maxHeight:   Math.round($(window).height() * 0.925),
             close:       function () {
-                $( '#panels-container .panel.new-panel' ).hide().slideDown( 1000 ).removeClass( 'new-panel' );
+                if(panels.animations) $( '#panels-container .panel.new-panel' ).hide().slideDown( 1000 ).removeClass( 'new-panel' );
+                else $( '#panels-container .panel.new-panel' ).show().removeClass( 'new-panel' );
             }
         } )
         .on('keydown', function(e) {

@@ -3,7 +3,7 @@
 class SiteOrigin_Panels_Widget_Call_To_Action extends SiteOrigin_Panels_Widget  {
 	function __construct() {
 		parent::__construct(
-			__('Call To Action', 'so-panels'),
+			__('Call To Action (PB)', 'so-panels'),
 			array(
 				'description' => __('A Call to Action block', 'so-panels'),
 				'default_style' => 'simple',

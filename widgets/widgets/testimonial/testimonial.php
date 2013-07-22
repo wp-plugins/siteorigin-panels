@@ -3,7 +3,7 @@
 class SiteOrigin_Panels_Widget_Testimonial extends SiteOrigin_Panels_Widget  {
 	function __construct() {
 		parent::__construct(
-			__('Testimonial', 'so-panels'),
+			__('Testimonial (PB)', 'so-panels'),
 			array(
 				'description' => __('Displays a bullet list of elements', 'so-panels'),
 				'default_style' => 'simple',

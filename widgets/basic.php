@@ -4,7 +4,7 @@ class SiteOrigin_Panels_Widgets_Gallery extends WP_Widget {
 	function __construct() {
 		parent::__construct(
 			'siteorigin-panels-gallery',
-			__( 'Gallery', 'so-panels' ),
+			__( 'Gallery (PB)', 'so-panels' ),
 			array(
 				'description' => __( 'Displays a gallery.', 'so-panels' ),
 			)
@@ -76,7 +76,7 @@ class SiteOrigin_Panels_Widgets_PostContent extends WP_Widget {
 	function __construct() {
 		parent::__construct(
 			'siteorigin-panels-post-content',
-			__( 'Post Content', 'so-panels' ),
+			__( 'Post Content (PB)', 'so-panels' ),
 			array(
 				'description' => __( 'Displays some form of post content form the current post.', 'so-panels' ),
 			)
@@ -146,7 +146,7 @@ class SiteOrigin_Panels_Widgets_Image extends WP_Widget {
 	function __construct() {
 		parent::__construct(
 			'siteorigin-panels-image',
-			__( 'Image', 'so-panels' ),
+			__( 'Image (PB)', 'so-panels' ),
 			array(
 				'description' => __( 'Displays a simple image.', 'so-panels' ),
 			)
@@ -201,7 +201,7 @@ class SiteOrigin_Panels_Widgets_PostLoop extends WP_Widget{
 	function __construct() {
 		parent::__construct(
 			'siteorigin-panels-postloop',
-			__( 'Post Loop', 'so-panels' ),
+			__( 'Post Loop (PB)', 'so-panels' ),
 			array(
 				'description' => __( 'Displays a post loop.', 'so-panels' ),
 			)
@@ -238,6 +238,14 @@ class SiteOrigin_Panels_Widgets_PostLoop extends WP_Widget{
 			case 'exclude' :
 				$query_args['post__not_in'] = get_option( 'sticky_posts' );
 				break;
+		}
+
+		// Exclude the current post to prevent possible infinite loop
+		if(!empty($query_args['post__not_in'])){
+			$query_args['post__not_in'][] = get_the_ID();
+		}
+		else {
+			$query_args['post__not_in'] = array( get_the_ID() );
 		}
 
 		if ( !empty( $instance['title'] ) ) {
@@ -414,7 +422,7 @@ class SiteOrigin_Panels_Widgets_EmbeddedVideo extends WP_Widget {
 	function __construct() {
 		parent::__construct(
 			'siteorigin-panels-embedded-video',
-			__( 'Embedded Video', 'so-panels' ),
+			__( 'Embedded Video (PB)', 'so-panels' ),
 			array(
 				'description' => __( 'Embeds a video.', 'so-panels' ),
 			)
@@ -464,7 +472,7 @@ class SiteOrigin_Panels_Widgets_Video extends WP_Widget {
 	function __construct() {
 		parent::__construct(
 			'siteorigin-panels-video',
-			__( 'Self Hosted Video', 'so-panels' ),
+			__( 'Hosted Video (PB)', 'so-panels' ),
 			array(
 				'description' => __( 'A self hosted video player.', 'so-panels' ),
 			)

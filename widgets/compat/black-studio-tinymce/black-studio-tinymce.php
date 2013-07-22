@@ -9,7 +9,7 @@
 function siteorigin_panels_black_studio_tinymce_admin_init() {
 	global $pagenow;
 
-	// Compatibility for SiteOrigin Panels (Page Builder)
+	// Compatibility for SiteOrigin Panels (PB)
 	if (
 		in_array($pagenow, array('post-new.php', 'post.php')) ||
 		($pagenow == 'themes.php' && isset($_GET['page']) && $_GET['page'] == 'so_panels_home_page' )

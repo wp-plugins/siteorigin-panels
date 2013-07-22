@@ -13,17 +13,17 @@ Build responsive page layouts using the widgets you know and love using this sim
 
 [vimeo http://vimeo.com/59561067]
 
-Over the years, WordPress has evolved into a fully functional CMS. SiteOrigin Page Builder completes the transition by giving you a way to create responsive column layouts using the widgets you know and love.
+Over the years, WordPress has evolved into a fully functional CMS. Page Builder (previously called Panels) completes the transition by giving you a way to create responsive column layouts using the widgets you know and love.
 
 = Use Your Widgets =
 
-You know widgets. They're the things you add to your sidebars. SiteOrigin Page Builder makes all your widgets infinitely more useful by turning them into the building blocks of your pages.
+You know widgets. They're the things you add to your sidebars. Page Builder makes all your widgets infinitely more useful by turning them into the building blocks of your pages.
 
 We've included a few useful widgets, but it works with any that your themes or plugins add.
 
 = Works with Most Themes =
 
-The Page Builder works with most well made themes. The only requirement is that your theme supports pages. And if your theme is responsive, change a few settings and boom, your layouts will work with your theme and collapse into a single column on mobile devices.
+Page Builder works with most well made themes. The only requirement is that your theme supports pages. And if your theme is responsive, change a few settings and boom, your layouts will work with your theme and collapse into a single column on mobile devices.
 
 There are loads free and premium themes that work with the Page Builder, we have our own collection of [free themes](http://siteorigin.com/) if you'd like to use one of ours.
 
@@ -82,6 +82,12 @@ Page Builder is actively developed and updated, so generally I'd recommend that 
 I've tried to ensure that Page Builder is compatible with most plugin widgets. It's best to just download Page Builder and test for yourself.
 
 == Changelog ==
+
+= 1.2.9 =
+* Fixed backwards compatibility issue.
+* Fixed potential infinite loop in post loop widget.
+* Various minor fixes and updates.
+* Added setting to remove animations for users experiencing poor performance.
 
 = 1.2.8 =
 * Improved Black Studio TinyMCE compatibility.

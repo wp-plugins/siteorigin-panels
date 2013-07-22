@@ -3,14 +3,14 @@
 Plugin Name: Page Builder
 Plugin URI: http://siteorigin.com/page-builder/
 Description: A drag and drop, responsive page builder that simplifies building your website.
-Version: 1.2.8
-Author: SiteOrigin
+Version: 1.2.9
+Author: Greg Priday
 Author URI: http://siteorigin.com
 License: GPL3
 License URI: http://www.gnu.org/licenses/gpl.html
 */
 
-define('SITEORIGIN_PANELS_VERSION', '1.2.8');
+define('SITEORIGIN_PANELS_VERSION', '1.2.9');
 define('SITEORIGIN_PANELS_BASE_FILE', __FILE__);
 
 // A few default widgets to make things easier
@@ -49,13 +49,14 @@ function siteorigin_panels_setting($key = ''){
 			'home-template' => 'home-panels.php',   // The file used to render a home page.
 			'post-types' => get_option('siteorigin_panels_post_types', array('page')),	// Post types that can be edited using panels.
 
-			'responsive' => !isset( $display_settings['responsive'] ) ? false : $display_settings['responsive'],			// Should we use a responsive layout
-			'mobile-width' => !isset( $display_settings['mobile-width'] ) ? 780 : $display_settings['mobile-width'],		// What is considered a mobile width?
+			'responsive' => !isset( $display_settings['responsive'] ) ? false : $display_settings['responsive'],					// Should we use a responsive layout
+			'mobile-width' => !isset( $display_settings['mobile-width'] ) ? 780 : $display_settings['mobile-width'],				// What is considered a mobile width?
 
-			'margin-bottom' => !isset( $display_settings['margin-bottom'] ) ? 30 : $display_settings['margin-bottom'],		// Bottom margin of a cell
-			'margin-sides' => !isset( $display_settings['margin-sides'] ) ? 30 : $display_settings['margin-sides'],			// Spacing between 2 cells
-			'affiliate-id' => false,																						// Set your affiliate ID
-			'copy-content' => !isset( $display_settings['copy-content'] ) ? true : $display_settings['copy-content'],		// Should we copy across content
+			'margin-bottom' => !isset( $display_settings['margin-bottom'] ) ? 30 : $display_settings['margin-bottom'],				// Bottom margin of a cell
+			'margin-sides' => !isset( $display_settings['margin-sides'] ) ? 30 : $display_settings['margin-sides'],					// Spacing between 2 cells
+			'affiliate-id' => false,																								// Set your affiliate ID
+			'copy-content' => !isset( $display_settings['copy-content'] ) ? true : $display_settings['copy-content'],				// Should we copy across content
+			'animations' => !isset( $display_settings['animations'] ) ? true : $display_settings['animations'],					// Should we copy across content
 		) );
 
 		// Filter these settings
@@ -619,7 +620,7 @@ function siteorigin_panels_render( $post_id = false ) {
 		return $siteorigin_panels_cache[$post_id];
 
 	if($post_id == 'home'){
-		$panels_data = get_option('siteorigin_panels_home_page', null);
+		$panels_data = get_option( 'siteorigin_panels_home_page', get_theme_mod('panels_home_page', null) );
 
 		if(is_null($panels_data)){
 			// Load the default layout
