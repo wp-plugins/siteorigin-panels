@@ -56,8 +56,8 @@ jQuery( function ( $ ) {
         .show()
         .dialog( {
             dialogClass: 'panels-admin-dialog',
-            autoOpen:false,
-            modal:   true,
+            autoOpen: false,
+            modal: false, // Disable modal so we don't mess with media editor. We'll create our own overlay.
             title:   $( '#grid-add-dialog' ).attr( 'data-title' ),
             open:    function () {
                 $( this ).find( 'input' ).val( 2 ).select();
@@ -82,11 +82,16 @@ jQuery( function ( $ ) {
             autoOpen:    false,
             resizable:   false,
             draggable:   false,
-            modal:       true,
+            modal:       false,
             title:       $( '#panels-dialog' ).attr( 'data-title' ),
             minWidth:    960,
-            maxHeight:   Math.round($(window).height() * 0.925),
+            maxHeight:   Math.round($(window).height() * 0.8),
+            open :       function () {
+                var overlay = $('<div class="ui-widget-overlay ui-front"></div>').css('z-index', 1000);
+                $(this).data('overlay', overlay).closest('.ui-dialog').before(overlay);
+            },
             close:       function () {
+                $(this).data('overlay').remove();
                 if(panels.animations) $( '#panels-container .panel.new-panel' ).hide().slideDown( 1000 ).removeClass( 'new-panel' );
                 else $( '#panels-container .panel.new-panel' ).show().removeClass( 'new-panel' );
             }
@@ -293,4 +298,12 @@ jQuery( function ( $ ) {
         });
         cloned = [];
     }
+
+    // Dismiss the donate button when a user clicks the link
+    $('#so-panels-donate-dismiss').click(function(){
+        $.ajax($(this).attr('href'));
+        $(this).closest('.message').slideUp();
+        return false;
+    });
+
 } );

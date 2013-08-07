@@ -239,7 +239,9 @@
                 $( '#panels-container .panel.new-panel' ).hide().slideDown( 500 , function(){ panel.data('dialog' ).dialog('open') } ).removeClass( 'new-panel' );
             else {
                 $( '#panels-container .panel.new-panel').show().removeClass( 'new-panel' );
-                panel.data('dialog' ).dialog('open');
+                setTimeout(function(){
+                    panel.data('dialog' ).dialog('open');
+                }, 500);
             }
         }
     }

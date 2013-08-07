@@ -11,20 +11,20 @@ jQuery(function($){
         autoOpen:    false,
         resizable:   false,
         draggable:   false,
-        modal:       true,
+        modal:       false,
         title:       $( '#grid-prebuilt-dialog' ).attr( 'data-title' ),
         minWidth:    600,
-        height: 350,
+        height:      350,
         create:      function(event, ui){
-            $(this ).closest('.ui-dialog' ).find('.ui-dialog-buttonset button' ).eq(0 ).addClass('button-delete');
+        },
+        open:        function(){
+            var overlay = $('<div class="ui-widget-overlay ui-front"></div>').css('z-index', 1000);
+            $(this).data('overlay', overlay).closest('.ui-dialog').before(overlay);
+        },
+        close :      function(){
+            $(this).data('overlay').remove();
         },
         buttons : [
-            {
-                text : panels.i10n.buttons.cancel,
-                click: function(){
-                    $( '#grid-prebuilt-dialog' ).dialog('close');
-                }
-            },
             {
                 text: panels.i10n.buttons.insert,
                 click: function(){

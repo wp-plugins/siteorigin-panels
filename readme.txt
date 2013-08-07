@@ -2,10 +2,11 @@
 Contributors: gpriday
 Tags: page builder, responsive, widget, builder, page, admin, gallery, content, cms
 Requires at least: 3.5
-Tested up to: 3.6 Beta 1
+Tested up to: 3.6
 Stable tag: trunk
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl.html
+Donate link: http://siteorigin.com/page-builder/donate/
 
 Build responsive page layouts using the widgets you know and love using this simple drag and drop page builder.
 
@@ -50,6 +51,7 @@ As well as some essential page elements widgets:
 Most standard widgets work with Page Builder, but here are some of our favorites.
 
 * [Black Studio TinyMCE](http://wordpress.org/plugins/black-studio-tinymce-widget/) for a visual content editing widget.
+* [Meta Slider](http://wordpress.org/plugins/ml-slider/) for a responsive slider widget.
 
 [Contact me](mailto:greg@siteorigin.com) if you've created a widget that would work well with Page Builder so I can add it to our recommended plugins list. Your plugin will also be recommended within Page Builder itself.
 
@@ -82,6 +84,11 @@ Page Builder is actively developed and updated, so generally I'd recommend that 
 I've tried to ensure that Page Builder is compatible with most plugin widgets. It's best to just download Page Builder and test for yourself.
 
 == Changelog ==
+
+= 1.2.10 =
+* Reduced max height of widget block to prevent overlaps.
+* Fixed issue that caused problems with TinyMCE widget.
+* General code clean up and performance improvements.
 
 = 1.2.9 =
 * Fixed backwards compatibility issue.
@@ -159,24 +166,3 @@ I've tried to ensure that Page Builder is compatible with most plugin widgets. I
 
 = 1.0 =
 * Initial release.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

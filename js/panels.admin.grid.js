@@ -163,7 +163,7 @@
                                     .find('a.undo')
                                     .click(function(){
                                         window.panels.undoManager.undo();
-                                        $('#panels-undo-message' ).fadeOut(function(){ $(this ).remove() });
+                                        $('#panels-undo-message' ).fadeOut(function(){ $( this ).remove() });
                                         return false;
                                     })
                                 ;

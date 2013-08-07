@@ -3,21 +3,20 @@
 Plugin Name: Page Builder
 Plugin URI: http://siteorigin.com/page-builder/
 Description: A drag and drop, responsive page builder that simplifies building your website.
-Version: 1.2.9
+Version: 1.2.10
 Author: Greg Priday
 Author URI: http://siteorigin.com
 License: GPL3
 License URI: http://www.gnu.org/licenses/gpl.html
+Donate link: http://siteorigin.com/page-builder/donate/
 */
 
-define('SITEORIGIN_PANELS_VERSION', '1.2.9');
+define('SITEORIGIN_PANELS_VERSION', '1.2.10');
 define('SITEORIGIN_PANELS_BASE_FILE', __FILE__);
 
-// A few default widgets to make things easier
 include plugin_dir_path(__FILE__).'widgets/widgets.php';
-
-// Theme Options
 include plugin_dir_path(__FILE__).'inc/options.php';
+include plugin_dir_path(__FILE__).'inc/aff.php';
 
 /**
  * Initialize the language files
@@ -210,7 +209,6 @@ function siteorigin_panels_admin_enqueue_scripts($prefix) {
 	if ( ( $screen->base == 'post' && in_array( $screen->id, siteorigin_panels_setting('post-types') ) ) || $screen->base == 'appearance_page_so_panels_home_page') {
 		wp_enqueue_script( 'jquery-ui-resizable' );
 		wp_enqueue_script( 'jquery-ui-sortable' );
-		wp_enqueue_script( 'jquery-ui-tabs' );
 		wp_enqueue_script( 'jquery-ui-dialog' );
 		wp_enqueue_script( 'jquery-ui-button' );
 
@@ -296,8 +294,8 @@ add_action( 'admin_print_scripts-appearance_page_so_panels_home_page', 'siteorig
 function siteorigin_panels_admin_enqueue_styles() {
 	$screen = get_current_screen();
 	if ( in_array( $screen->id, siteorigin_panels_setting('post-types') ) || $screen->base == 'appearance_page_so_panels_home_page') {
-		wp_enqueue_style( 'so-panels-jquery-ui', plugin_dir_url(__FILE__) . 'css/jquery-ui-theme.css' );
-		wp_enqueue_style( 'so-panels-admin', plugin_dir_url(__FILE__) . 'css/panels-admin.css' );
+		//wp_enqueue_style( 'so-panels-jquery-ui', plugin_dir_url(__FILE__) . 'css/jquery-ui-theme.css' );
+		wp_enqueue_style( 'so-panels-admin', plugin_dir_url(__FILE__) . 'css/admin.css' );
 		wp_enqueue_style( 'so-panels-chosen', plugin_dir_url(__FILE__) . 'js/chosen/chosen.css' );
 	
 		do_action( 'siteorigin_panel_enqueue_admin_styles' );
@@ -843,8 +841,16 @@ function siteorigin_panels_cloned_page_layouts($layouts){
 }
 add_filter('siteorigin_panels_prebuilt_layouts', 'siteorigin_panels_cloned_page_layouts', 20);
 
+/**
+ * Add a link to recommended plugins and widgets.
+ */
 function siteorigin_panels_recommended_widgets(){
-	?><p><a href="<?php echo admin_url('plugin-install.php?tab=favorites&user=siteorigin-pagebuilder') ?>" target="_blank"><?php _e('Recommended Plugins and Widgets') ?></a></p><?php
+	?>
+	<p id="so-panels-recommended-plugins">
+		<a href="<?php echo admin_url('plugin-install.php?tab=favorites&user=siteorigin-pagebuilder') ?>" target="_blank"><?php _e('Recommended Plugins and Widgets', 'so-panels') ?></a>
+		<small><?php _e('Free plugins that work well with Page Builder', 'so-panels') ?></small>
+	</p>
+	<?php
 }
 add_action('siteorigin_panels_after_widgets', 'siteorigin_panels_recommended_widgets');
 
@@ -878,3 +884,27 @@ function siteorigin_panels_wp_import_post_meta_map($val) {
 	if(is_string($val)) return str_replace('<<<br>>>', "\n", $val);
 	else return array_map('siteorigin_panels_wp_import_post_meta_map', $val);
 }
+
+function siteorigin_panels_donate_link(){
+	$user = wp_get_current_user();
+	$dismissed = (bool) get_user_meta($user->ID, 'siteorigin_panels_dismiss_donate', true);
+	if($dismissed === true) return;
+
+	?>
+	<div class="message">
+		<p>
+			<?php printf(__('<a href="%s" target="_blank">Help improve Page Builder</a> by crowd funding its development', 'so-panels'), 'http://siteorigin.com/page-builder/donate/'); ?>
+			- <a href="http://siteorigin.com/page-builder/donate/" target="_blank"><?php _e('Contribute', 'so-panels') ?></a>
+			| <a href="<?php echo admin_url('admin-ajax.php?action=so_panels_dismiss_donate'); ?>" id="so-panels-donate-dismiss"><?php _e('Dismiss', 'so-panels') ?></a>
+	</div>
+	<?php
+}
+add_action('siteorigin_panels_before_interface', 'siteorigin_panels_donate_link');
+
+function siteorigin_panels_dismiss_donate(){
+	$user = wp_get_current_user();
+	update_user_meta($user->ID, 'siteorigin_panels_dismiss_donate', true);
+	var_dump($user->ID);
+	exit();
+}
+add_action('wp_ajax_so_panels_dismiss_donate', 'siteorigin_panels_dismiss_donate');

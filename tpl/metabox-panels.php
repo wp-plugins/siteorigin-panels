@@ -27,7 +27,7 @@ foreach($wp_widget_factory->widgets as $class => $info){
 	$form .= '<input type="hidden" data-info-field="cell" name="widgets[{$id}][info][cell]" value="" />';
 	
 	$widget->form = $form;
-	
+
 	$panel_widgets[] = $widget;
 }
 
@@ -36,6 +36,9 @@ $layouts = apply_filters('siteorigin_panels_prebuilt_layouts', array());
 ?>
 
 <div id="panels" data-animations="<?php echo siteorigin_panels_setting('animations') ? 'true' : 'false' ?>">
+
+	<?php do_action('siteorigin_panels_before_interface') ?>
+
 	<div id="panels-container">
 	</div>
 	
