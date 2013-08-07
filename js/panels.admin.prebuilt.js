@@ -28,22 +28,29 @@ jQuery(function($){
             {
                 text: panels.i10n.buttons.insert,
                 click: function(){
-                    var $$ = $('#grid-prebuilt-input' );
-                    if($$.val() == '') {
-                        
-                    }
+                    var dialog = $(this).closest('.ui-dialog');
+                    if(dialog.hasClass('panels-ajax-loading')) return;
+                    dialog.addClass('panels-ajax-loading');
 
-                    var s = $$.find(':selected');
-                    if(s.attr('data-layout-id') == null){
+                    var s = $('#grid-prebuilt-input' ).find(':selected');
+                    if(s.attr('data-layout-id') == null) {
+                        $( '#grid-prebuilt-dialog' ).dialog('close');
                         return;
                     }
-                    
-                    if(confirm(panels.i10n.messages.confirmLayout)){
-                        // Clear the grids and load the prebuilt layout
-                        panels.clearGrids();
-                        panels.loadPanels(panelsPrebuiltLayouts[s.attr('data-layout-id')]);
-                    }
-                    $( '#grid-prebuilt-dialog' ).dialog('close');
+
+                    $.get(ajaxurl, {action: 'so_panels_prebuilt', layout: s.attr('data-layout-id')}, function(data){
+                        dialog.removeClass('panels-ajax-loading');
+
+                        if(typeof data.name != 'undefined') {
+                            if(confirm(panels.i10n.messages.confirmLayout)){
+                                // Clear the grids and load the prebuilt layout
+                                panels.clearGrids();
+                                panels.loadPanels(data);
+                                $( '#grid-prebuilt-dialog' ).dialog('close');
+                            }
+                        }
+                    });
+
                 }
             }
         ]

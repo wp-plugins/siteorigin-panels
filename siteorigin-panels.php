@@ -3,7 +3,7 @@
 Plugin Name: Page Builder
 Plugin URI: http://siteorigin.com/page-builder/
 Description: A drag and drop, responsive page builder that simplifies building your website.
-Version: 1.2.10
+Version: 1.2.11
 Author: Greg Priday
 Author URI: http://siteorigin.com
 License: GPL3
@@ -11,7 +11,7 @@ License URI: http://www.gnu.org/licenses/gpl.html
 Donate link: http://siteorigin.com/page-builder/donate/
 */
 
-define('SITEORIGIN_PANELS_VERSION', '1.2.10');
+define('SITEORIGIN_PANELS_VERSION', '1.2.11');
 define('SITEORIGIN_PANELS_BASE_FILE', __FILE__);
 
 include plugin_dir_path(__FILE__).'widgets/widgets.php';
@@ -244,9 +244,6 @@ function siteorigin_panels_admin_enqueue_scripts($prefix) {
 				),
 			),
 		) );
-
-		$layouts = apply_filters('siteorigin_panels_prebuilt_layouts', array());
-		wp_localize_script('so-panels-admin-prebuilt', 'panelsPrebuiltLayouts', $layouts);
 
 		// Localize the panels with the panels data
 		if($screen->base == 'appearance_page_so_panels_home_page'){
@@ -808,7 +805,7 @@ function siteorigin_panels_enqueue_styles(){
 add_action('wp_enqueue_scripts', 'siteorigin_panels_enqueue_styles');
 
 /**
- * Add current pages as clonable pages
+ * Add current pages as cloneable pages
  * 
  * @param $layouts
  * @return mixed
@@ -817,7 +814,7 @@ function siteorigin_panels_cloned_page_layouts($layouts){
 	$pages = get_posts(array(
 		'post_type' => 'page',
 		'post_status' => array('publish', 'draft'),
-		'numberposts' => 100,
+		'numberposts' => 200,
 	));
 	
 	foreach($pages as $page){
@@ -828,13 +825,15 @@ function siteorigin_panels_cloned_page_layouts($layouts){
 		
 		$name =  empty($page->post_title) ? __('Untitled', 'so-panels') : $page->post_title;
 		if($page->post_status != 'publish') $name .= ' ( ' . __('Unpublished', 'so-panels') . ' )';
-		
-		$layouts['post-'.$page->ID] = wp_parse_args(
-			array(
-				'name' => sprintf(__('Clone Page: %s', 'so-panels'), $name )
-			),
-			$panels_data
-		);
+
+		if(current_user_can('edit_post', $page->ID)) {
+			$layouts['post-'.$page->ID] = wp_parse_args(
+				array(
+					'name' => sprintf(__('Clone Page: %s', 'so-panels'), $name )
+				),
+				$panels_data
+			);
+		}
 	}
 	
 	return $layouts;
@@ -885,6 +884,9 @@ function siteorigin_panels_wp_import_post_meta_map($val) {
 	else return array_map('siteorigin_panels_wp_import_post_meta_map', $val);
 }
 
+/**
+ * Display the donate link
+ */
 function siteorigin_panels_donate_link(){
 	$user = wp_get_current_user();
 	$dismissed = (bool) get_user_meta($user->ID, 'siteorigin_panels_dismiss_donate', true);
@@ -901,10 +903,28 @@ function siteorigin_panels_donate_link(){
 }
 add_action('siteorigin_panels_before_interface', 'siteorigin_panels_donate_link');
 
-function siteorigin_panels_dismiss_donate(){
+/**
+ * Admin ajax handler for dismissing the donate button
+ */
+function siteorigin_panels_ajax_action_dismiss_donate(){
 	$user = wp_get_current_user();
 	update_user_meta($user->ID, 'siteorigin_panels_dismiss_donate', true);
-	var_dump($user->ID);
 	exit();
 }
-add_action('wp_ajax_so_panels_dismiss_donate', 'siteorigin_panels_dismiss_donate');
+add_action('wp_ajax_so_panels_dismiss_donate', 'siteorigin_panels_ajax_action_dismiss_donate');
+
+/**
+ * Admin ajax handler for loading a prebuilt layout.
+ */
+function siteorigin_panels_ajax_action_prebuilt(){
+	// Get any layouts that the current user could edit.
+	$layouts = apply_filters('siteorigin_panels_prebuilt_layouts', array());
+
+	if(empty($_GET['layout'])) exit();
+	if(empty($layouts[$_GET['layout']])) exit();
+
+	header('content-type: application/json');
+	echo json_encode($layouts[$_GET['layout']]);
+	exit();
+}
+add_action('wp_ajax_so_panels_prebuilt', 'siteorigin_panels_ajax_action_prebuilt');

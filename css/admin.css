@@ -966,6 +966,10 @@ html {
 	text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.3);
 }
 
+.ui-dialog.panels-admin-dialog.panels-ajax-loading .ui-dialog-buttonpane {
+	background: #f1f1f1 url(./images/ajax-loader.gif) no-repeat 15px 17px;
+}
+
 #so-panels-recommended-plugins {
 	text-align: center;
 }

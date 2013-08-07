@@ -85,6 +85,9 @@ I've tried to ensure that Page Builder is compatible with most plugin widgets. I
 
 == Changelog ==
 
+= 1.2.11 =
+* Prebuilt layouts are now loaded through AJAX to improve performance.
+
 = 1.2.10 =
 * Reduced max height of widget block to prevent overlaps.
 * Fixed issue that caused problems with TinyMCE widget.
@@ -137,32 +140,3 @@ I've tried to ensure that Page Builder is compatible with most plugin widgets. I
 * Added several website element widgets as well as a framework for extending them.
 * Fixed IE8 issue.
 * Improved embedded video widget.
-
-= 1.1.6 =
-* Fixed a PHP 5.2 issue that broke certain widgets and the settings page.
-
-= 1.1.5 =
-* Text content of Page Builder is now saved to post_content to improve compatibility with SEO/search plugins.
-* Added an embedded video widget.
-
-= 1.1.4 =
-* Various UI improvements.
-* Transition from theme version.
-
-= 1.1.3 =
-* A fix to the CSS issue effecting WP 3.5.
-
-= 1.1.2 =
-* Changes to make Page Builder compatible with WordPress 3.6.
-
-= 1.1.1 =
-* Minor changes in preparation for inclusion on the WordPress plugin directory.
-
-= 1.1 =
-* Added self hosted video player widget and shortcode.
-* Added page cloning.
-* Added settings to control display.
-* Several bug fixes and improvements.
-
-= 1.0 =
-* Initial release.
