@@ -299,11 +299,4 @@ jQuery( function ( $ ) {
         cloned = [];
     }
 
-    // Dismiss the donate button when a user clicks the link
-    $('#so-panels-donate-dismiss').click(function(){
-        $.ajax($(this).attr('href'));
-        $(this).closest('.message').slideUp();
-        return false;
-    });
-
 } );

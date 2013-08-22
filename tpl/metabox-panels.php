@@ -104,12 +104,21 @@ $layouts = apply_filters('siteorigin_panels_prebuilt_layouts', array());
 		</div>
 	<?php endif; ?>
 
+
+	<div id="panels-row-style-select">
+		<ul>
+			<li data-value=""><?php esc_html_e('none', 'so-panels') ?></li>
+			<?php
+			$row_styles = apply_filters('siteorigin_panels_row_styles', array());
+			if(is_array($row_styles) && !empty($row_styles)){
+				foreach($row_styles as $id => $name) {
+					?><li data-value="<?php echo esc_attr($id) ?>"><?php echo esc_html($name) ?></li><?php
+				}
+			}
+			?>
+		</ul>
+	</div>
+
 	<?php wp_nonce_field('save', '_sopanels_nonce') ?>
-	
-	<?php if(defined('WP_DEBUG') && WP_DEBUG && !empty($GLOBALS['post'])) : ?>
-		<!--
-		// <?php echo esc_html($GLOBALS['post']->post_title) ?> Panels Data Array
-		<?php var_export( get_post_meta($GLOBALS['post']->ID, 'panels_data', true)) ?>
-		-->
-	<?php endif; ?>
+	<?php do_action('siteorigin_panels_metabox_end'); ?>
 </div>

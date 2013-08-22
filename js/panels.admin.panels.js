@@ -281,7 +281,7 @@
             }
 
             // Create the grids
-            var grid = panels.createGrid( Number( data.grids[gi]['cells'] ), cellWeights );
+            var grid = panels.createGrid( Number( data.grids[gi]['cells'] ), cellWeights, data.grids[gi]['style'] );
 
             // Add panels to the grid cells
             for ( var pi in data.widgets ) {

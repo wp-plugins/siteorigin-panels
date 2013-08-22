@@ -6,7 +6,7 @@ Tested up to: 3.6
 Stable tag: trunk
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl.html
-Donate link: http://siteorigin.com/page-builder/donate/
+Donate link: http://siteorigin.com/page-builder/#donate
 
 Build responsive page layouts using the widgets you know and love using this simple drag and drop page builder.
 
@@ -14,13 +14,13 @@ Build responsive page layouts using the widgets you know and love using this sim
 
 [vimeo http://vimeo.com/59561067]
 
-Over the years, WordPress has evolved into a fully functional CMS. Page Builder (previously called Panels) completes the transition by giving you a way to create responsive column layouts using the widgets you know and love.
+WordPress has evolved into a fully functional CMS. Page Builder (previously called Panels) completes the transition by giving you a way to create responsive column layouts using the widgets you know and love.
 
 = Use Your Widgets =
 
-You know widgets. They're the things you add to your sidebars. Page Builder makes all your widgets infinitely more useful by turning them into the building blocks of your pages.
+You know widgets. They're the things you add to your sidebars. Page Builder makes all your widgets even more useful by turning them into the building blocks of your pages.
 
-We've included a few useful widgets, but it works with any that your themes or plugins add.
+We've included a few useful widgets, but it works with a lot of other well made widgets and plugins out there.
 
 = Works with Most Themes =
 
@@ -84,6 +84,12 @@ Page Builder is actively developed and updated, so generally I'd recommend that 
 I've tried to ensure that Page Builder is compatible with most plugin widgets. It's best to just download Page Builder and test for yourself.
 
 == Changelog ==
+
+= 1.3 =
+* Added option to select row styles. Requires theme integration.
+* Added open in new window options to bundled widgets.
+* Moved caching of bundled widget CSS into database instead of file based caching.
+* Various bug fixes and performance enhancements.
 
 = 1.2.11 =
 * Prebuilt layouts are now loaded through AJAX to improve performance.

@@ -30,6 +30,10 @@ class SiteOrigin_Panels_Widget_Testimonial extends SiteOrigin_Panels_Widget  {
 					'type' => 'text',
 					'label' => __('URL', 'so-panels'),
 				),
+				'new_window' => array(
+					'type' => 'checkbox',
+					'label' => __('Open In New Window', 'so-panels'),
+				),
 			)
 		);
 	}

@@ -27,10 +27,42 @@ function origin_widgets_enqueue($prefix){
 }
 add_action('admin_enqueue_scripts', 'origin_widgets_enqueue');
 
+function origin_widgets_display_css(){
+	if(empty($_GET['class']) || empty($_GET['style']) || empty($_GET['preset'])) return;
+	if(strpos($_GET['class'], 'SiteOrigin_Panels_Widget_') !== 0) return;
+
+	header("Content-type: text/css");
+
+	$class = $_GET['class'];
+	$widget = new $class();
+	$id = str_replace('_', '', strtolower(str_replace('SiteOrigin_Panels_Widget_', '', $class)));
+	$key = strtolower($id.'-'.$_GET['style'].'-'. $_GET['preset'].'-'.str_replace('.', '', $_GET['ver']));
+
+	$css = get_site_transient('origin_wcss:'.$key);
+	if($css === false || $_GET['ver'] == 'trunk') {
+
+		echo "/* Regenerate Cache */\n\n";
+		// Recreate the CSS
+		$css = $widget->create_css($_GET['style'],$_GET['preset']);
+		$css = preg_replace('#/\*.*?\*/#s', '', $css);
+		$css = preg_replace('/\s*([{}|:;,])\s+/', '$1', $css);
+		$css = preg_replace('/\s\s+(.*)/', '$1', $css);
+		$css = str_replace(';}', '}', $css);
+
+		set_site_transient('origin_wcss:'.$key, $css, 86400);
+	}
+	echo $css;
+
+	exit();
+}
+add_action('wp_ajax_origin_widgets_css', 'origin_widgets_display_css');
+add_action('wp_ajax_nopriv_origin_widgets_css', 'origin_widgets_display_css'); // In case we missed any CSS.
+
 /**
  * Class SiteOrigin_Panels_Widget
  */
 abstract class SiteOrigin_Panels_Widget extends WP_Widget{
+
 	public $form_args;
 	protected $demo;
 	protected $origin_id;
@@ -76,7 +108,6 @@ abstract class SiteOrigin_Panels_Widget extends WP_Widget{
 
 		// We wont clear cache if this is a preview
 		if(!siteorigin_panels_is_preview()){
-
 			// Remove the old CSS file
 			if(!empty($old['origin_style'])) {
 				list($style, $preset) = explode(':', $old['origin_style']);
@@ -90,8 +121,18 @@ abstract class SiteOrigin_Panels_Widget extends WP_Widget{
 					if(empty($old['origin_style_'.$id])) continue;
 					$the_widget = $wp_widget_factory->widgets[$sub[1]];
 					list($style, $preset) = explode(':', $old['origin_style_'.$id]);
+
 					$the_widget->clear_css_cache($style, $preset);
 				}
+			}
+
+
+
+		}
+
+		foreach($this->form_args as $field_id => $field_args) {
+			if($field_args['type'] == 'checkbox') {
+				$new[$field_id] = !empty($new[$field_id]);
 			}
 		}
 
@@ -112,22 +153,27 @@ abstract class SiteOrigin_Panels_Widget extends WP_Widget{
 			}
 			if(!isset($instance[$field_id])) $instance[$field_id] = false;
 
-			?><p><label for="<?php echo $this->get_field_id( $field_id ); ?>"><?php echo esc_html($field_args['label']) ?></label><br/><?php
+			?><p><label for="<?php echo $this->get_field_id( $field_id ); ?>"><?php echo esc_html($field_args['label']) ?></label><?php
+
+			if($field_args['type'] != 'checkbox') echo '<br />';
 
 			switch($field_args['type']) {
 				case 'text' :
-					?><input type="text" class="widefat" name="<?php echo $this->get_field_name( $field_id ); ?>" value="<?php echo esc_attr($instance[$field_id]) ?>" /><?php
+					?><input type="text" class="widefat" id="<?php echo $this->get_field_id( $field_id ); ?>" name="<?php echo $this->get_field_name( $field_id ); ?>" value="<?php echo esc_attr($instance[$field_id]) ?>" /><?php
 					break;
 				case 'textarea' :
 					if(empty($field_args['height'])) $field_args['height'] = 6;
-					?><textarea class="widefat" name="<?php echo $this->get_field_name( $field_id ); ?>" rows="<?php echo intval($field_args['height']) ?>"><?php echo esc_textarea($instance[$field_id]) ?></textarea><?php
+					?><textarea class="widefat" id="<?php echo $this->get_field_id( $field_id ); ?>" name="<?php echo $this->get_field_name( $field_id ); ?>" rows="<?php echo intval($field_args['height']) ?>"><?php echo esc_textarea($instance[$field_id]) ?></textarea><?php
 					break;
 				case 'number' :
-					?><input type="number" class="small-text" name="<?php echo $this->get_field_name( $field_id ); ?>" value="<?php echo floatval($instance[$field_id]) ?>" /><?php
+					?><input type="number" class="small-text" id="<?php echo $this->get_field_id( $field_id ); ?>" name="<?php echo $this->get_field_name( $field_id ); ?>" value="<?php echo floatval($instance[$field_id]) ?>" /><?php
+					break;
+				case 'checkbox' :
+					?><input type="checkbox" class="small-text" id="<?php echo $this->get_field_id( $field_id ); ?>" name="<?php echo $this->get_field_name( $field_id ); ?>" <?php checked(!empty($instance[$field_id])) ?>/><?php
 					break;
 				case 'select' :
 					?>
-					<select name="<?php echo $this->get_field_name( $field_id ); ?>">
+					<select id="<?php echo $this->get_field_id( $field_id ); ?>" name="<?php echo $this->get_field_name( $field_id ); ?>">
 						<?php foreach($field_args['options'] as $k => $v) : ?>
 							<option value="<?php echo esc_attr($k) ?>" <?php selected($instance[$field_id], $k) ?>><?php echo esc_html($v) ?></option>
 						<?php endforeach; ?>
@@ -194,6 +240,20 @@ abstract class SiteOrigin_Panels_Widget extends WP_Widget{
 	 * @return bool|void
 	 */
 	function widget($args, $instance){
+
+		// Set up defaults for all the widget args
+		foreach($this->form_args as $field_id => $field_args) {
+			if(isset($field_args['default']) && !isset($instance[$field_id])) {
+				$instance[$field_id] = $field_args['default'];
+			}
+			if(!isset($instance[$field_id])) $instance[$field_id] = false;
+		}
+
+		// Filter the title
+		if(!empty($instance['title'])) {
+			$instance['title'] = apply_filters('widget_title', $instance['title'], $instance, $this->id_base);
+		}
+
 		if(!empty($instance['origin_style'])) {
 			list($style, $preset) = explode(':', $instance['origin_style']);
 			$style = sanitize_file_name($style);
@@ -225,25 +285,14 @@ abstract class SiteOrigin_Panels_Widget extends WP_Widget{
 			return false;
 		}
 
-
-		// Enqueue the CSS
+		// Dynamically generate the CSS
 		if(!empty($instance['origin_style'])) {
 			$filename = $this->origin_id.'-'.$style.'-'.$preset;
-			$css_files = get_option('origin_css_files', array());
-			if( empty( $css_files[$filename] ) || !file_exists($css_files[$filename]['file']) || ( SITEORIGIN_PANELS_VERSION == 'trunk' && !siteorigin_panels_is_panel() ) ) {
-				// Recreate the CSS file
-				$css_files[$filename] = $this->cache_css($style, $preset);
-				if($css_files[$filename] === false) {
-					// We're unable to upload the file
-				}
-				else {
-					update_option('origin_css_files', $css_files);
-				}
-			}
-
-			if(!wp_script_is('origin-widget-'.$filename) && !empty($css_files[$filename]['url'])) {
-				wp_enqueue_style('origin-widget-'.$filename, $css_files[$filename]['url'], array());
-			}
+			wp_enqueue_style( 'origin-widget-'.$filename, add_query_arg(array(
+				'class' => get_class($this),
+				'style' => $style,
+				'preset' => $preset,
+			), admin_url('admin-ajax.php?action=origin_widgets_css') ), array(), SITEORIGIN_PANELS_VERSION );
 		}
 
 		if(method_exists($this, 'enqueue_scripts')) {
@@ -306,7 +355,7 @@ abstract class SiteOrigin_Panels_Widget extends WP_Widget{
 				break;
 			}
 		}
-		if(empty($style_file)) return;
+		if(empty($style_file)) return '';
 
 		if(!class_exists('lessc')) include plugin_dir_path(__FILE__).'lib/lessc.inc.php';
 		$less = file_get_contents(plugin_dir_path(__FILE__) . 'widgets/'.$this->origin_id.'/styles/'.$style.'.less');
@@ -347,41 +396,7 @@ abstract class SiteOrigin_Panels_Widget extends WP_Widget{
 	 */
 	function clear_css_cache($style, $preset){
 		$filename = $this->origin_id.'-'.$style.'-'.$preset;
-		$css_files = get_option('origin_css_files', array());
-
-		if(!empty($css_files[$filename]) && file_exists($css_files[$filename]['file'])) {
-			// Delete the old file
-			unlink($css_files[$filename]['file']);
-			unset($css_files[$filename]);
-		}
-
-		add_option('origin_css_files', $css_files);
-	}
-
-	/**
-	 * Cache the CSS in the uploads folder.
-	 *
-	 * @param $style
-	 * @param $preset
-	 * @return mixed
-	 */
-	public function cache_css($style, $preset){
-		$filename = $this->origin_id.'-'.$style.'-'.$preset;
-		$css = $this->create_css($style,$preset);
-		$css_files = get_option('origin_css_files', array());
-
-		// Remove the old file from cache if it's there
-		if(!empty($css_files[$filename]) && file_exists($css_files[$filename]['file'])) {
-			// Delete the old file
-			unlink($css_files[$filename]['file']);
-			unset($css_files[$filename]);
-		}
-
-		$upload = wp_upload_bits($filename.'.css', null, $css);
-		$css_files[$filename] = $upload;
-		add_option('origin_css_files', $css_files);
-
-		return $css_files[$filename];
+		delete_site_transient('origin_widgets_css_cache:'.$filename);
 	}
 
 	/**
@@ -519,6 +534,9 @@ abstract class SiteOrigin_Panels_Widget extends WP_Widget{
 		$this->sub_widgets[$id] = array($name, $class);
 	}
 
+	/**
+	 * Add the fields required to query the posts.
+	 */
 	function add_post_query_fields(){
 		// Add the posts type field
 		$post_types = get_post_types(array('public' => true));

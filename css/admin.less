@@ -734,6 +734,7 @@ html {
 	.ui-icon.ui-icon-settings{ background: url(images/icons/settings.png); }
 	.ui-icon.ui-icon-move{ background: url(images/icons/move.png); }
 	.ui-icon.ui-icon-remove{ background: url(images/icons/remove.png); }
+	.ui-icon.ui-icon-gear{ background: url(images/icons/gear.png); }
 
 	&:hover {
 		.gradient(#F0F0F0, #F0F0F0, #FFFFFF);
@@ -880,5 +881,55 @@ html {
 		font-size: 11px;
 		color: #666;
 		margin-top: 4px;
+	}
+}
+
+#panels-row-style-select {
+	position: absolute;
+	display: none;
+	background: #3f3f3f;
+	.rounded(3px);
+	min-width: 250px;
+	z-index: 1000;
+
+	ul {
+		margin: 0;
+		list-style: none;
+		padding: 8px;
+
+		li {
+			font-weight: bold;
+			font-size: 11px;
+			.gradient(#fefefe, #d6d6d6, #fefefe);
+			.box-shadow(~"0 1px 1px rgba(0,0,0,0.4)");
+			padding: 8px;
+			line-height: 1em;
+			.rounded(2px);
+			.transition();
+			color: #474747;
+
+			&:last-child {
+				margin-bottom: 0;
+			}
+
+			text-shadow: 0 1px 0 rgba(255,255,255,0.4);
+			cursor: pointer;
+		}
+
+		li:hover, li.selected {
+			.gradient(#7fbadb, #5692b3, #7fbadb);
+			color: #004f70;
+		}
+	}
+
+	&:before {
+		content: '';
+		display: block;
+		position: absolute;
+		right: 32px;
+		top: -4px;
+		width: 8px;
+		height: 4px;
+		background: url(./images/pointer.png);
 	}
 }

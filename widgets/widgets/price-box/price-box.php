@@ -39,6 +39,10 @@ class SiteOrigin_Panels_Widget_Price_Box extends SiteOrigin_Panels_Widget  {
 					'type' => 'text',
 					'label' => __('Button URL', 'so-panels'),
 				),
+				'button_new_window' => array(
+					'type' => 'checkbox',
+					'label' => __('Open In New Window', 'so-panels'),
+				),
 			)
 		);
 

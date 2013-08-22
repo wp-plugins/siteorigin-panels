@@ -50,7 +50,8 @@ function siteorigin_panels_options_field_post_types($args){
 
 	$all_post_types = get_post_types(array('_builtin' => false));
 	$all_post_types = array_merge(array('page' => 'page', 'post' => 'post'), $all_post_types);
-	
+	unset($all_post_types['ml-slider']);
+
 	foreach($all_post_types as $type){
 		$info = get_post_type_object($type);
 		if(empty($info->labels->name)) continue;
@@ -102,6 +103,7 @@ function siteorigin_panels_options_field_display($args){
  * @return array
  */
 function siteorigin_panels_options_sanitize_post_types($types){
+	if(empty($types)) return array();
 	$all_post_types = get_post_types(array('_builtin' => false));
 	$all_post_types = array_merge(array('post' => 'post', 'page' => 'page'), $all_post_types);
 	foreach($types as $type => $val){

@@ -58,13 +58,15 @@
      *
      * @return {*}
      */
-    panels.createGrid = function ( cells, weights ) {
+    panels.createGrid = function ( cells, weights, style ) {
         if ( weights == null || weights.length == 0 ) {
             weights = [];
             for ( var i = 0; i < cells; i++ ) {
                 weights[i] = 1;
             }
         }
+
+        if(typeof style == 'undefined') style = '';
 
         var weightSum = 0;
         for (var index in weights) {
@@ -75,7 +77,9 @@
         var container = $( '<div />' ).addClass( 'grid-container' ).appendTo( '#panels-container' );
         // Add the hidden field to store the grid order
         container.append( $( '<input type="hidden" name="grids[' + gridId + '][cells]" />' ).val( cells ) );
-        
+
+        var styleInput = $( '<input type="hidden" name="grids[' + gridId + '][style]" />' ).val(style).appendTo(container);
+
         container
             .append(
                 $( '<div class="controls" />' )
@@ -192,6 +196,33 @@
                                 return false;
                             } )
 
+                    )
+                    // Add the button for selecting the row style
+                    .append (
+                        $( '<div class="ui-button ui-button-icon-only"><div class="ui-icon ui-icon-gear"></div></div>' )
+                            .attr( 'data-tooltip', 'Visual Style' )
+                            .addClass( 'tooltip' )
+                            .click( function(){
+                                if($('#panels-row-style-select').is(':visible') && $('#panels-row-style-select').data('panels-row') == container){
+                                    $('#panels-row-style-select').fadeOut();
+                                    return;
+                                }
+
+                                // Display the dropdown form
+                                $('#panels-row-style-select')
+                                    .hide()
+                                    .fadeIn()
+                                    .css({
+                                        top: container.position().top + 28,
+                                        right: -1
+                                    })
+                                    .data('panels-row', container)
+                                    .find('li').removeClass('selected').unbind('click').click(function(){
+                                        var $$ = $(this).addClass('selected');
+                                        styleInput.val($$.data('value'));
+                                        $('#panels-row-style-select').fadeOut();
+                                    }).filter('[data-value="'+styleInput.val()+'"]').addClass('selected');
+                            } )
                     )
                     // Add the move/reorder button
                     .append(

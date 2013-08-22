@@ -811,6 +811,12 @@ html {
 	background: url(images/icons/remove.png);
 }
 
+#panels .ui-button .ui-icon.ui-icon-gear,
+#add-to-panels .ui-button .ui-icon.ui-icon-gear,
+.ui-dialog.panels-admin-dialog .ui-dialog-titlebar-close .ui-icon.ui-icon-gear {
+	background: url(images/icons/gear.png);
+}
+
 #panels .ui-button:hover,
 #add-to-panels .ui-button:hover,
 .ui-dialog.panels-admin-dialog .ui-dialog-titlebar-close:hover {
@@ -1002,5 +1008,76 @@ html {
 	display: block;
 	font-size: 11px;
 	margin-top: 4px;
+}
+
+#panels-row-style-select {
+	position: absolute;
+	
+	background: #3f3f3f;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	border-radius: 3px;
+	display: none;
+	min-width: 250px;
+	z-index: 1000;
+}
+
+#panels-row-style-select ul {
+	list-style: none;
+	margin: 0;
+	padding: 8px;
+}
+
+#panels-row-style-select ul li {
+	background: #fefefe;
+	background: -webkit-gradient(linear, left bottom, left top, color-stop(0, #d6d6d6), color-stop(1, #fefefe));
+	background: -ms-linear-gradient(bottom, #d6d6d6, #fefefe);
+	background: -moz-linear-gradient(center bottom, #d6d6d6 0%, #fefefe 100%);
+	background: -o-linear-gradient(#fefefe, #d6d6d6);
+	-webkit-border-radius: 2px;
+	-moz-border-radius: 2px;
+	border-radius: 2px;
+	-webkit-box-shadow: 0 1px 1px rgba(0,0,0,0.4);
+	-moz-box-shadow: 0 1px 1px rgba(0,0,0,0.4);
+	box-shadow: 0 1px 1px rgba(0,0,0,0.4);
+	color: #474747;
+	cursor: pointer;
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#fefefe', endColorstr='#d6d6d6', GradientType=0);
+	font-size: 11px;
+	font-weight: bold;
+	line-height: 1em;
+	padding: 8px;
+	text-shadow: 0 1px 0 rgba(255, 255, 255, 0.4);
+	-webkit-transition: all 0.2s ease;
+	-moz-transition: all 0.2s ease;
+	-o-transition: all 0.2s ease;
+	transition: all 0.2s ease;
+}
+
+#panels-row-style-select ul li:last-child {
+	margin-bottom: 0;
+}
+
+#panels-row-style-select ul li:hover,
+#panels-row-style-select ul li.selected {
+	background: #7fbadb;
+	background: -webkit-gradient(linear, left bottom, left top, color-stop(0, #5692b3), color-stop(1, #7fbadb));
+	background: -ms-linear-gradient(bottom, #5692b3, #7fbadb);
+	background: -moz-linear-gradient(center bottom, #5692b3 0%, #7fbadb 100%);
+	background: -o-linear-gradient(#7fbadb, #5692b3);
+	color: #004f70;
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#7fbadb', endColorstr='#5692b3', GradientType=0);
+}
+
+#panels-row-style-select:before {
+	position: absolute;
+	top: -4px;
+	right: 32px;
+	width: 8px;
+	height: 4px;
+	
+	background: url(./images/pointer.png);
+	content: '';
+	display: block;
 }
 

@@ -209,8 +209,6 @@ class SiteOrigin_Panels_Widgets_PostLoop extends WP_Widget{
 	}
 
 	/**
-	 *
-	 *
 	 * @param array $args
 	 * @param array $instance
 	 */
@@ -222,6 +220,7 @@ class SiteOrigin_Panels_Widgets_PostLoop extends WP_Widget{
 		unset($query_args['template']);
 		unset($query_args['additional']);
 		unset($query_args['sticky']);
+		unset($query_args['title']);
 
 		$query_args = wp_parse_args($instance['additional'], $query_args);
 
@@ -248,14 +247,15 @@ class SiteOrigin_Panels_Widgets_PostLoop extends WP_Widget{
 			$query_args['post__not_in'] = array( get_the_ID() );
 		}
 
-		if ( !empty( $instance['title'] ) ) {
-			echo $args['before_title'] . esc_html( $instance['title'] ) . $args['after_title'];
-		}
-
 		// Create the query
 		query_posts($query_args);
-
 		echo $args['before_widget'];
+
+		// Filter the title
+		$instance['title'] = apply_filters('widget_title', $instance['title'], $instance, $this->id_base);
+		if ( !empty( $instance['title'] ) ) {
+			echo $args['before_title'] . $instance['title'] . $args['after_title'];
+		}
 
 		if(strpos('/'.$instance['template'], '/content') !== false) {
 			while(have_posts()) {
@@ -352,7 +352,14 @@ class SiteOrigin_Panels_Widgets_PostLoop extends WP_Widget{
 			<label for="<?php echo $this->get_field_id('template') ?>"><?php _e('Template', 'so-panels') ?></label>
 			<select id="<?php echo $this->get_field_id( 'template' ) ?>" name="<?php echo $this->get_field_name( 'template' ) ?>">
 				<?php foreach($templates as $template) : ?>
-					<option value="<?php echo esc_attr($template) ?>" <?php selected($instance['template'], $template) ?>><?php echo esc_html($template) ?></option>
+					<option value="<?php echo esc_attr($template) ?>" <?php selected($instance['template'], $template) ?>>
+						<?php
+						$headers = get_file_data( locate_template($template), array(
+							'loop_name' => 'Loop Name',
+						) );
+						echo esc_html(!empty($headers['loop_name']) ? $headers['loop_name'] : $template);
+						?>
+					</option>
 				<?php endforeach; ?>
 			</select>
 		</p>

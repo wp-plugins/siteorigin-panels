@@ -1,9 +1,9 @@
 <?php
 /*
-Plugin Name: Page Builder
+Plugin Name: Page Builder by SiteOrigin
 Plugin URI: http://siteorigin.com/page-builder/
 Description: A drag and drop, responsive page builder that simplifies building your website.
-Version: 1.2.11
+Version: 1.3
 Author: Greg Priday
 Author URI: http://siteorigin.com
 License: GPL3
@@ -11,7 +11,7 @@ License URI: http://www.gnu.org/licenses/gpl.html
 Donate link: http://siteorigin.com/page-builder/donate/
 */
 
-define('SITEORIGIN_PANELS_VERSION', '1.2.11');
+define('SITEORIGIN_PANELS_VERSION', '1.3');
 define('SITEORIGIN_PANELS_BASE_FILE', __FILE__);
 
 include plugin_dir_path(__FILE__).'widgets/widgets.php';
@@ -43,23 +43,24 @@ function siteorigin_panels_setting($key = ''){
 		else $settings = array();
 
 		$settings = wp_parse_args( $settings, array(
-			'home-page' => false,                   // Is the home page supported
-			'home-page-default' => false,           // What's the default for the home page?
-			'home-template' => 'home-panels.php',   // The file used to render a home page.
-			'post-types' => get_option('siteorigin_panels_post_types', array('page')),	// Post types that can be edited using panels.
+			'home-page' => false,																								// Is the home page supported
+			'home-page-default' => false,																						// What's the default layout for the home page?
+			'home-template' => 'home-panels.php',																				// The file used to render a home page.
+			'post-types' => get_option('siteorigin_panels_post_types', array('page')),											// Post types that can be edited using panels.
 
-			'responsive' => !isset( $display_settings['responsive'] ) ? false : $display_settings['responsive'],					// Should we use a responsive layout
-			'mobile-width' => !isset( $display_settings['mobile-width'] ) ? 780 : $display_settings['mobile-width'],				// What is considered a mobile width?
+			'responsive' => !isset( $display_settings['responsive'] ) ? false : $display_settings['responsive'],				// Should we use a responsive layout
+			'mobile-width' => !isset( $display_settings['mobile-width'] ) ? 780 : $display_settings['mobile-width'],			// What is considered a mobile width?
 
-			'margin-bottom' => !isset( $display_settings['margin-bottom'] ) ? 30 : $display_settings['margin-bottom'],				// Bottom margin of a cell
-			'margin-sides' => !isset( $display_settings['margin-sides'] ) ? 30 : $display_settings['margin-sides'],					// Spacing between 2 cells
-			'affiliate-id' => false,																								// Set your affiliate ID
-			'copy-content' => !isset( $display_settings['copy-content'] ) ? true : $display_settings['copy-content'],				// Should we copy across content
+			'margin-bottom' => !isset( $display_settings['margin-bottom'] ) ? 30 : $display_settings['margin-bottom'],			// Bottom margin of a cell
+			'margin-sides' => !isset( $display_settings['margin-sides'] ) ? 30 : $display_settings['margin-sides'],				// Spacing between 2 cells
+			'affiliate-id' => false,																							// Set your affiliate ID
+			'copy-content' => !isset( $display_settings['copy-content'] ) ? true : $display_settings['copy-content'],			// Should we copy across content
 			'animations' => !isset( $display_settings['animations'] ) ? true : $display_settings['animations'],					// Should we copy across content
 		) );
 
 		// Filter these settings
 		$settings = apply_filters('siteorigin_panels_settings', $settings);
+		if( empty( $settings['post-types'] ) ) $settings['post-types'] = array();
 	}
 
 	if( !empty( $key ) ) return isset( $settings[$key] ) ? $settings[$key] : null;
@@ -70,7 +71,7 @@ function siteorigin_panels_setting($key = ''){
  * Add the admin menu entries
  */
 function siteorigin_panels_admin_menu(){
-	if(!siteorigin_panels_setting('home-page')) return;
+	if( !siteorigin_panels_setting( 'home-page' ) ) return;
 	
 	add_theme_page(
 		__( 'Custom Home Page Builder', 'so-panels' ),
@@ -250,6 +251,7 @@ function siteorigin_panels_admin_enqueue_scripts($prefix) {
 			$panels_data = get_option('siteorigin_panels_home_page', null);
 			if(is_null($panels_data)){
 				// Load the default layout
+				$layouts = apply_filters('siteorigin_panels_prebuilt_layouts', array());
 				$panels_data = !empty($layouts['home']) ? $layouts['home'] : current($layouts);
 			}
 			$panels_data = apply_filters( 'siteorigin_panels_data', $panels_data, 'home');
@@ -308,7 +310,7 @@ add_action( 'admin_print_styles-appearance_page_so_panels_home_page', 'siteorigi
 function siteorigin_panels_add_help_tab($prefix) {
 	$screen = get_current_screen();
 	if(
-		($screen->base == 'post' && (in_array( $screen->id, siteorigin_panels_setting('post-types') ) || $screen->id == ''))
+		($screen->base == 'post' && ( in_array( $screen->id, siteorigin_panels_setting( 'post-types' ) ) || $screen->id == ''))
 		|| ($screen->id == 'appearance_page_so_panels_home_page')
 	) {
 		$screen->add_help_tab( array(
@@ -412,7 +414,7 @@ function siteorigin_panels_get_panels_data_from_post($form_post){
 
 	$panels_data['grid_cells'] = array_map( 'stripslashes_deep', isset( $form_post['grid_cells'] ) ? $form_post['grid_cells'] : array() );
 	$panels_data['grid_cells'] = array_values( $panels_data['grid_cells'] );
-	
+
 	return $panels_data;
 }
 
@@ -450,7 +452,7 @@ function siteorigin_panels_css() {
 	}
 
 	// Exit if we don't have panels data
-	if ( empty( $panels_data ) ) return;
+	if ( empty( $panels_data ) || empty( $panels_data['grids'] ) ) return;
 
 	$settings = siteorigin_panels_setting();
 
@@ -627,9 +629,8 @@ function siteorigin_panels_render( $post_id = false ) {
 		$panels_data = get_post_meta( $post_id, 'panels_data', true );
 	}
 	
-	if ( empty( $panels_data ) ) return '';
-
 	$panels_data = apply_filters( 'siteorigin_panels_data', $panels_data, $post_id );
+	if( empty( $panels_data ) || empty( $panels_data['grids'] ) ) return '';
 
 	// Create the skeleton of the grids
 	$grids = array();
@@ -641,15 +642,30 @@ function siteorigin_panels_render( $post_id = false ) {
 		}
 	}
 
-	foreach ( $panels_data['widgets'] as $widget ) {
-		$grids[intval( $widget['info']['grid'] )][intval( $widget['info']['cell'] )][] = $widget;
+	if( !empty( $panels_data['widgets'] ) ){
+		foreach ( $panels_data['widgets'] as $widget ) {
+			$grids[intval( $widget['info']['grid'] )][intval( $widget['info']['cell'] )][] = $widget;
+		}
 	}
 
 	ob_start();
 	foreach ( $grids as $gi => $cells ) {
-		?><div class="panel-grid" id="pg-<?php echo $gi ?>"><?php
+
+		$grid_classes = array('panel-grid');
+		$grid_classes = apply_filters( 'siteorigin_panels_row_classes', $grid_classes );
+		$grid_classes = array_map('esc_attr', $grid_classes);
+
+		?><div class="<?php echo implode(' ', $grid_classes) ?>" id="pg-<?php echo $gi ?>"><?php
+
+		if( !empty( $panels_data['grids'][$gi]['style'] ) ) {
+			?><div class="panel-row-style <?php echo esc_attr('panel-row-style-' . $panels_data['grids'][$gi]['style']) ?>"><?php
+		}
+
 		foreach ( $cells as $ci => $widgets ) {
-			?><div class="panel-grid-cell" id="pgc-<?php echo $gi . '-' . $ci ?>"><?php
+			$cell_classes = apply_filters( 'siteorigin_panels_row_cell_classes', array('panel-grid-cell') );
+			$cell_classes = array_map('esc_attr', $cell_classes);
+
+			?><div class="<?php echo implode( ' ', $cell_classes ) ?>" id="pgc-<?php echo $gi . '-' . $ci ?>"><?php
 			foreach ( $widgets as $pi => $widget_info ) {
 				$data = $widget_info;
 				unset( $data['info'] );
@@ -660,6 +676,10 @@ function siteorigin_panels_render( $post_id = false ) {
 			?></div><?php
 		}
 		?></div><?php
+
+		if( !empty( $panels_data['grids'][$gi]['style'] ) ) {
+			?></div><?php
+		}
 	}
 	$html = ob_get_clean();
 
@@ -758,8 +778,8 @@ add_filter('show_admin_bar', 'siteorigin_panels_preview_adminbar');
 
 /**
  * This is a way to show previews of panels, especially for the home page.
- * 
- * @param $mod
+ *
+ * @param $val
  * @return array
  */
 function siteorigin_panels_preview_load_data($val){
@@ -885,35 +905,6 @@ function siteorigin_panels_wp_import_post_meta_map($val) {
 }
 
 /**
- * Display the donate link
- */
-function siteorigin_panels_donate_link(){
-	$user = wp_get_current_user();
-	$dismissed = (bool) get_user_meta($user->ID, 'siteorigin_panels_dismiss_donate', true);
-	if($dismissed === true) return;
-
-	?>
-	<div class="message">
-		<p>
-			<?php printf(__('<a href="%s" target="_blank">Help improve Page Builder</a> by crowd funding its development', 'so-panels'), 'http://siteorigin.com/page-builder/donate/'); ?>
-			- <a href="http://siteorigin.com/page-builder/donate/" target="_blank"><?php _e('Contribute', 'so-panels') ?></a>
-			| <a href="<?php echo admin_url('admin-ajax.php?action=so_panels_dismiss_donate'); ?>" id="so-panels-donate-dismiss"><?php _e('Dismiss', 'so-panels') ?></a>
-	</div>
-	<?php
-}
-add_action('siteorigin_panels_before_interface', 'siteorigin_panels_donate_link');
-
-/**
- * Admin ajax handler for dismissing the donate button
- */
-function siteorigin_panels_ajax_action_dismiss_donate(){
-	$user = wp_get_current_user();
-	update_user_meta($user->ID, 'siteorigin_panels_dismiss_donate', true);
-	exit();
-}
-add_action('wp_ajax_so_panels_dismiss_donate', 'siteorigin_panels_ajax_action_dismiss_donate');
-
-/**
  * Admin ajax handler for loading a prebuilt layout.
  */
 function siteorigin_panels_ajax_action_prebuilt(){
@@ -928,3 +919,20 @@ function siteorigin_panels_ajax_action_prebuilt(){
 	exit();
 }
 add_action('wp_ajax_so_panels_prebuilt', 'siteorigin_panels_ajax_action_prebuilt');
+
+function siteorigin_panels_dump(){
+	if( defined('WP_DEBUG') && WP_DEBUG ) {
+		echo "<!--\n\n";
+		echo "// Panels Data dump\n\n";
+
+		if(isset($_GET['page']) && $_GET['page'] == 'so_panels_home_page') {
+			var_export( get_option( 'siteorigin_panels_home_page', null ) );
+		}
+		else{
+			global $post;
+			var_export( get_post_meta($post->ID, 'panels_data', true));
+		}
+		echo "\n\n-->";
+	}
+}
+add_action('siteorigin_panels_metabox_end', 'siteorigin_panels_dump');
