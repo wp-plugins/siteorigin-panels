@@ -1,4 +1,4 @@
-=== Page Builder ===
+=== Page Builder by SiteOrigin ===
 Contributors: gpriday
 Tags: page builder, responsive, widget, builder, page, admin, gallery, content, cms
 Requires at least: 3.5
