@@ -28,6 +28,8 @@ function origin_widgets_enqueue($prefix){
 add_action('admin_enqueue_scripts', 'origin_widgets_enqueue');
 
 function origin_widgets_display_css(){
+	if(is_admin()) return;
+	if(empty($_GET['action']) || $_GET['action'] != 'origin_widgets_css') return;
 	if(empty($_GET['class']) || empty($_GET['style']) || empty($_GET['preset'])) return;
 	if(strpos($_GET['class'], 'SiteOrigin_Panels_Widget_') !== 0) return;
 
@@ -55,8 +57,7 @@ function origin_widgets_display_css(){
 
 	exit();
 }
-add_action('wp_ajax_origin_widgets_css', 'origin_widgets_display_css');
-add_action('wp_ajax_nopriv_origin_widgets_css', 'origin_widgets_display_css'); // In case we missed any CSS.
+add_action('init', 'origin_widgets_display_css');
 
 /**
  * Class SiteOrigin_Panels_Widget
@@ -183,7 +184,7 @@ abstract class SiteOrigin_Panels_Widget extends WP_Widget{
 			}
 			if(!empty($field_args['description'])) echo '<small class="description">'.esc_html($field_args['description']).'</small>';
 
-			?><p><?php
+			?></p><?php
 		}
 
 		if(!isset($instance['origin_style'])) {
@@ -192,22 +193,22 @@ abstract class SiteOrigin_Panels_Widget extends WP_Widget{
 
 		// Now, lets add the style options.
 		$styles = $this->get_styles();
-		if( empty( $styles ) ) return;
-
-		?>
-		<p>
-			<label for="<?php echo $this->get_field_id('origin_style') ?>"><?php _e('Style', 'so-panels') ?></label>
-			<select name="<?php echo $this->get_field_name('origin_style') ?>" id="<?php echo $this->get_field_id('origin_style') ?>">
-				<?php foreach($this->get_styles() as $style_id => $style_info) : $presets = $this->get_style_presets($style_id); ?>
-					<?php if(!empty($presets)) : foreach($presets as $preset_id => $preset) : ?>
-						<option value="<?php echo esc_attr($style_id.':'.$preset_id) ?>" <?php selected($style_id.':'.$preset_id, $instance['origin_style']) ?>>
-							<?php echo esc_html($style_info['Name'].' - '.$preset_id) ?>
-						</option>
-					<?php endforeach; endif; ?>
-				<?php endforeach ?>
-			</select>
-		</p>
-		<?php
+		if( !empty( $styles ) ) {
+			?>
+			<p>
+				<label for="<?php echo $this->get_field_id('origin_style') ?>"><?php _e('Style', 'so-panels') ?></label>
+				<select name="<?php echo $this->get_field_name('origin_style') ?>" id="<?php echo $this->get_field_id('origin_style') ?>">
+					<?php foreach($this->get_styles() as $style_id => $style_info) : $presets = $this->get_style_presets($style_id); ?>
+						<?php if(!empty($presets)) : foreach($presets as $preset_id => $preset) : ?>
+							<option value="<?php echo esc_attr($style_id.':'.$preset_id) ?>" <?php selected($style_id.':'.$preset_id, $instance['origin_style']) ?>>
+								<?php echo esc_html($style_info['Name'].' - '.$preset_id) ?>
+							</option>
+						<?php endforeach; endif; ?>
+					<?php endforeach ?>
+				</select>
+			</p>
+			<?php
+		}
 
 		foreach($this->sub_widgets as $id => $sub) {
 			global $wp_widget_factory;
@@ -292,7 +293,7 @@ abstract class SiteOrigin_Panels_Widget extends WP_Widget{
 				'class' => get_class($this),
 				'style' => $style,
 				'preset' => $preset,
-			), admin_url('admin-ajax.php?action=origin_widgets_css') ), array(), SITEORIGIN_PANELS_VERSION );
+			), site_url('?action=origin_widgets_css') ), array(), SITEORIGIN_PANELS_VERSION );
 		}
 
 		if(method_exists($this, 'enqueue_scripts')) {
@@ -464,9 +465,12 @@ abstract class SiteOrigin_Panels_Widget extends WP_Widget{
 			foreach($this->get_widget_paths() as $path) {
 				if(!is_dir($path)) continue;
 
-				foreach(glob($path.'/'.$this->origin_id.'/styles/*.less') as $file) {
-					$p = pathinfo($file);
-					$this->styles[$p['filename']] = $this->get_style_data($p['filename']);
+				$files = glob($path.'/'.$this->origin_id.'/styles/*.less');
+				if(!empty($files)) {
+					foreach(glob($path.'/'.$this->origin_id.'/styles/*.less') as $file) {
+						$p = pathinfo($file);
+						$this->styles[$p['filename']] = $this->get_style_data($p['filename']);
+					}
 				}
 			}
 		}

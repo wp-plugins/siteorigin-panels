@@ -1,6 +1,6 @@
 === Page Builder by SiteOrigin ===
 Contributors: gpriday
-Tags: page builder, responsive, widget, builder, page, admin, gallery, content, cms
+Tags: page builder, responsive, widget, widgets, builder, page, admin, gallery, content, cms, pages, post, css, layout, grid
 Requires at least: 3.5
 Tested up to: 3.6
 Stable tag: trunk
@@ -84,6 +84,13 @@ Page Builder is actively developed and updated, so generally I'd recommend that 
 I've tried to ensure that Page Builder is compatible with most plugin widgets. It's best to just download Page Builder and test for yourself.
 
 == Changelog ==
+
+= 1.3.1 =
+* Fixed issue with CSS of bundled widgets conflicting with some plugins.
+* CSS is now generated separately instead of inline. This also allows for multiple page layouts on a single archive/page.
+* Fixed some JS errors.
+* Made call to action widget responsive.
+* Properly handles password protected posts.
 
 = 1.3 =
 * Added option to select row styles. Requires theme integration.

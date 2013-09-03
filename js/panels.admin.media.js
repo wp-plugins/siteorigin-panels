@@ -18,8 +18,8 @@ jQuery(function($){
             var attachments = wp.media.gallery.attachments( wp.shortcode.next( 'gallery', h ).shortcode );
             var ids = attachments.models.map(function(e){ return e.id });
 
-            
             // Create a new gallery panel
+            // TODO support random and column arguments
             var panel = $('#panels-dialog').panelsCreatePanel('SiteOrigin_Panels_Widgets_Gallery', {
                 'ids' : ids.join(',') 
             });

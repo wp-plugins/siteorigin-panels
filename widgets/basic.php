@@ -38,6 +38,8 @@ class SiteOrigin_Panels_Widgets_Gallery extends WP_Widget {
 			'ids' => '',
 			'image_size' => apply_filters('siteorigin_panels_gallery_default_size', ''),
 			'type' => apply_filters('siteorigin_panels_gallery_default_type', ''),
+			'columns' => 3,
+			'columns' => 3,
 		));
 
 		?>
@@ -68,7 +70,13 @@ class SiteOrigin_Panels_Widgets_Gallery extends WP_Widget {
 			<label for="<?php echo $this->get_field_id( 'type' ) ?>"><?php _e( 'Gallery Type', 'so-panels' ) ?></label>
 			<input type="text" class="regular" value="<?php echo esc_attr($instance['type']) ?>" name="<?php echo $this->get_field_name('type') ?>" />
 		</p>
-	<?php
+
+		<p>
+			<label for="<?php echo $this->get_field_id( 'columns' ) ?>"><?php _e( 'Columns', 'so-panels' ) ?></label>
+			<input type="text" class="regular" value="<?php echo esc_attr($instance['columns']) ?>" name="<?php echo $this->get_field_name('columns') ?>" />
+		</p>
+
+		<?php
 	}
 }
 
