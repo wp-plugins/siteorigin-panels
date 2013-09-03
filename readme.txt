@@ -85,6 +85,10 @@ I've tried to ensure that Page Builder is compatible with most plugin widgets. I
 
 == Changelog ==
 
+= 1.3.2 =
+* Minor CSS improvements
+* Fixed a critical issue that was breaking Page Builder CSS on some server configurations.
+
 = 1.3.1 =
 * Fixed issue with CSS of bundled widgets conflicting with some plugins.
 * CSS is now generated separately instead of inline. This also allows for multiple page layouts on a single archive/page.

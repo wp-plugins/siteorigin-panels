@@ -3,7 +3,7 @@
 Plugin Name: Page Builder by SiteOrigin
 Plugin URI: http://siteorigin.com/page-builder/
 Description: A drag and drop, responsive page builder that simplifies building your website.
-Version: 1.3.1
+Version: 1.3.2
 Author: Greg Priday
 Author URI: http://siteorigin.com
 License: GPL3
@@ -11,7 +11,7 @@ License URI: http://www.gnu.org/licenses/gpl.html
 Donate link: http://siteorigin.com/page-builder/donate/
 */
 
-define('SITEORIGIN_PANELS_VERSION', '1.3.1');
+define('SITEORIGIN_PANELS_VERSION', '1.3.2');
 define('SITEORIGIN_PANELS_BASE_FILE', __FILE__);
 
 include plugin_dir_path(__FILE__).'widgets/widgets.php';
@@ -440,12 +440,11 @@ function siteorigin_panels_get_home_page_data(){
  */
 function siteorigin_panels_css() {
 	if(empty($_GET['action']) || $_GET['action'] != 'siteorigin_panels_post_css') return;
-	if(!isset($_GET['post']) || !isset($_GET['ver']) || !isset($_GET['offset'])) return;
-
-	$gi_offset = intval($_GET['offset']);
+	if(!isset($_GET['post']) || !isset($_GET['ver'])) return;
 
 	if($_GET['post'] == 'home') $panels_data = siteorigin_panels_get_home_page_data();
 	else $panels_data = get_post_meta( $_GET['post'], 'panels_data', true );
+	$post_id = $_GET['post'];
 
 
 	// Exit if we don't have panels data
@@ -470,18 +469,18 @@ function siteorigin_panels_css() {
 			if ( $cell_count > 1 ) {
 				$css_new = 'width:' . round( $cell['weight'] * 100, 3 ) . '%';
 				if ( empty( $css[1920][$css_new] ) ) $css[1920][$css_new] = array();
-				$css[1920][$css_new][] = '#pgc-' . ($gi + $gi_offset) . '-' . $i;
+				$css[1920][$css_new][] = '#pgc-' . $post_id . '-' . $gi  . '-' . $i;
 			}
 		}
 
 		// Add the bottom margin to any grids that aren't the last
 		if($gi != count($panels_data['grids'])-1){
-			$css[1920]['margin-bottom: '.$panels_margin_bottom.'px'][] = '#pg-' . ($gi + $gi_offset);
+			$css[1920]['margin-bottom: '.$panels_margin_bottom.'px'][] = '#pg-' . $post_id . '-' . $gi;
 		}
 
 		if ( $cell_count > 1 ) {
 			if ( empty( $css[1920]['float:left'] ) ) $css[1920]['float:left'] = array();
-			$css[1920]['float:left'][] = '#pg-' . ($gi + $gi_offset) . ' .panel-grid-cell';
+			$css[1920]['float:left'][] = '#pg-' . $post_id . '-' . $gi . ' .panel-grid-cell';
 		}
 
 		if ( $settings['responsive'] ) {
@@ -489,14 +488,14 @@ function siteorigin_panels_css() {
 			$mobile_css = array( 'float:none', 'width:auto' );
 			foreach ( $mobile_css as $c ) {
 				if ( empty( $css[ $panels_mobile_width ][ $c ] ) ) $css[ $panels_mobile_width ][ $c ] = array();
-				$css[ $panels_mobile_width ][ $c ][] = '#pg-' . ($gi + $gi_offset) . ' .panel-grid-cell';
+				$css[ $panels_mobile_width ][ $c ][] = '#pg-' . $post_id . '-' . $gi . ' .panel-grid-cell';
 			}
 
 			for ( $i = 0; $i < $cell_count; $i++ ) {
 				if ( $i != $cell_count - 1 ) {
 					$css_new = 'margin-bottom:' . $panels_margin_bottom . 'px';
 					if ( empty( $css[$panels_mobile_width][$css_new] ) ) $css[$panels_mobile_width][$css_new] = array();
-					$css[$panels_mobile_width][$css_new][] = '#pgc-' . ($gi + $gi_offset) . '-' . $i;
+					$css[$panels_mobile_width][$css_new][] = '#pgc-' . $post_id . '-' . $gi . '-' . $i;
 				}
 			}
 		}
@@ -553,7 +552,7 @@ function siteorigin_panels_css() {
 		if ( $res < 1920 ) $css_text .= ' } ';
 	}
 
-	header('content-type:text/css');
+	header("Content-type: text/css");
 	echo $css_text;
 	exit();
 }
@@ -645,7 +644,7 @@ function siteorigin_panels_render( $post_id = false, $enqueue_css = true ) {
 		if ( post_password_required($post_id) ) return false;
 		$panels_data = get_post_meta( $post_id, 'panels_data', true );
 	}
-	
+
 	$panels_data = apply_filters( 'siteorigin_panels_data', $panels_data, $post_id );
 	if( empty( $panels_data ) || empty( $panels_data['grids'] ) ) return '';
 
@@ -666,15 +665,14 @@ function siteorigin_panels_render( $post_id = false, $enqueue_css = true ) {
 	}
 
 	// Use an offset so we don't have conflicting IDs
-	static $gi_offset = 0;
-
 	ob_start();
 	foreach ( $grids as $gi => $cells ) {
+
 		$grid_classes = array('panel-grid');
 		$grid_classes = apply_filters( 'siteorigin_panels_row_classes', $grid_classes );
 		$grid_classes = array_map('esc_attr', $grid_classes);
 
-		?><div class="<?php echo implode(' ', $grid_classes) ?>" id="pg-<?php echo $gi + $gi_offset ?>"><?php
+		?><div class="<?php echo implode(' ', $grid_classes) ?>" id="pg-<?php echo $post_id . '-' . $gi ?>"><?php
 
 		if( !empty( $panels_data['grids'][$gi]['style'] ) ) {
 			?><div class="panel-row-style <?php echo esc_attr('panel-row-style-' . $panels_data['grids'][$gi]['style']) ?>"><?php
@@ -684,7 +682,7 @@ function siteorigin_panels_render( $post_id = false, $enqueue_css = true ) {
 			$cell_classes = apply_filters( 'siteorigin_panels_row_cell_classes', array('panel-grid-cell') );
 			$cell_classes = array_map('esc_attr', $cell_classes);
 
-			?><div class="<?php echo implode( ' ', $cell_classes ) ?>" id="pgc-<?php echo ($gi + $gi_offset) . '-' . $ci ?>"><?php
+			?><div class="<?php echo implode( ' ', $cell_classes ) ?>" id="pgc-<?php echo $post_id . '-' . $gi  . '-' . $ci ?>"><?php
 			foreach ( $widgets as $pi => $widget_info ) {
 				$data = $widget_info;
 				unset( $data['info'] );
@@ -703,14 +701,13 @@ function siteorigin_panels_render( $post_id = false, $enqueue_css = true ) {
 	if($enqueue_css) {
 		// This is the CSS for the page layout.
 		wp_enqueue_style(
-			'siteorigin-panels-post-css-'.$post_id.'-'.$gi_offset,
+			'siteorigin-panels-post-css-'.$post_id,
 			add_query_arg(
 				array(
 					'action' => 'siteorigin_panels_post_css',
 					'post' => $post_id,
-					'offset' => $gi_offset,
 					// Include this to ensure changes don't get cached by the browser
-					'layout' => substr(md5(serialize($panels_data)), 0, 8)
+					'layout' => substr( md5( serialize( $panels_data ) ), 0, 8)
 				),
 				site_url()
 			),
@@ -719,7 +716,6 @@ function siteorigin_panels_render( $post_id = false, $enqueue_css = true ) {
 		);
 	}
 
-	$gi_offset += count($grids);
 	$html = ob_get_clean();
 
 	return apply_filters( 'siteorigin_panels_render', $html, $post_id, !empty($post) ? $post : null );
