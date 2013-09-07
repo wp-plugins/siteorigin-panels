@@ -16,6 +16,8 @@ Build responsive page layouts using the widgets you know and love using this sim
 
 WordPress has evolved into a fully functional CMS. Page Builder (previously called Panels) completes the transition by giving you a way to create responsive column layouts using the widgets you know and love.
 
+[Our newsletter](http://siteorigin.com/) is a great place to stay up to date with Page Builder and the rest of our free WordPress products.
+
 = Use Your Widgets =
 
 You know widgets. They're the things you add to your sidebars. Page Builder makes all your widgets even more useful by turning them into the building blocks of your pages.
@@ -84,6 +86,10 @@ Page Builder is actively developed and updated, so generally I'd recommend that 
 I've tried to ensure that Page Builder is compatible with most plugin widgets. It's best to just download Page Builder and test for yourself.
 
 == Changelog ==
+
+= 1.3.3 =
+Fixed issue with widgets that relied on global post.
+Fixed minor search issue.
 
 = 1.3.2 =
 * Minor CSS improvements

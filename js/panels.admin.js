@@ -146,7 +146,7 @@ jQuery( function ( $ ) {
                 return;
             }
 
-            var value = $( this ).val();
+            var value = $( this ).val().toLowerCase();
 
             // Filter the panels
             $( '#panels-dialog .panel-type-list .panel-type' )

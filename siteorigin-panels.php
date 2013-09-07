@@ -3,7 +3,7 @@
 Plugin Name: Page Builder by SiteOrigin
 Plugin URI: http://siteorigin.com/page-builder/
 Description: A drag and drop, responsive page builder that simplifies building your website.
-Version: 1.3.2
+Version: 1.3.3
 Author: Greg Priday
 Author URI: http://siteorigin.com
 License: GPL3
@@ -11,7 +11,7 @@ License URI: http://www.gnu.org/licenses/gpl.html
 Donate link: http://siteorigin.com/page-builder/donate/
 */
 
-define('SITEORIGIN_PANELS_VERSION', '1.3.2');
+define('SITEORIGIN_PANELS_VERSION', '1.3.3');
 define('SITEORIGIN_PANELS_BASE_FILE', __FILE__);
 
 include plugin_dir_path(__FILE__).'widgets/widgets.php';
@@ -46,7 +46,7 @@ function siteorigin_panels_setting($key = ''){
 			'home-page' => false,																								// Is the home page supported
 			'home-page-default' => false,																						// What's the default layout for the home page?
 			'home-template' => 'home-panels.php',																				// The file used to render a home page.
-			'post-types' => get_option('siteorigin_panels_post_types', array('page')),											// Post types that can be edited using panels.
+			'post-types' => get_option('siteorigin_panels_post_types', array('page', 'post')),									// Post types that can be edited using panels.
 
 			'responsive' => !isset( $display_settings['responsive'] ) ? false : $display_settings['responsive'],				// Should we use a responsive layout
 			'mobile-width' => !isset( $display_settings['mobile-width'] ) ? 780 : $display_settings['mobile-width'],			// What is considered a mobile width?
@@ -583,11 +583,17 @@ function siteorigin_panels_prepare_post_content($posts){
 		$types = siteorigin_panels_setting('post-types');
 
 		foreach($posts as $post) {
-			if( in_array($post->post_type, $types) && empty($siteorigin_panels_cache[$post->ID] ) ) {
+
+			if( in_array($post->post_type, $types) && empty($siteorigin_panels_cache[$post->ID] ) && get_post_meta($post->ID, 'panels_data') != false ) {
 				// Prepare the layout
+				$GLOBALS['post'] = $post;
+				setup_postdata( $post );
 				$siteorigin_panels_cache[$post->ID] = siteorigin_panels_render( $post->ID );
+
 			}
 		}
+
+		wp_reset_postdata();
 	}
 
 	return $posts;

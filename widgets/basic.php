@@ -494,7 +494,7 @@ class SiteOrigin_Panels_Widgets_Video extends WP_Widget {
 	function __construct() {
 		parent::__construct(
 			'siteorigin-panels-video',
-			__( 'Hosted Video (PB)', 'so-panels' ),
+			__( 'Self Hosted Video (PB)', 'so-panels' ),
 			array(
 				'description' => __( 'A self hosted video player.', 'so-panels' ),
 			)
