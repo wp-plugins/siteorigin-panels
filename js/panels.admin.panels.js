@@ -179,6 +179,16 @@
                 })
             )
             .append(
+                $('<a>' + panels.i10n.buttons.duplicate + '<a>' ).addClass('duplicate' ).click(function(){
+                    // Duplicate the widget
+                    var duplicatePanel = $('#panels-dialog').panelsCreatePanel(panel.attr('data-type'), panel.getPanelData());
+                    window.panels.addPanel(duplicatePanel, panel.closest('.panels-container'), null, false);
+                    duplicatePanel.removeClass('new-panel');
+
+                    return false;
+                })
+            )
+            .append(
                 $('<a>' + panels.i10n.buttons.delete + '<a>' ).addClass('delete').click(function(){
                     deleteFunction();
                     return false;
@@ -213,9 +223,9 @@
     /**
      * Add a new Panel (well, widget)
      *
-     * @param panel
-     * @param container
-     * @param position
+     * @param panel The new panel (Widget) we're adding.
+     * @param container The container we're adding it to
+     * @param position The position
      * @param booll animate Should we animate the panel
      */
     panels.addPanel = function(panel, container, position, animate){

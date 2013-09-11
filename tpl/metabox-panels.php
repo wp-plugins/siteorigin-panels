@@ -43,10 +43,10 @@ $layouts = apply_filters('siteorigin_panels_prebuilt_layouts', array());
 	</div>
 	
 	<div id="add-to-panels">
-		<button class="panels-add tooltip" data-tooltip="<?php esc_attr_e('Add Widget','so-panels') ?>"><?php _e('Add Widget', 'so-panels') ?></button>
-		<button class="grid-add tooltip" data-tooltip="<?php esc_attr_e('Add Row','so-panels') ?>"><?php _e('Add Row', 'so-panels') ?></button>
+		<button class="panels-add" data-tooltip="<?php esc_attr_e('Add Widget','so-panels') ?>"><?php _e('Add Widget', 'so-panels') ?></button>
+		<button class="grid-add" data-tooltip="<?php esc_attr_e('Add Row','so-panels') ?>"><?php _e('Add Row', 'so-panels') ?></button>
 		<?php if(!empty($layouts)) : ?>
-			<button class="prebuilt-set tooltip" data-tooltip="<?php esc_attr_e('Prebuilt Layouts','so-panels') ?>"><?php _e('Prebuilt Layouts', 'so-panels') ?></button>
+			<button class="prebuilt-set" data-tooltip="<?php esc_attr_e('Prebuilt Layouts','so-panels') ?>"><?php _e('Prebuilt Layouts', 'so-panels') ?></button>
 		<?php endif; ?>
 		<div class="clear"></div>
 	</div>

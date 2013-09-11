@@ -85,13 +85,8 @@
                 $( '<div class="controls" />' )
                     // Add the remove button
                     .append(
-                        $( '<div />' )
-                            .button( {
-                                icons:{primary:'ui-icon-remove'},
-                                text: false
-                            } )
+                        $( '<div class="ui-button ui-button-icon-only"><div class="ui-icon ui-icon-remove"></div></div>' )
                             .attr( 'data-tooltip', panels.i10n.buttons['delete'] )
-                            .addClass( 'tooltip' )
                             .click( function () {
                                 $( this ).removeTooltip();
 
@@ -199,9 +194,8 @@
                     )
                     // Add the button for selecting the row style
                     .append (
-                        $( '<div class="ui-button ui-button-icon-only"><div class="ui-icon ui-icon-gear"></div></div>' )
+                        $( '<div class="ui-button ui-button-icon-only panels-visual-style"><div class="ui-icon ui-icon-gear"></div></div>' )
                             .attr( 'data-tooltip', 'Visual Style' )
-                            .addClass( 'tooltip' )
                             .click( function(){
                                 if($('#panels-row-style-select').is(':visible') && $('#panels-row-style-select').data('panels-row') == container){
                                     $('#panels-row-style-select').fadeOut();
@@ -229,6 +223,11 @@
                         $( '<div class="ui-button ui-button-icon-only grid-handle"><div class="ui-icon ui-icon-move"></div></div>' )
                     )
             );
+
+        // Hide the row style button if none are available
+        if( $('#panels-row-style-select li').length == 1 ) {
+            container.find('.panels-visual-style').remove();
+        }
 
         var grid = $( '<div />' ).addClass( 'grid' ).appendTo( container );
 

@@ -87,6 +87,12 @@ I've tried to ensure that Page Builder is compatible with most plugin widgets. I
 
 == Changelog ==
 
+= 1.3.4 =
+Added duplicate widget to improve workflow.
+Only displays visual styles icon if there are any specified by the theme.
+Fixed plugin conflicts.
+Minor bug fixes in previews.
+
 = 1.3.3 =
 Fixed issue with widgets that relied on global post.
 Fixed minor search issue.

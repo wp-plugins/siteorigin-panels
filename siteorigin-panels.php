@@ -3,7 +3,7 @@
 Plugin Name: Page Builder by SiteOrigin
 Plugin URI: http://siteorigin.com/page-builder/
 Description: A drag and drop, responsive page builder that simplifies building your website.
-Version: 1.3.3
+Version: 1.3.4
 Author: Greg Priday
 Author URI: http://siteorigin.com
 License: GPL3
@@ -11,7 +11,7 @@ License URI: http://www.gnu.org/licenses/gpl.html
 Donate link: http://siteorigin.com/page-builder/donate/
 */
 
-define('SITEORIGIN_PANELS_VERSION', '1.3.3');
+define('SITEORIGIN_PANELS_VERSION', '1.3.4');
 define('SITEORIGIN_PANELS_BASE_FILE', __FILE__);
 
 include plugin_dir_path(__FILE__).'widgets/widgets.php';
@@ -231,6 +231,7 @@ function siteorigin_panels_admin_enqueue_scripts($prefix) {
 					'insert' => __( 'Insert', 'so-panels' ),
 					'cancel' => __( 'cancel', 'so-panels' ),
 					'delete' => __( 'Delete', 'so-panels' ),
+					'duplicate' => __( 'Duplicate', 'so-panels' ),
 					'edit' => __( 'Edit', 'so-panels' ),
 					'done' => __( 'Done', 'so-panels' ),
 					'undo' => __( 'Undo', 'so-panels' ),
@@ -788,7 +789,7 @@ add_action('admin_bar_menu', 'siteorigin_panels_admin_bar_menu', 100);
  * Handles creating the preview.
  */
 function siteorigin_panels_preview(){
-	if(isset($_GET['siteorigin_panels_preview']) && wp_verify_nonce($_GET['_wpnonce'], 'siteorigin-panels-preview')){
+	if(isset($_GET['siteorigin_panels_preview']) && isset($_GET['_wpnonce']) && wp_verify_nonce($_GET['_wpnonce'], 'siteorigin-panels-preview')){
 		global $siteorigin_panels_is_preview;
 		$siteorigin_panels_is_preview = true;
 		// Set the panels home state to true
@@ -834,6 +835,12 @@ function siteorigin_panels_preview_load_data($val){
 function siteorigin_panels_body_class($classes){
 	if(siteorigin_panels_is_panel()) $classes[] = 'siteorigin-panels';
 	if(siteorigin_panels_is_home()) $classes[] = 'siteorigin-panels-home';
+
+	if(isset($_GET['siteorigin_panels_preview']) && isset($_GET['_wpnonce']) && wp_verify_nonce($_GET['_wpnonce'], 'siteorigin-panels-preview')) {
+		// This is a home page preview
+		$classes[] = 'siteorigin-panels';
+		$classes[] = 'siteorigin-panels-home';
+	}
 	
 	return $classes;
 }
