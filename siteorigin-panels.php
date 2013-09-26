@@ -3,7 +3,7 @@
 Plugin Name: Page Builder by SiteOrigin
 Plugin URI: http://siteorigin.com/page-builder/
 Description: A drag and drop, responsive page builder that simplifies building your website.
-Version: 1.3.4
+Version: 1.3.5
 Author: Greg Priday
 Author URI: http://siteorigin.com
 License: GPL3
@@ -11,7 +11,7 @@ License URI: http://www.gnu.org/licenses/gpl.html
 Donate link: http://siteorigin.com/page-builder/donate/
 */
 
-define('SITEORIGIN_PANELS_VERSION', '1.3.4');
+define('SITEORIGIN_PANELS_VERSION', '1.3.5');
 define('SITEORIGIN_PANELS_BASE_FILE', __FILE__);
 
 include plugin_dir_path(__FILE__).'widgets/widgets.php';
@@ -571,55 +571,36 @@ function siteorigin_panels_prepare_home_content( ) {
 }
 add_action('wp_enqueue_scripts', 'siteorigin_panels_prepare_home_content', 11);
 
-/**
- * Prepare the panels data after post selection.
- *
- * @param $posts
- * @return mixed
- */
-function siteorigin_panels_prepare_post_content($posts){
-	if( !is_admin() ) {
-		global $siteorigin_panels_cache;
-		if(empty($siteorigin_panels_cache)) $siteorigin_panels_cache = array();
-		$types = siteorigin_panels_setting('post-types');
-
-		foreach($posts as $post) {
-
-			if( in_array($post->post_type, $types) && empty($siteorigin_panels_cache[$post->ID] ) && get_post_meta($post->ID, 'panels_data') != false ) {
-				// Prepare the layout
-				$GLOBALS['post'] = $post;
-				setup_postdata( $post );
-				$siteorigin_panels_cache[$post->ID] = siteorigin_panels_render( $post->ID );
-
-			}
+function siteorigin_panels_prepare_single_post_content(){
+	if( is_singular() ) {
+		global $siteorigin_panels_cache, $post;
+		if( empty($siteorigin_panels_cache[$post->ID] ) ) {
+			$siteorigin_panels_cache[$post->ID] = siteorigin_panels_render( $post->ID );
 		}
-
-		wp_reset_postdata();
 	}
-
-	return $posts;
 }
-add_filter('the_posts', 'siteorigin_panels_prepare_post_content');
+add_action('wp_enqueue_scripts', 'siteorigin_panels_prepare_single_post_content');
 
 /**
  * Filter the content of the panel, adding all the widgets.
  *
  * @param $content
+ * @return string
  *
  * @filter the_content
  */
 function siteorigin_panels_filter_content( $content ) {
 	global $post;
-	// Some plugins use the content filter for non posts
+
 	if ( empty( $post ) ) return $content;
 	if ( in_array( $post->post_type, siteorigin_panels_setting('post-types') ) ) {
 		$panel_content = siteorigin_panels_render( $post->ID );
+
 		if ( !empty( $panel_content ) ) $content = $panel_content;
 	}
 
 	return $content;
 }
-
 add_filter( 'the_content', 'siteorigin_panels_filter_content' );
 
 
@@ -632,6 +613,10 @@ add_filter( 'the_content', 'siteorigin_panels_filter_content' );
  */
 function siteorigin_panels_render( $post_id = false, $enqueue_css = true ) {
 	if( empty($post_id) ) $post_id = get_the_ID();
+
+	global $siteorigin_panels_current_post;
+	$old_current_post = $siteorigin_panels_current_post;
+	$siteorigin_panels_current_post = $post_id;
 
 	// Try get the cached panel from in memory cache.
 	global $siteorigin_panels_cache;
@@ -722,8 +707,10 @@ function siteorigin_panels_render( $post_id = false, $enqueue_css = true ) {
 			SITEORIGIN_PANELS_VERSION
 		);
 	}
-
 	$html = ob_get_clean();
+
+	// Reset the current post
+	$siteorigin_panels_current_post = $old_current_post;
 
 	return apply_filters( 'siteorigin_panels_render', $html, $post_id, !empty($post) ? $post : null );
 }

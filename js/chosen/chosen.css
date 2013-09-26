@@ -275,6 +275,7 @@
 	overflow-x: hidden;
 	overflow-y: auto;
 	padding: 0 0 0 4px;
+	-webkit-overflow-scrolling: touch;
 }
 
 .chzn-container-multi .chzn-results {
@@ -391,6 +392,8 @@
 	-moz-box-shadow: 0 1px 0 #fff inset;
 	box-shadow: 0 1px 0 #fff inset;
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#eeeeee', endColorstr='#ffffff', GradientType=0 );
+	-moz-border-radius-bottomleft: 0;
+	-moz-border-radius-bottomright: 0;
 }
 
 .chzn-container-active .chzn-single-with-drop div {

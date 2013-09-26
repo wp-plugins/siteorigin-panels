@@ -39,7 +39,8 @@ class SiteOrigin_Panels_Widgets_Gallery extends WP_Widget {
 			'image_size' => apply_filters('siteorigin_panels_gallery_default_size', ''),
 			'type' => apply_filters('siteorigin_panels_gallery_default_type', ''),
 			'columns' => 3,
-			'columns' => 3,
+			'link' => '',
+
 		));
 
 		?>
@@ -76,6 +77,15 @@ class SiteOrigin_Panels_Widgets_Gallery extends WP_Widget {
 			<input type="text" class="regular" value="<?php echo esc_attr($instance['columns']) ?>" name="<?php echo $this->get_field_name('columns') ?>" />
 		</p>
 
+		<p>
+			<label for="<?php echo $this->get_field_id( 'link' ) ?>"><?php _e( 'Link To', 'so-panels' ) ?></label>
+			<select name="<?php echo $this->get_field_name( 'link' ) ?>" id="<?php echo $this->get_field_id( 'link' ) ?>">
+				<option value="" <?php selected('', $instance['link']) ?>><?php esc_html_e('Attachment Page', 'so-panels') ?></option>
+				<option value="file" <?php selected('file', $instance['link']) ?>><?php esc_html_e('File', 'so-panels') ?></option>
+				<option value="none" <?php selected('none', $instance['link']) ?>><?php esc_html_e('None', 'so-panels') ?></option>
+			</select>
+		</p>
+
 		<?php
 	}
 }
@@ -92,6 +102,8 @@ class SiteOrigin_Panels_Widgets_PostContent extends WP_Widget {
 	}
 
 	function widget( $args, $instance ) {
+		if( is_admin() ) return;
+
 		echo $args['before_widget'];
 		$content = apply_filters('siteorigin_panels_widget_post_content', $this->default_content($instance['type']));
 		echo $content;
@@ -130,11 +142,9 @@ class SiteOrigin_Panels_Widgets_PostContent extends WP_Widget {
 		));
 
 		$types = apply_filters('siteorigin_panels_widget_post_content_types', array(
+			'' => __('None', 'so-panels'),
 			'title' => __('Title', 'so-panels'),
-			'content' => __('Content', 'so-panels'),
 			'featured' => __('Featured Image', 'so-panels'),
-			'tags' => __('Post Tags', 'so-panels'),
-			'categories' => __('Post Categories', 'so-panels'),
 		));
 
 		?>
@@ -221,7 +231,8 @@ class SiteOrigin_Panels_Widgets_PostLoop extends WP_Widget{
 	 * @param array $instance
 	 */
 	function widget( $args, $instance ) {
-		if(empty($instance['template'])) return;
+		if( empty( $instance['template'] ) ) return;
+		if( is_admin() ) return;
 
 		$template = $instance['template'];
 		$query_args = $instance;
@@ -249,15 +260,15 @@ class SiteOrigin_Panels_Widgets_PostLoop extends WP_Widget{
 
 		// Exclude the current post to prevent possible infinite loop
 
-		$post = get_post();
+		global $siteorigin_panels_current_post;
 
-		if(!empty($post)){
+		if( !empty($siteorigin_panels_current_post) ){
 
 			if(!empty($query_args['post__not_in'])){
-				$query_args['post__not_in'][] = get_the_ID();
+				$query_args['post__not_in'][] = $siteorigin_panels_current_post;
 			}
 			else {
-				$query_args['post__not_in'] = array( get_the_ID() );
+				$query_args['post__not_in'] = array( $siteorigin_panels_current_post );
 			}
 
 		}
@@ -286,7 +297,6 @@ class SiteOrigin_Panels_Widgets_PostLoop extends WP_Widget{
 
 		// Reset everything
 		wp_reset_query();
-		wp_reset_postdata();
 	}
 
 	function update($new, $old){

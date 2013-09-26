@@ -472,6 +472,10 @@ html {
 	margin-left: -125px;
 	text-align: center;
 	z-index: 100;
+	-moz-border-radius-topright: 0;
+	-moz-border-radius-bottomright: 3px;
+	-moz-border-radius-bottomleft: 3px;
+	-moz-border-radius-topleft: 0;
 }
 
 #panels-home-page #post-body {
@@ -892,6 +896,10 @@ html {
 	margin: -1px -1px 0 -1px;
 	padding: 10px;
 	text-shadow: rgba(255, 255, 255, 0.6) 0px 1px 0px;
+	-moz-border-radius-topright: 3px;
+	-moz-border-radius-bottomright: 0;
+	-moz-border-radius-bottomleft: 0;
+	-moz-border-radius-topleft: 3px;
 }
 
 .ui-dialog.panels-admin-dialog .ui-dialog-titlebar .ui-dialog-titlebar-close {

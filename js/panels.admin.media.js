@@ -77,7 +77,7 @@ jQuery(function($){
 
     // When the user clicks on the select button, we need to display the gallery editing
     $('body').on({
-        click: function(){
+        click: function(event){
             // Make sure the media gallery API exists
             if ( typeof wp === 'undefined' || ! wp.media || ! wp.media.gallery ) return;
             event.preventDefault();

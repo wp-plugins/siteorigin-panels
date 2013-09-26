@@ -87,15 +87,22 @@ I've tried to ensure that Page Builder is compatible with most plugin widgets. I
 
 == Changelog ==
 
+= 1.3.5 =
+* Removed post pre preparation that was causing plugin conflicts. Relying on late printing of scripts and styles instead.
+* Fixed infinite loop with post loop widget and issue that was removing the first post.
+* Added "Link To" option to gallery widget.
+* Other minor bug fixes and updates.
+* Removed content option from Post Content widget. TinyMCE widget is recommended for adding content.
+
 = 1.3.4 =
-Added duplicate widget to improve workflow.
-Only displays visual styles icon if there are any specified by the theme.
-Fixed plugin conflicts.
-Minor bug fixes in previews.
+* Added duplicate widget to improve workflow.
+* Only displays visual styles icon if there are any specified by the theme.
+* Fixed plugin conflicts.
+* Minor bug fixes in previews.
 
 = 1.3.3 =
-Fixed issue with widgets that relied on global post.
-Fixed minor search issue.
+* Fixed issue with widgets that relied on global post.
+* Fixed minor search issue.
 
 = 1.3.2 =
 * Minor CSS improvements

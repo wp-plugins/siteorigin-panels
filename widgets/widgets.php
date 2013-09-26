@@ -41,7 +41,7 @@ function origin_widgets_display_css(){
 	$key = strtolower($id.'-'.$_GET['style'].'-'. $_GET['preset'].'-'.str_replace('.', '', $_GET['ver']));
 
 	$css = get_site_transient('origin_wcss:'.$key);
-	if($css === false || $_GET['ver'] == 'trunk') {
+	if($css === false || ( defined('SITEORIGIN_PANELS_NOCACHE') && SITEORIGIN_PANELS_NOCACHE ) ) {
 
 		echo "/* Regenerate Cache */\n\n";
 		// Recreate the CSS
