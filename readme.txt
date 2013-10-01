@@ -87,6 +87,11 @@ I've tried to ensure that Page Builder is compatible with most plugin widgets. I
 
 == Changelog ==
 
+= 1.3.6 =
+* Added option to clone the current home page.
+* Fixed issue where certain widgets crashed the builder interface.
+* Updated language files.
+
 = 1.3.5 =
 * Removed post pre preparation that was causing plugin conflicts. Relying on late printing of scripts and styles instead.
 * Fixed infinite loop with post loop widget and issue that was removing the first post.

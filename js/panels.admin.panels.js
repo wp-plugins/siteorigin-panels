@@ -19,9 +19,8 @@
         var data = {};
 
         $$.data('dialog').find( '*[name]' ).not( '[data-info-field]' ).each( function () {
-            var name = /widgets\[[0-9]+\]\[([a-z0-9_]+)\]/.exec($(this).attr('name'));
+            var name = /widgets\[[0-9]+\]\[([^\]]+)\]/.exec($(this).attr('name'));
             name = name[1];
-            //if ( $$.attr( 'type' ) == 'checkbox' ) data[name] = $( this ).is( ':checked' )
             data[name] = $( this ).val();
         } );
 

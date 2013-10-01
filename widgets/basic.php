@@ -299,6 +299,13 @@ class SiteOrigin_Panels_Widgets_PostLoop extends WP_Widget{
 		wp_reset_query();
 	}
 
+	/**
+	 * Update the widget
+	 *
+	 * @param array $new
+	 * @param array $old
+	 * @return array
+	 */
 	function update($new, $old){
 		return $new;
 	}

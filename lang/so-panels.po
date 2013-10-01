@@ -1,97 +1,113 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2013-06-09 20:54+0200\n"
-"PO-Revision-Date: 2013-06-09 20:55+0200\n"
+"POT-Creation-Date: 2013-10-01 18:24+0200\n"
+"PO-Revision-Date: 2013-10-01 18:24+0200\n"
 "Last-Translator: Greg Priday <greg@siteorigin.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.5.5\n"
+"X-Generator: Poedit 1.5.7\n"
 "X-Poedit-KeywordsList: _;gettext;gettext_noop;__;_e;esc_attr_e;esc_html_e\n"
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SearchPath-0: ..\n"
 
-#: ../siteorigin-panels.php:75
+#: ../siteorigin-panels.php:77
 msgid "Custom Home Page Builder"
 msgstr ""
 
-#: ../siteorigin-panels.php:76
+#: ../siteorigin-panels.php:78
 msgid "Home Page"
 msgstr ""
 
-#: ../siteorigin-panels.php:88 ../siteorigin-panels.php:97
-#: ../siteorigin-panels.php:321 ../inc/options.php:7
+#: ../siteorigin-panels.php:90 ../siteorigin-panels.php:99
+#: ../siteorigin-panels.php:318 ../inc/options.php:7
 msgid "Page Builder"
 msgstr ""
 
-#: ../siteorigin-panels.php:230
+#: ../siteorigin-panels.php:231
 msgid "Insert"
 msgstr ""
 
-#: ../siteorigin-panels.php:231
+#: ../siteorigin-panels.php:232
 msgid "cancel"
 msgstr ""
 
-#: ../siteorigin-panels.php:232
+#: ../siteorigin-panels.php:233
 msgid "Delete"
 msgstr ""
 
-#: ../siteorigin-panels.php:233
-msgid "Edit"
-msgstr ""
-
 #: ../siteorigin-panels.php:234
-msgid "Done"
+msgid "Duplicate"
 msgstr ""
 
 #: ../siteorigin-panels.php:235
-msgid "Undo"
+msgid "Edit"
 msgstr ""
 
 #: ../siteorigin-panels.php:236
+msgid "Done"
+msgstr ""
+
+#: ../siteorigin-panels.php:237
+msgid "Undo"
+msgstr ""
+
+#: ../siteorigin-panels.php:238
 msgid "Add"
 msgstr ""
 
-#: ../siteorigin-panels.php:239
+#: ../siteorigin-panels.php:241
 msgid "Columns deleted"
 msgstr ""
 
-#: ../siteorigin-panels.php:240
+#: ../siteorigin-panels.php:242
 msgid "Widget deleted"
 msgstr ""
 
-#: ../siteorigin-panels.php:241
+#: ../siteorigin-panels.php:243
 msgid ""
 "Are you sure you want to load this layout? It will overwrite your current "
 "page."
 msgstr ""
 
-#: ../siteorigin-panels.php:242
+#: ../siteorigin-panels.php:244
 #, php-format
 msgid "Edit %s Widget"
 msgstr ""
 
-#: ../siteorigin-panels.php:721
+#: ../siteorigin-panels.php:766
 msgid "Edit Home Page"
 msgstr ""
 
-#: ../siteorigin-panels.php:787
+#: ../siteorigin-panels.php:845
 msgid "SiteOrigin Themes"
 msgstr ""
 
-#: ../siteorigin-panels.php:821
+#: ../siteorigin-panels.php:879
 msgid "Untitled"
 msgstr ""
 
-#: ../siteorigin-panels.php:822
+#: ../siteorigin-panels.php:880
 msgid "Unpublished"
 msgstr ""
 
-#: ../siteorigin-panels.php:826
+#: ../siteorigin-panels.php:885
 #, php-format
 msgid "Clone Page: %s"
+msgstr ""
+
+#: ../siteorigin-panels.php:898
+msgid "Clone: Current Home Page"
+msgstr ""
+
+#: ../siteorigin-panels.php:914
+msgid "Recommended Plugins and Widgets"
+msgstr ""
+
+#: ../siteorigin-panels.php:915
+msgid "Free plugins that work well with Page Builder"
 msgstr ""
 
 #: ../inc/options.php:7 ../tpl/options.php:3
@@ -110,31 +126,43 @@ msgstr ""
 msgid "Post Types"
 msgstr ""
 
-#: ../inc/options.php:31
-msgid "Responsive"
+#: ../inc/options.php:29
+msgid "Copy Content to Post Content"
+msgstr ""
+
+#: ../inc/options.php:30
+msgid "Animations"
 msgstr ""
 
 #: ../inc/options.php:32
+msgid "Disable animations to improve Page Builder interface performance"
+msgstr ""
+
+#: ../inc/options.php:36
+msgid "Responsive"
+msgstr ""
+
+#: ../inc/options.php:37
 msgid "Mobile Width"
 msgstr ""
 
-#: ../inc/options.php:33
+#: ../inc/options.php:38
 msgid "Margin Sides"
 msgstr ""
 
-#: ../inc/options.php:34
+#: ../inc/options.php:39
 msgid "Margin Bottom"
 msgstr ""
 
-#: ../inc/options.php:65
+#: ../inc/options.php:71
 msgid "Post types that will have the page builder available"
 msgstr ""
 
-#: ../inc/options.php:77
+#: ../inc/options.php:85
 msgid "Enabled"
 msgstr ""
 
-#: ../inc/options.php:82
+#: ../inc/options.php:90
 msgid "px"
 msgstr ""
 
@@ -183,40 +211,44 @@ msgid ""
 "Read the <a href='%s' target='_blank'>full documentation</a> on SiteOrigin."
 msgstr ""
 
-#: ../tpl/metabox-panels.php:43
+#: ../tpl/metabox-panels.php:46
 msgid "Add Widget"
 msgstr ""
 
-#: ../tpl/metabox-panels.php:44 ../tpl/metabox-panels.php:83
-msgid "Add Columns"
+#: ../tpl/metabox-panels.php:47 ../tpl/metabox-panels.php:86
+msgid "Add Row"
 msgstr ""
 
-#: ../tpl/metabox-panels.php:46
+#: ../tpl/metabox-panels.php:49
 msgid "Prebuilt Layouts"
 msgstr ""
 
-#: ../tpl/metabox-panels.php:53
+#: ../tpl/metabox-panels.php:56
 msgid "Add New Widget"
 msgstr ""
 
-#: ../tpl/metabox-panels.php:84
+#: ../tpl/metabox-panels.php:87 ../widgets/basic.php:76
 msgid "Columns"
 msgstr ""
 
-#: ../tpl/metabox-panels.php:89
+#: ../tpl/metabox-panels.php:92
 msgid "Insert Prebuilt Page Layout"
 msgstr ""
 
-#: ../tpl/metabox-panels.php:90
+#: ../tpl/metabox-panels.php:93
 msgid "Page Layout"
 msgstr ""
 
-#: ../tpl/metabox-panels.php:92
+#: ../tpl/metabox-panels.php:95
 msgid "Select Layout"
 msgstr ""
 
-#: ../tpl/metabox-panels.php:96
+#: ../tpl/metabox-panels.php:99
 msgid "Untitled Layout"
+msgstr ""
+
+#: ../tpl/metabox-panels.php:110
+msgid "none"
 msgstr ""
 
 #: ../video/jplayer/skins/premium/gui.php:3
@@ -253,287 +285,288 @@ msgid "unmute"
 msgstr ""
 
 #: ../widgets/basic.php:7
-msgid "Gallery"
+msgid "Gallery (PB)"
 msgstr ""
 
 #: ../widgets/basic.php:9
 msgid "Displays a gallery."
 msgstr ""
 
-#: ../widgets/basic.php:45
+#: ../widgets/basic.php:48
 msgid "Gallery Images"
 msgstr ""
 
-#: ../widgets/basic.php:46
+#: ../widgets/basic.php:49
 msgid "edit gallery"
 msgstr ""
 
-#: ../widgets/basic.php:50
+#: ../widgets/basic.php:53
 msgid ""
 "Comma separated attachment IDs. Defaults to all current page's attachments."
 msgstr ""
 
-#: ../widgets/basic.php:54
+#: ../widgets/basic.php:57
 msgid "Image Size"
 msgstr ""
 
-#: ../widgets/basic.php:56 ../widgets/basic.php:394 ../widgets/widgets.php:567
+#: ../widgets/basic.php:59 ../widgets/basic.php:441 ../widgets/widgets.php:592
 msgid "Default"
 msgstr ""
 
-#: ../widgets/basic.php:57
+#: ../widgets/basic.php:60
 msgid "Large"
 msgstr ""
 
-#: ../widgets/basic.php:58
+#: ../widgets/basic.php:61
 msgid "Medium"
 msgstr ""
 
-#: ../widgets/basic.php:59
+#: ../widgets/basic.php:62
 msgid "Thumbnail"
 msgstr ""
 
-#: ../widgets/basic.php:60
+#: ../widgets/basic.php:63
 msgid "Full"
 msgstr ""
 
-#: ../widgets/basic.php:68
+#: ../widgets/basic.php:71
 msgid "Gallery Type"
 msgstr ""
 
-#: ../widgets/basic.php:79
-msgid "Post Content"
+#: ../widgets/basic.php:81
+msgid "Link To"
 msgstr ""
 
-#: ../widgets/basic.php:81
+#: ../widgets/basic.php:83
+msgid "Attachment Page"
+msgstr ""
+
+#: ../widgets/basic.php:84
+msgid "File"
+msgstr ""
+
+#: ../widgets/basic.php:85 ../widgets/basic.php:145 ../widgets/basic.php:415
+#: ../widgets/widgets.php:565
+msgid "None"
+msgstr ""
+
+#: ../widgets/basic.php:97
+msgid "Post Content (PB)"
+msgstr ""
+
+#: ../widgets/basic.php:99
 msgid "Displays some form of post content form the current post."
 msgstr ""
 
-#: ../widgets/basic.php:125 ../widgets/basic.php:340
+#: ../widgets/basic.php:146 ../widgets/basic.php:380
 #: ../widgets/widgets/call-to-action/call-to-action.php:15
 #: ../widgets/widgets/list/list.php:15
 #: ../widgets/widgets/price-box/price-box.php:15
 msgid "Title"
 msgstr ""
 
-#: ../widgets/basic.php:126
-msgid "Content"
-msgstr ""
-
-#: ../widgets/basic.php:127
+#: ../widgets/basic.php:147
 msgid "Featured Image"
 msgstr ""
 
-#: ../widgets/basic.php:128
-msgid "Post Tags"
-msgstr ""
-
-#: ../widgets/basic.php:129
-msgid "Post Categories"
-msgstr ""
-
-#: ../widgets/basic.php:134
+#: ../widgets/basic.php:152
 msgid "Display Content"
 msgstr ""
 
-#: ../widgets/basic.php:149 ../widgets/widgets/testimonial/testimonial.php:23
-msgid "Image"
+#: ../widgets/basic.php:167
+msgid "Image (PB)"
 msgstr ""
 
-#: ../widgets/basic.php:151
+#: ../widgets/basic.php:169
 msgid "Displays a simple image."
 msgstr ""
 
-#: ../widgets/basic.php:184
+#: ../widgets/basic.php:202
 #: ../widgets/widgets/animated-image/animated-image.php:15
 msgid "Image URL"
 msgstr ""
 
-#: ../widgets/basic.php:188 ../widgets/widgets/button/button.php:19
+#: ../widgets/basic.php:206 ../widgets/widgets/button/button.php:19
 msgid "Destination URL"
 msgstr ""
 
-#: ../widgets/basic.php:204
-msgid "Post Loop"
+#: ../widgets/basic.php:222
+msgid "Post Loop (PB)"
 msgstr ""
 
-#: ../widgets/basic.php:206
+#: ../widgets/basic.php:224
 msgid "Displays a post loop."
 msgstr ""
 
-#: ../widgets/basic.php:329
+#: ../widgets/basic.php:369
 msgid "Unfortunately your theme doesn't have any post loops."
 msgstr ""
 
-#: ../widgets/basic.php:344
+#: ../widgets/basic.php:384
 msgid "Template"
 msgstr ""
 
-#: ../widgets/basic.php:352 ../widgets/widgets.php:526
+#: ../widgets/basic.php:399 ../widgets/widgets.php:551
 msgid "Post Type"
 msgstr ""
 
-#: ../widgets/basic.php:361 ../widgets/widgets.php:533
+#: ../widgets/basic.php:408 ../widgets/widgets.php:558
 msgid "Posts Per Page"
 msgstr ""
 
-#: ../widgets/basic.php:366 ../widgets/widgets.php:538
+#: ../widgets/basic.php:413 ../widgets/widgets.php:563
 msgid "Order By"
 msgstr ""
 
-#: ../widgets/basic.php:368 ../widgets/widgets.php:540
-msgid "None"
-msgstr ""
-
-#: ../widgets/basic.php:369 ../widgets/widgets.php:541
+#: ../widgets/basic.php:416 ../widgets/widgets.php:566
 msgid "Post ID"
 msgstr ""
 
-#: ../widgets/basic.php:370 ../widgets/widgets.php:542
+#: ../widgets/basic.php:417 ../widgets/widgets.php:567
 msgid "Author"
 msgstr ""
 
-#: ../widgets/basic.php:371 ../widgets/basic.php:372
-#: ../widgets/widgets.php:543 ../widgets/widgets.php:544
+#: ../widgets/basic.php:418 ../widgets/basic.php:419
+#: ../widgets/widgets.php:568 ../widgets/widgets.php:569
 #: ../widgets/widgets/testimonial/testimonial.php:15
 msgid "Name"
 msgstr ""
 
-#: ../widgets/basic.php:373 ../widgets/widgets.php:545
+#: ../widgets/basic.php:420 ../widgets/widgets.php:570
 msgid "Date"
 msgstr ""
 
-#: ../widgets/basic.php:374 ../widgets/widgets.php:546
+#: ../widgets/basic.php:421 ../widgets/widgets.php:571
 msgid "Modified"
 msgstr ""
 
-#: ../widgets/basic.php:375 ../widgets/widgets.php:547
+#: ../widgets/basic.php:422 ../widgets/widgets.php:572
 msgid "Parent"
 msgstr ""
 
-#: ../widgets/basic.php:376 ../widgets/widgets.php:548
+#: ../widgets/basic.php:423 ../widgets/widgets.php:573
 msgid "Random"
 msgstr ""
 
-#: ../widgets/basic.php:377 ../widgets/widgets.php:549
+#: ../widgets/basic.php:424 ../widgets/widgets.php:574
 msgid "Comment Count"
 msgstr ""
 
-#: ../widgets/basic.php:378 ../widgets/basic.php:379
-#: ../widgets/widgets.php:550
+#: ../widgets/basic.php:425 ../widgets/basic.php:426
+#: ../widgets/widgets.php:575
 msgid "Menu Order"
 msgstr ""
 
-#: ../widgets/basic.php:384 ../widgets/widgets.php:556
+#: ../widgets/basic.php:431 ../widgets/widgets.php:581
 msgid "Order"
 msgstr ""
 
-#: ../widgets/basic.php:386 ../widgets/widgets.php:559
+#: ../widgets/basic.php:433 ../widgets/widgets.php:584
 msgid "Descending"
 msgstr ""
 
-#: ../widgets/basic.php:387 ../widgets/widgets.php:558
+#: ../widgets/basic.php:434 ../widgets/widgets.php:583
 msgid "Ascending"
 msgstr ""
 
-#: ../widgets/basic.php:392 ../widgets/widgets.php:565
+#: ../widgets/basic.php:439 ../widgets/widgets.php:590
 msgid "Sticky Posts"
 msgstr ""
 
-#: ../widgets/basic.php:395 ../widgets/widgets.php:568
+#: ../widgets/basic.php:442 ../widgets/widgets.php:593
 msgid "Ignore Sticky"
 msgstr ""
 
-#: ../widgets/basic.php:396 ../widgets/widgets.php:569
+#: ../widgets/basic.php:443 ../widgets/widgets.php:594
 msgid "Exclude Sticky"
 msgstr ""
 
-#: ../widgets/basic.php:397 ../widgets/widgets.php:570
+#: ../widgets/basic.php:444 ../widgets/widgets.php:595
 msgid "Only Sticky"
 msgstr ""
 
-#: ../widgets/basic.php:402
+#: ../widgets/basic.php:449
 msgid "Additional "
 msgstr ""
 
-#: ../widgets/basic.php:404 ../widgets/widgets.php:577
+#: ../widgets/basic.php:451 ../widgets/widgets.php:602
 #, php-format
 msgid ""
 "Additional query arguments. See <a href=\"%s\" target=\"_blank"
 "\">query_posts</a>."
 msgstr ""
 
-#: ../widgets/basic.php:417
-msgid "Embedded Video"
+#: ../widgets/basic.php:464
+msgid "Embedded Video (PB)"
 msgstr ""
 
-#: ../widgets/basic.php:419
+#: ../widgets/basic.php:466
 msgid "Embeds a video."
 msgstr ""
 
-#: ../widgets/basic.php:451
+#: ../widgets/basic.php:498
 msgid "Video"
 msgstr ""
 
-#: ../widgets/basic.php:467
-msgid "Self Hosted Video"
+#: ../widgets/basic.php:514
+msgid "Self Hosted Video (PB)"
 msgstr ""
 
-#: ../widgets/basic.php:469
+#: ../widgets/basic.php:516
 msgid "A self hosted video player."
 msgstr ""
 
-#: ../widgets/basic.php:544
+#: ../widgets/basic.php:591
 msgid "Video URL"
 msgstr ""
 
-#: ../widgets/basic.php:548
+#: ../widgets/basic.php:595
 msgid "Poster URL"
 msgstr ""
 
-#: ../widgets/basic.php:550
+#: ../widgets/basic.php:597
 msgid "An image that displays before the video starts playing."
 msgstr ""
 
-#: ../widgets/basic.php:553
+#: ../widgets/basic.php:600
 msgid "Skin"
 msgstr ""
 
-#: ../widgets/basic.php:555
+#: ../widgets/basic.php:602
 msgid "SiteOrigin"
 msgstr ""
 
-#: ../widgets/basic.php:556
+#: ../widgets/basic.php:603
 msgid "Premium Pixels"
 msgstr ""
 
-#: ../widgets/basic.php:560
+#: ../widgets/basic.php:607
 msgid "Aspect Ratio"
 msgstr ""
 
-#: ../widgets/basic.php:562
+#: ../widgets/basic.php:609
 msgid "1.777 is HD standard."
 msgstr ""
 
-#: ../widgets/basic.php:567
+#: ../widgets/basic.php:614
 msgid "Auto Play Video"
 msgstr ""
 
-#: ../widgets/widgets.php:148
+#: ../widgets/widgets.php:199
 msgid "Style"
 msgstr ""
 
-#: ../widgets/widgets.php:169
+#: ../widgets/widgets.php:221
 #, php-format
 msgid "%s Style"
 msgstr ""
 
-#: ../widgets/widgets.php:576
+#: ../widgets/widgets.php:601
 msgid "Additional Arguments"
 msgstr ""
 
 #: ../widgets/widgets/animated-image/animated-image.php:6
-msgid "Animated Image"
+msgid "Animated Image (PB)"
 msgstr ""
 
 #: ../widgets/widgets/animated-image/animated-image.php:8
@@ -565,9 +598,7 @@ msgid "Slide Right"
 msgstr ""
 
 #: ../widgets/widgets/button/button.php:6
-#: ../widgets/widgets/call-to-action/call-to-action.php:33
-#: ../widgets/widgets/price-box/price-box.php:45
-msgid "Button"
+msgid "Button (PB)"
 msgstr ""
 
 #: ../widgets/widgets/button/button.php:8
@@ -580,27 +611,34 @@ msgid "Text"
 msgstr ""
 
 #: ../widgets/widgets/button/button.php:23
-msgid "Button Alignment"
-msgstr ""
-
-#: ../widgets/widgets/button/button.php:25
-msgid "Left"
-msgstr ""
-
-#: ../widgets/widgets/button/button.php:26
-msgid "Right"
+#: ../widgets/widgets/call-to-action/call-to-action.php:31
+#: ../widgets/widgets/price-box/price-box.php:44
+#: ../widgets/widgets/testimonial/testimonial.php:35
+msgid "Open In New Window"
 msgstr ""
 
 #: ../widgets/widgets/button/button.php:27
+msgid "Button Alignment"
+msgstr ""
+
+#: ../widgets/widgets/button/button.php:29
+msgid "Left"
+msgstr ""
+
+#: ../widgets/widgets/button/button.php:30
+msgid "Right"
+msgstr ""
+
+#: ../widgets/widgets/button/button.php:31
 msgid "Center"
 msgstr ""
 
-#: ../widgets/widgets/button/button.php:28
+#: ../widgets/widgets/button/button.php:32
 msgid "Justify"
 msgstr ""
 
 #: ../widgets/widgets/call-to-action/call-to-action.php:6
-msgid "Call To Action"
+msgid "Call To Action (PB)"
 msgstr ""
 
 #: ../widgets/widgets/call-to-action/call-to-action.php:8
@@ -621,8 +659,13 @@ msgstr ""
 msgid "Button URL"
 msgstr ""
 
+#: ../widgets/widgets/call-to-action/call-to-action.php:37
+#: ../widgets/widgets/price-box/price-box.php:49
+msgid "Button"
+msgstr ""
+
 #: ../widgets/widgets/list/list.php:6
-msgid "List"
+msgid "List (PB)"
 msgstr ""
 
 #: ../widgets/widgets/list/list.php:8
@@ -633,11 +676,11 @@ msgstr ""
 
 #: ../widgets/widgets/list/list.php:20
 #: ../widgets/widgets/price-box/price-box.php:32
-msgid "Start each new point with an astrix (*)"
+msgid "Start each new point with an asterisk (*)"
 msgstr ""
 
 #: ../widgets/widgets/price-box/price-box.php:6
-msgid "Price Box"
+msgid "Price Box (PB)"
 msgstr ""
 
 #: ../widgets/widgets/price-box/price-box.php:19
@@ -656,16 +699,20 @@ msgstr ""
 msgid "Features Text"
 msgstr ""
 
-#: ../widgets/widgets/price-box/price-box.php:46
+#: ../widgets/widgets/price-box/price-box.php:50
 msgid "Feature List"
 msgstr ""
 
 #: ../widgets/widgets/testimonial/testimonial.php:6
-msgid "Testimonial"
+msgid "Testimonial (PB)"
 msgstr ""
 
 #: ../widgets/widgets/testimonial/testimonial.php:19
 msgid "Location"
+msgstr ""
+
+#: ../widgets/widgets/testimonial/testimonial.php:23
+msgid "Image"
 msgstr ""
 
 #: ../widgets/widgets/testimonial/testimonial.php:31

@@ -3,7 +3,7 @@
 Plugin Name: Page Builder by SiteOrigin
 Plugin URI: http://siteorigin.com/page-builder/
 Description: A drag and drop, responsive page builder that simplifies building your website.
-Version: 1.3.5
+Version: 1.3.6
 Author: Greg Priday
 Author URI: http://siteorigin.com
 License: GPL3
@@ -11,7 +11,7 @@ License URI: http://www.gnu.org/licenses/gpl.html
 Donate link: http://siteorigin.com/page-builder/donate/
 */
 
-define('SITEORIGIN_PANELS_VERSION', '1.3.5');
+define('SITEORIGIN_PANELS_VERSION', '1.3.6');
 define('SITEORIGIN_PANELS_BASE_FILE', __FILE__);
 
 include plugin_dir_path(__FILE__).'widgets/widgets.php';
@@ -48,7 +48,7 @@ function siteorigin_panels_setting($key = ''){
 			'home-template' => 'home-panels.php',																				// The file used to render a home page.
 			'post-types' => get_option('siteorigin_panels_post_types', array('page', 'post')),									// Post types that can be edited using panels.
 
-			'responsive' => !isset( $display_settings['responsive'] ) ? false : $display_settings['responsive'],				// Should we use a responsive layout
+			'responsive' => !isset( $display_settings['responsive'] ) ? true : $display_settings['responsive'],				    // Should we use a responsive layout
 			'mobile-width' => !isset( $display_settings['mobile-width'] ) ? 780 : $display_settings['mobile-width'],			// What is considered a mobile width?
 
 			'margin-bottom' => !isset( $display_settings['margin-bottom'] ) ? 30 : $display_settings['margin-bottom'],			// Bottom margin of a cell
@@ -139,7 +139,7 @@ add_action('admin_init', 'siteorigin_panels_transfer_home_page');
  * @return string
  */
 function siteorigin_panels_filter_home_template($template){
-	if(!get_option('siteorigin_panels_home_page_enabled', siteorigin_panels_setting('home-page-default'))) return $template;
+	if( !get_option('siteorigin_panels_home_page_enabled', siteorigin_panels_setting('home-page-default')) ) return $template;
 	
 	$GLOBALS['siteorigin_panels_is_panels_home'] = true;
 	return locate_template(array(
@@ -182,7 +182,7 @@ add_action('update_option_show_on_front', 'siteorigin_panels_disable_on_front_pa
  */
 function siteorigin_panels_is_panel($can_edit = false){
 	// Check if this is a panel
-	$is_panel =  (siteorigin_panels_is_home() || ( is_singular() && get_post_meta(get_the_ID(), 'panels_data', false) != '' ));
+	$is_panel =  ( siteorigin_panels_is_home() || ( is_singular() && get_post_meta(get_the_ID(), 'panels_data', false) != '' ) );
 	return $is_panel && (!$can_edit || ( (is_singular() && current_user_can('edit_post', get_the_ID())) || ( siteorigin_panels_is_home() && current_user_can('edit_theme_options') ) ));
 }
 
@@ -887,6 +887,18 @@ function siteorigin_panels_cloned_page_layouts($layouts){
 				$panels_data
 			);
 		}
+	}
+
+	// Include the current home page in the clone pages.
+	$home_data = get_option('siteorigin_panels_home_page', null);
+	if ( !empty($home_data) ) {
+
+		$layouts['current-home-page'] = wp_parse_args(
+			array(
+				'name' => __('Clone: Current Home Page', 'so-panels'),
+			),
+			$home_data
+		);
 	}
 	
 	return $layouts;
