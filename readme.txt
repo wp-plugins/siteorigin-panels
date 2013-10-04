@@ -79,13 +79,17 @@ Most standard widgets work with Page Builder, but here are some of our favorites
 
 Yes, provided your theme is licensed under GPL or a compatible license. If you're publishing your theme on ThemeForest, you must select the GPL license instead of their regular license.
 
-Page Builder is actively developed and updated, so generally I'd recommend that you have your users install the actual plugin so they can receive updates.
+Page Builder is actively developed and updated, so generally I'd recommend that you have your users install the actual plugin so they can receive updates. You can try [TGM Plugin Activation](http://tgmpluginactivation.com/).
 
 = Will plugin X work with Page Builder? =
 
 I've tried to ensure that Page Builder is compatible with most plugin widgets. It's best to just download Page Builder and test for yourself.
 
 == Changelog ==
+
+= 1.3.7 =
+* Fixed issue with pagination for a post loop on custom home page.
+* Improved ways that a theme can add custom PB element styles.
 
 = 1.3.6 =
 * Added option to clone the current home page.

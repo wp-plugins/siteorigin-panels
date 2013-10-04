@@ -191,6 +191,8 @@ abstract class SiteOrigin_Panels_Widget extends WP_Widget{
 			$instance['origin_style'] = !empty($this->widget_options['default_style']) ? $this->widget_options['default_style'] : false;
 		}
 
+		do_action('siteorigin_panels_widget_before_styles', $this, $instance);
+
 		// Now, lets add the style options.
 		$styles = $this->get_styles();
 		if( !empty( $styles ) ) {
@@ -201,7 +203,7 @@ abstract class SiteOrigin_Panels_Widget extends WP_Widget{
 					<?php foreach($this->get_styles() as $style_id => $style_info) : $presets = $this->get_style_presets($style_id); ?>
 						<?php if(!empty($presets)) : foreach($presets as $preset_id => $preset) : ?>
 							<option value="<?php echo esc_attr($style_id.':'.$preset_id) ?>" <?php selected($style_id.':'.$preset_id, $instance['origin_style']) ?>>
-								<?php echo esc_html($style_info['Name'].' - '.$preset_id) ?>
+								<?php echo esc_html($style_info['Name'] . ' - ' . ucwords( str_replace( '_', ' ', $preset_id ) ) ) ?>
 							</option>
 						<?php endforeach; endif; ?>
 					<?php endforeach ?>
@@ -209,6 +211,8 @@ abstract class SiteOrigin_Panels_Widget extends WP_Widget{
 			</p>
 			<?php
 		}
+
+		do_action('siteorigin_panels_widget_before_substyles', $this, $instance);
 
 		foreach($this->sub_widgets as $id => $sub) {
 			global $wp_widget_factory;
@@ -223,7 +227,7 @@ abstract class SiteOrigin_Panels_Widget extends WP_Widget{
 					<?php foreach($the_widget->get_styles() as $style_id => $style_info) : $presets = $the_widget->get_style_presets($style_id); ?>
 						<?php if(!empty($presets)) : foreach($presets as $preset_id => $preset) : ?>
 							<option value="<?php echo esc_attr($style_id.':'.$preset_id) ?>" <?php selected($style_id.':'.$preset_id, $instance['origin_style_'.$id]) ?>>
-								<?php echo esc_html($style_info['Name'].' - '.$preset_id) ?>
+								<?php echo esc_html($style_info['Name'].' - ' . ucwords( str_replace( '_', ' ', $preset_id ) ) ) ?>
 							</option>
 						<?php endforeach; endif; ?>
 					<?php endforeach ?>
@@ -231,6 +235,8 @@ abstract class SiteOrigin_Panels_Widget extends WP_Widget{
 			</p>
 			<?php
 		}
+
+		do_action('siteorigin_panels_widget_after_styles', $this, $instance);
 	}
 
 	/**
@@ -359,7 +365,14 @@ abstract class SiteOrigin_Panels_Widget extends WP_Widget{
 		if(empty($style_file)) return '';
 
 		if(!class_exists('lessc')) include plugin_dir_path(__FILE__).'lib/lessc.inc.php';
-		$less = file_get_contents(plugin_dir_path(__FILE__) . 'widgets/'.$this->origin_id.'/styles/'.$style.'.less');
+
+		foreach($this->get_widget_folders() as $folder => $folder_url) {
+			$filename = rtrim($folder, '/') . '/' . $this->origin_id.'/styles/'.$style.'.less';
+			if(file_exists($filename)) {
+				$less = file_get_contents($filename);
+				break;
+			}
+		}
 		// Add in the mixins
 		$less = str_replace(
 			'@import "../../../less/mixins";',
@@ -485,11 +498,19 @@ abstract class SiteOrigin_Panels_Widget extends WP_Widget{
 	 * @return mixed|void
 	 */
 	public function get_style_presets($style_id) {
-		$filename = plugin_dir_path(__FILE__).'widgets/'.$this->origin_id.'/presets/'.sanitize_file_name($style_id).'.php';
-		if(file_exists($filename)) {
-			// This file should register a filter that adds the presets
-			$presets = include($filename);
+
+		$presets = array();
+
+		foreach($this->get_widget_folders() as $folder => $folder_uri) {
+			$filename = rtrim($folder, '/') . '/' . $this->origin_id.'/presets/'.sanitize_file_name($style_id).'.php';
+
+			if(file_exists($filename)) {
+				// This file should register a filter that adds the presets
+				$new_presets = include($filename);
+				$presets = array_merge($presets, $new_presets);
+			}
 		}
+
 
 		return apply_filters('origin_widget_presets_'.$this->origin_id.'_'.$style_id, $presets);
 	}
