@@ -87,6 +87,9 @@ I've tried to ensure that Page Builder is compatible with most plugin widgets. I
 
 == Changelog ==
 
+= 1.3.7.1 =
+* A small fix to remove error notices in a fairly common situation.
+
 = 1.3.7 =
 * Fixed issue with pagination for a post loop on custom home page.
 * Improved ways that a theme can add custom PB element styles.
