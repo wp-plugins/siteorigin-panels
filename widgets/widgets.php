@@ -34,18 +34,25 @@ function origin_widgets_display_css(){
 	if(strpos($_GET['class'], 'SiteOrigin_Panels_Widget_') !== 0) return;
 
 	header("Content-type: text/css");
+	echo origin_widgets_generate_css($_GET['class'], $_GET['style'], $_GET['preset'], $_GET['ver']);
+	exit();
+}
+add_action('init', 'origin_widgets_display_css');
 
-	$class = $_GET['class'];
+function origin_widgets_generate_css($class, $style, $preset, $version = null){
 	$widget = new $class();
+	if( !is_subclass_of($widget, 'SiteOrigin_Panels_Widget') ) return '';
+	if(empty($version)) $version = SITEORIGIN_PANELS_VERSION;
+
 	$id = str_replace('_', '', strtolower(str_replace('SiteOrigin_Panels_Widget_', '', $class)));
-	$key = strtolower($id.'-'.$_GET['style'].'-'. $_GET['preset'].'-'.str_replace('.', '', $_GET['ver']));
+	$key = strtolower($id.'-'.$style.'-'. $preset.'-'.str_replace('.', '', $version));
 
 	$css = get_site_transient('origin_wcss:'.$key);
 	if($css === false || ( defined('SITEORIGIN_PANELS_NOCACHE') && SITEORIGIN_PANELS_NOCACHE ) ) {
 
 		echo "/* Regenerate Cache */\n\n";
 		// Recreate the CSS
-		$css = $widget->create_css($_GET['style'],$_GET['preset']);
+		$css = $widget->create_css($style, $preset);
 		$css = preg_replace('#/\*.*?\*/#s', '', $css);
 		$css = preg_replace('/\s*([{}|:;,])\s+/', '$1', $css);
 		$css = preg_replace('/\s\s+(.*)/', '$1', $css);
@@ -53,11 +60,9 @@ function origin_widgets_display_css(){
 
 		set_site_transient('origin_wcss:'.$key, $css, 86400);
 	}
-	echo $css;
 
-	exit();
+	return $css;
 }
-add_action('init', 'origin_widgets_display_css');
 
 /**
  * Class SiteOrigin_Panels_Widget
@@ -295,11 +300,20 @@ abstract class SiteOrigin_Panels_Widget extends WP_Widget{
 		// Dynamically generate the CSS
 		if(!empty($instance['origin_style'])) {
 			$filename = $this->origin_id.'-'.$style.'-'.$preset;
-			wp_enqueue_style( 'origin-widget-'.$filename, add_query_arg(array(
-				'class' => get_class($this),
-				'style' => $style,
-				'preset' => $preset,
-			), site_url('?action=origin_widgets_css') ), array(), SITEORIGIN_PANELS_VERSION );
+			if(siteorigin_panels_setting('inline-css')) {
+				static $inlined_css = array();
+				if(empty($inlined_css[$filename])) {
+					$inlined_css[$filename] = true;
+					?><style type="text/css" media="all"><?php echo origin_widgets_generate_css(get_class($this), $style, $preset) ?></style><?php
+				}
+			}
+			else {
+				wp_enqueue_style( 'origin-widget-'.$filename, add_query_arg(array(
+					'class' => get_class($this),
+					'style' => $style,
+					'preset' => $preset,
+				), site_url('?action=origin_widgets_css') ), array(), SITEORIGIN_PANELS_VERSION );
+			}
 		}
 
 		if(method_exists($this, 'enqueue_scripts')) {

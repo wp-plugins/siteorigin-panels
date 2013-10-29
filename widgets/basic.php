@@ -243,8 +243,26 @@ class SiteOrigin_Panels_Widgets_PostLoop extends WP_Widget{
 
 		$query_args = wp_parse_args($instance['additional'], $query_args);
 
-		global $wp_query;
-		$query_args['paged'] = $wp_query->get('paged');
+		global $wp_rewrite;
+
+		if( $wp_rewrite->using_permalinks() ) {
+
+			if( get_query_var('paged') ) {
+				// When the widget appears on a sub page.
+				$query_args['paged'] = get_query_var('paged');
+			}
+			elseif( strpos( $_SERVER['REQUEST_URI'], '/page/' ) !== false ) {
+				// When the widget appears on the home page.
+				preg_match('/\/page\/([0-9]+)\//', $_SERVER['REQUEST_URI'], $matches);
+				if(!empty($matches[1])) $query_args['paged'] = intval($matches[1]);
+				else $query_args['paged'] = 1;
+			}
+			else $query_args['paged'] = 1;
+		}
+		else {
+			// Get current page number when we're not using permalinks
+			$query_args['paged'] = isset($_GET['paged']) ? intval($_GET['paged']) : 1;
+		}
 
 		switch($instance['sticky']){
 			case 'ignore' :

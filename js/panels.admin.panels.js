@@ -39,7 +39,7 @@
         newPanelId++;
 
         var dialogWrapper = $( this );
-        var $$ = dialogWrapper.find('.panel-type[data-class="' + type + '"]' );
+        var $$ = dialogWrapper.find('.panel-type' ).filter(function() { return $(this).data('class') === type });
 
         if($$.length == 0) return null;
 

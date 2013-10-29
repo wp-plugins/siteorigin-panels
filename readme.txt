@@ -87,6 +87,13 @@ I've tried to ensure that Page Builder is compatible with most plugin widgets. I
 
 == Changelog ==
 
+= 1.3.8 =
+* Fixed pagination with post loop widget.
+* Fixed testimonial widget HTML.
+* Fixed price box new window setting.
+* Added option to display CSS inline.
+* Fixed incompatibility with namespaced widgets.
+
 = 1.3.7.1 =
 * A small fix to remove error notices in a fairly common situation.
 

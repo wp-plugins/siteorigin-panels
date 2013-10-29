@@ -37,6 +37,10 @@ function siteorigin_panels_options_init() {
 	add_settings_field( 'mobile-width', __('Mobile Width', 'so-panels'), 'siteorigin_panels_options_field_display', 'siteorigin-panels', 'display', array( 'type' => 'mobile-width' ));
 	add_settings_field( 'margin-sides', __('Margin Sides', 'so-panels'), 'siteorigin_panels_options_field_display', 'siteorigin-panels', 'display', array( 'type' => 'margin-sides' ));
 	add_settings_field( 'margin-bottom', __('Margin Bottom', 'so-panels'), 'siteorigin_panels_options_field_display', 'siteorigin-panels', 'display', array( 'type' => 'margin-bottom' ));
+	add_settings_field( 'inline-css', __('Inline CSS', 'so-panels'), 'siteorigin_panels_options_field_display', 'siteorigin-panels', 'display', array(
+		'type' => 'inline-css',
+		'description' => __('Disabling this will generate CSS using a separate query.', 'so-panels'),
+	));
 }
 add_action( 'admin_init', 'siteorigin_panels_options_init' );
 
@@ -82,6 +86,7 @@ function siteorigin_panels_options_field_display($args){
 		case 'responsive' :
 		case 'copy-content' :
 		case 'animations' :
+		case 'inline-css' :
 			?><label><input type="checkbox" name="siteorigin_panels_display[<?php echo esc_attr($args['type']) ?>]" <?php checked($settings[$args['type']]) ?> /> <?php _e('Enabled', 'so-panels') ?></label><?php
 			break;
 		case 'margin-bottom' :
@@ -124,6 +129,7 @@ function siteorigin_panels_options_sanitize_post_types($types){
 function siteorigin_panels_options_sanitize_display($vals){
 	foreach($vals as $f => $v){
 		switch($f){
+			case 'inline-css' :
 			case 'responsive' :
 			case 'copy-content' :
 			case 'animations' :
@@ -139,5 +145,6 @@ function siteorigin_panels_options_sanitize_display($vals){
 	$vals['responsive'] = !empty($vals['responsive']);
 	$vals['copy-content'] = !empty($vals['copy-content']);
 	$vals['animations'] = !empty($vals['animations']);
+	$vals['inline-css'] = !empty($vals['inline-css']);
 	return $vals;
 }
