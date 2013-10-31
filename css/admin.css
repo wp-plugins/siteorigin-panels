@@ -189,7 +189,7 @@ html {
 
 #panels-container .grid-container .controls {
 	line-height: 1;
-	margin-bottom: 2px;
+	margin-bottom: 3px;
 	text-align: right;
 }
 
@@ -327,7 +327,7 @@ html {
 
 #so-panels-panels .panels-container .ui-state-highlight {
 	position: relative;
-	height: 47px;
+	height: 49px;
 	
 	background: #ddebef;
 	border: 1px solid;

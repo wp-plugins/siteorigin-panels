@@ -61,16 +61,22 @@ jQuery( function ( $ ) {
             title:   $( '#grid-add-dialog' ).attr( 'data-title' ),
             open:    function () {
                 $( this ).find( 'input' ).val( 2 ).select();
+                var overlay = $('<div class="ui-widget-overlay ui-front"></div>').css('z-index', 1000);
+                $(this).data('overlay', overlay).closest('.ui-dialog').before(overlay);
+            },
+            close : function(){
+                $(this).data('overlay').remove();
             },
             buttons: gridAddDialogButtons
         })
         .on('keydown', function(e) {
             if (e.keyCode == $.ui.keyCode.ENTER) {
                 // This is the same as clicking the add button
-                $(this ).closest('.ui-dialog').find('.ui-dialog-buttonpane .ui-button:eq(0)').click();
+                gridAddDialogButtons[panels.i10n.buttons.add]();
+                setTimeout(function(){$( '#grid-add-dialog' ).dialog( 'close' );}, 1)
             }
             else if (e.keyCode === $.ui.keyCode.ESCAPE) {
-                $(this ).dialog('close');
+                $( '#grid-add-dialog' ).dialog( 'close' );
             }
         });
     ;

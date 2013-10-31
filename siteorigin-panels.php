@@ -3,7 +3,7 @@
 Plugin Name: Page Builder by SiteOrigin
 Plugin URI: http://siteorigin.com/page-builder/
 Description: A drag and drop, responsive page builder that simplifies building your website.
-Version: 1.3.8
+Version: 1.3.9
 Author: Greg Priday
 Author URI: http://siteorigin.com
 License: GPL3
@@ -11,12 +11,13 @@ License URI: http://www.gnu.org/licenses/gpl.html
 Donate link: http://siteorigin.com/page-builder/donate/
 */
 
-define('SITEORIGIN_PANELS_VERSION', '1.3.8');
+define('SITEORIGIN_PANELS_VERSION', '1.3.9');
 define('SITEORIGIN_PANELS_BASE_FILE', __FILE__);
 
 include plugin_dir_path(__FILE__).'widgets/widgets.php';
 include plugin_dir_path(__FILE__).'inc/options.php';
 include plugin_dir_path(__FILE__).'inc/aff.php';
+include plugin_dir_path(__FILE__).'inc/revisions.php';
 
 /**
  * Initialize the language files
@@ -379,13 +380,25 @@ function siteorigin_panels_save_post( $post_id, $post ) {
 	if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) return;
 	if ( empty( $_POST['_sopanels_nonce'] ) || !wp_verify_nonce( $_POST['_sopanels_nonce'], 'save' ) ) return;
 	if ( !current_user_can( 'edit_post', $post_id ) ) return;
+	if ( wp_is_post_revision($post_id) ) return;
 
 	$panels_data = siteorigin_panels_get_panels_data_from_post( $_POST );
 	update_post_meta( $post_id, 'panels_data', $panels_data );
+}
+add_action( 'save_post', 'siteorigin_panels_save_post', 10, 2 );
 
-	if( !empty($panels_data['widgets']) && siteorigin_panels_setting('copy-content') ) {
+function siteorigin_panels_content_save_pre($content){
+	global $post;
+
+	if ( !siteorigin_panels_setting('copy-content') ) return $content;
+	if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) return $content;
+	if ( empty( $_POST['_sopanels_nonce'] ) || !wp_verify_nonce( $_POST['_sopanels_nonce'], 'save' ) ) return $content;
+	if ( !current_user_can( 'edit_post', $post->ID ) ) return $content;
+
+	$panels_data = siteorigin_panels_get_panels_data_from_post( $_POST );
+	if( !empty($panels_data['widgets']) ) {
 		// Save the panels data into post_content for SEO and search plugins
-		$content = siteorigin_panels_render( $post_id, false );
+		$content = siteorigin_panels_render( $post->ID, false, $panels_data );
 		$content = preg_replace(
 			array(
 				// Remove invisible content
@@ -406,15 +419,11 @@ function siteorigin_panels_save_post( $post_id, $post ) {
 		$content = explode("\n", $content);
 		$content = array_map('trim', $content);
 		$content = implode("\n", $content);
-		$post->post_content = $content;
-
-		// Update the post, removing this action first so we don't infinite loop.
-		remove_action('save_post', 'siteorigin_panels_save_post');
-		wp_update_post($post);
-		add_action( 'save_post', 'siteorigin_panels_save_post', 10, 2 );
 	}
+
+	return $content;
 }
-add_action( 'save_post', 'siteorigin_panels_save_post', 10, 2 );
+add_filter('content_save_pre', 'siteorigin_panels_content_save_pre');
 
 /**
  * Convert form post data into more efficient panels data.
@@ -440,7 +449,7 @@ function siteorigin_panels_get_panels_data_from_post($form_post){
 			unset( $widget['info'] );
 			$widget = $the_widget->update( $widget, $widget );
 		}
-		$info['class'] = get_class($the_widget);
+		$info['class'] = addslashes(get_class($the_widget));
 		$widget['info'] = $info;
 		$panels_data['widgets'][$i] = $widget;
 	}
@@ -493,6 +502,7 @@ add_action( 'init', 'siteorigin_panels_css' );
 /**
  * Generate the actual CSS.
  *
+ * @param $post_id
  * @param $panels_data
  * @return string
  */
@@ -657,7 +667,7 @@ add_filter( 'the_content', 'siteorigin_panels_filter_content' );
  * @param bool $enqueue_css Should we also enqueue the layout CSS.
  * @return string
  */
-function siteorigin_panels_render( $post_id = false, $enqueue_css = true ) {
+function siteorigin_panels_render( $post_id = false, $enqueue_css = true, $panels_data = false ) {
 	if( empty($post_id) ) $post_id = get_the_ID();
 
 	global $siteorigin_panels_current_post;
@@ -669,18 +679,20 @@ function siteorigin_panels_render( $post_id = false, $enqueue_css = true ) {
 	if(!empty($siteorigin_panels_cache) && !empty($siteorigin_panels_cache[$post_id]))
 		return $siteorigin_panels_cache[$post_id];
 
-	if($post_id == 'home'){
-		$panels_data = get_option( 'siteorigin_panels_home_page', get_theme_mod('panels_home_page', null) );
+	if( empty($panels_data) ) {
+		if($post_id == 'home'){
+			$panels_data = get_option( 'siteorigin_panels_home_page', get_theme_mod('panels_home_page', null) );
 
-		if(is_null($panels_data)){
-			// Load the default layout
-			$layouts = apply_filters('siteorigin_panels_prebuilt_layouts', array());
-			$panels_data = !empty($layouts['home']) ? $layouts['home'] : current($layouts);
+			if(is_null($panels_data)){
+				// Load the default layout
+				$layouts = apply_filters('siteorigin_panels_prebuilt_layouts', array());
+				$panels_data = !empty($layouts['home']) ? $layouts['home'] : current($layouts);
+			}
 		}
-	}
-	else{
-		if ( post_password_required($post_id) ) return false;
-		$panels_data = get_post_meta( $post_id, 'panels_data', true );
+		else{
+			if ( post_password_required($post_id) ) return false;
+			$panels_data = get_post_meta( $post_id, 'panels_data', true );
+		}
 	}
 
 	$panels_data = apply_filters( 'siteorigin_panels_data', $panels_data, $post_id );

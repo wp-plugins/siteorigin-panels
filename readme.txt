@@ -87,6 +87,12 @@ I've tried to ensure that Page Builder is compatible with most plugin widgets. I
 
 == Changelog ==
 
+= 1.3.9 =
+* Integrated with WordPress revisions.
+* Fixed issue with namespaced widget.
+* Small admin CSS fixes.
+* Fixed dialog closing after adding new row.
+
 = 1.3.8 =
 * Fixed pagination with post loop widget.
 * Fixed testimonial widget HTML.
