@@ -144,7 +144,7 @@
                     // This fixes a weird a focus issue
                     $(this ).closest('.ui-dialog' ).find('a' ).blur();
 
-                    var overlay = $('<div class="ui-widget-overlay ui-front"></div>').css('z-index', 1000);
+                    var overlay = $('<div class="siteorigin-panels-ui-widget-overlay ui-widget-overlay ui-front"></div>').css('z-index', 80001);
                     $(this).data('overlay', overlay).closest('.ui-dialog').before(overlay);
                 },
                 close: function(){
@@ -261,7 +261,7 @@
     $.fn.panelsSetPanelTitle = function ( ) {
         return $(this ).each(function(){
             var titleValue = '';
-            $(this).data('dialog').find( 'input[type="text"], textarea').each(function(){
+            $(this).data('dialog').find( '.siteorigin-panels-use-for-title, input[type="text"], textarea').each(function(){
                 titleValue = $(this).val();
                 if(titleValue != '') return false;
             });

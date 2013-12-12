@@ -1,6 +1,5 @@
 <?php
 // Include all the basic widgets
-include plugin_dir_path(__FILE__) . '/basic.php';
 include plugin_dir_path(__FILE__) . '/less/functions.php';
 
 /**
@@ -68,7 +67,6 @@ function origin_widgets_generate_css($class, $style, $preset, $version = null){
  * Class SiteOrigin_Panels_Widget
  */
 abstract class SiteOrigin_Panels_Widget extends WP_Widget{
-
 	public $form_args;
 	protected $demo;
 	protected $origin_id;

@@ -2,7 +2,7 @@
 Contributors: gpriday
 Tags: page builder, responsive, widget, widgets, builder, page, admin, gallery, content, cms, pages, post, css, layout, grid
 Requires at least: 3.5
-Tested up to: 3.6
+Tested up to: 3.8
 Stable tag: trunk
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl.html
@@ -16,19 +16,21 @@ Build responsive page layouts using the widgets you know and love using this sim
 
 WordPress has evolved into a fully functional CMS. Page Builder (previously called Panels) completes the transition by giving you a way to create responsive column layouts using the widgets you know and love.
 
-[Our newsletter](http://siteorigin.com/) is a great place to stay up to date with Page Builder and the rest of our free WordPress products.
+[Our newsletter](http://eepurl.com/hbvhM) is a great place to stay up to date with Page Builder and the rest of our free WordPress products.
 
 = Use Your Widgets =
 
 You know widgets. They're the things you add to your sidebars. Page Builder makes all your widgets even more useful by turning them into the building blocks of your pages.
 
-We've included a few useful widgets, but it works with a lot of other well made widgets and plugins out there.
+We've included a few useful widgets, but it works with a lot of other widgets and plugins out there.
 
 = Works with Most Themes =
 
 Page Builder works with most well made themes. The only requirement is that your theme supports pages. And if your theme is responsive, change a few settings and boom, your layouts will work with your theme and collapse into a single column on mobile devices.
 
 There are loads free and premium themes that work with the Page Builder, we have our own collection of [free themes](http://siteorigin.com/) if you'd like to use one of ours.
+
+[Documentation](http://siteorigin.com/page-builder/documentation/) for Page Builder is available on SiteOrigin.
 
 = Bundled Widgets =
 
@@ -86,6 +88,12 @@ Page Builder is actively developed and updated, so generally I'd recommend that 
 I've tried to ensure that Page Builder is compatible with most plugin widgets. It's best to just download Page Builder and test for yourself.
 
 == Changelog ==
+
+= 1.3.10 =
+* Updated to latest jPlayer.
+* Fixed issue that wasn't allowing users to disable custom home page feature.
+* Compatibility with WordPress 3.8, including new admin design.
+* Using wp_slash before saving panels_data meta to ensure \r and \n aren't lost.
 
 = 1.3.9 =
 * Integrated with WordPress revisions.

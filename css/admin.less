@@ -59,6 +59,7 @@ html {
 
 
 #panels-container {
+
 	.grid-wrapper h4 {
 		margin: 5px 1px;
 	}
@@ -116,10 +117,9 @@ html {
 			}
 
 			.cell-width{
-				height: 11px;
+				height: 1em;
 				position: absolute;
 				bottom: -13px;
-				overflow: hidden;
 				font-size: 9px;
 				width: 100%;
 			}
@@ -146,7 +146,7 @@ html {
 
 			.cell-width-value{
 				position: absolute;
-				top: 0;
+				top: -2px;
 				left: 0;
 				width: 100%;
 				text-align: center;
@@ -185,16 +185,24 @@ html {
 	}
 }
 
-#so-panels-panels .ui-resizable-helper{
-	.box-sizing(border-box);
-	background: #fff8bd;
-	border: 1px solid #ecd800;
-	min-height: 100px;
-	position: absolute;
+#so-panels-panels {
+	background: #F8F8F8;
+	margin-top: 5px;
+
+	.ui-resizable-helper{
+		.box-sizing(border-box);
+		border: 1px solid #ecd800;
+		min-height: 100px;
+		position: absolute;
+	}
 }
 
 
 #so-panels-panels {
+
+	.hndle {
+		margin-top: 0 !important;
+	}
 
 	.panels-container {
 
@@ -752,7 +760,7 @@ html {
 .ui-dialog.panels-admin-dialog{
 	border: 1px solid #D0D0D0;
     background: white;
-    z-index: 1001;
+    z-index: 80002;
     padding: 0 !important;
 
 	.rounded(3px);
