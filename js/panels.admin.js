@@ -291,8 +291,10 @@ jQuery( function ( $ ) {
 
         // Clear the old form wrapper and copy across all the dialog forms so they're included when we submit
         clearFormCloned();
+
         $('#panels .panel').each( function(){
             var dialog = $(this).data('dialog');
+            dialog.trigger('panelscloneprepare');
             cloned.push( dialog.clone().hide().appendTo($form) );
         } );
         

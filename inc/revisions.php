@@ -40,7 +40,7 @@ add_action( 'wp_restore_post_revision', 'siteorigin_panels_revisions_restore', 1
  * @return mixed
  */
 function siteorigin_panels_revisions_fields( $fields ) {
-	$fields['panels_data_field'] = __('Page Builder Content', 'so-panels');
+	$fields['panels_data_field'] = __('Page Builder Content', 'siteorigin-panels');
 	return $fields;
 
 }

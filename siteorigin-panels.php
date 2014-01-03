@@ -3,7 +3,7 @@
 Plugin Name: Page Builder by SiteOrigin
 Plugin URI: http://siteorigin.com/page-builder/
 Description: A drag and drop, responsive page builder that simplifies building your website.
-Version: 1.3.10
+Version: 1.4
 Author: Greg Priday
 Author URI: http://siteorigin.com
 License: GPL3
@@ -11,7 +11,7 @@ License URI: http://www.gnu.org/licenses/gpl.html
 Donate link: http://siteorigin.com/page-builder/donate/
 */
 
-define('SITEORIGIN_PANELS_VERSION', '1.3.10');
+define('SITEORIGIN_PANELS_VERSION', '1.4');
 define('SITEORIGIN_PANELS_BASE_FILE', __FILE__);
 
 include plugin_dir_path(__FILE__).'widgets/basic.php';
@@ -23,19 +23,21 @@ include plugin_dir_path(__FILE__).'inc/revisions.php';
  * Initialize the Page Builder.
  */
 function siteorigin_panels_init(){
+	$display_settings = get_option('siteorigin_panels_display', array());
+	if( isset($display_settings['bundled-widgets'] ) && !$display_settings['bundled-widgets'] ) return;
 
 	if( !defined('SITEORIGIN_PANELS_LEGACY_WIDGETS_ACTIVE') && ( !is_admin() || basename($_SERVER["SCRIPT_FILENAME"]) != 'plugins.php') ) {
 		// Include the bundled widgets if the Legacy Widgets plugin isn't active.
 		include plugin_dir_path(__FILE__).'widgets/widgets.php';
 	}
 }
-add_action('after_setup_theme', 'siteorigin_panels_init');
+add_action('plugins_loaded', 'siteorigin_panels_init');
 
 /**
  * Initialize the language files
  */
 function siteorigin_panels_init_lang(){
-	load_plugin_textdomain('so-panels', false, 'siteorigin-panels/lang');
+	load_plugin_textdomain('siteorigin-panels', false, 'siteorigin-panels/lang');
 }
 add_action('admin_init', 'siteorigin_panels_init_lang');
 
@@ -61,6 +63,7 @@ function siteorigin_panels_setting($key = ''){
 			'home-template' => 'home-panels.php',																				// The file used to render a home page.
 			'post-types' => get_option('siteorigin_panels_post_types', array('page', 'post')),									// Post types that can be edited using panels.
 
+			'bundled-widgets' => !isset( $display_settings['bundled-widgets'] ) ? true : $display_settings['bundled-widgets'],	// Include bundled widgets.
 			'responsive' => !isset( $display_settings['responsive'] ) ? true : $display_settings['responsive'],				    // Should we use a responsive layout
 			'mobile-width' => !isset( $display_settings['mobile-width'] ) ? 780 : $display_settings['mobile-width'],			// What is considered a mobile width?
 
@@ -69,7 +72,7 @@ function siteorigin_panels_setting($key = ''){
 			'affiliate-id' => false,																							// Set your affiliate ID
 			'copy-content' => !isset( $display_settings['copy-content'] ) ? true : $display_settings['copy-content'],			// Should we copy across content
 			'animations' => !isset( $display_settings['animations'] ) ? true : $display_settings['animations'],					// Do we need animations
-			'inline-css' => !isset( $display_settings['inline-css'] ) ? true : $display_settings['inline-css'],				// How to display CSS
+			'inline-css' => !isset( $display_settings['inline-css'] ) ? true : $display_settings['inline-css'],				    // How to display CSS
 		) );
 
 		// Filter these settings
@@ -88,8 +91,8 @@ function siteorigin_panels_admin_menu(){
 	if( !siteorigin_panels_setting( 'home-page' ) ) return;
 	
 	add_theme_page(
-		__( 'Custom Home Page Builder', 'so-panels' ),
-		__( 'Home Page', 'so-panels' ),
+		__( 'Custom Home Page Builder', 'siteorigin-panels' ),
+		__( 'Home Page', 'siteorigin-panels' ),
 		'edit_theme_options',
 		'so_panels_home_page',
 		'siteorigin_panels_render_admin_home_page'
@@ -101,7 +104,7 @@ add_action('admin_menu', 'siteorigin_panels_admin_menu');
  * Render the page used to build the custom home page.
  */
 function siteorigin_panels_render_admin_home_page(){
-	add_meta_box( 'so-panels-panels', __( 'Page Builder', 'so-panels' ), 'siteorigin_panels_metabox_render', 'appearance_page_so_panels_home_page', 'advanced', 'high' );
+	add_meta_box( 'so-panels-panels', __( 'Page Builder', 'siteorigin-panels' ), 'siteorigin_panels_metabox_render', 'appearance_page_so_panels_home_page', 'advanced', 'high' );
 	include plugin_dir_path(__FILE__).'tpl/admin-home-page.php';
 }
 
@@ -110,7 +113,7 @@ function siteorigin_panels_render_admin_home_page(){
  */
 function siteorigin_panels_metaboxes() {
 	foreach( siteorigin_panels_setting( 'post-types' ) as $type ){
-		add_meta_box( 'so-panels-panels', __( 'Page Builder', 'so-panels' ), 'siteorigin_panels_metabox_render', $type, 'advanced', 'high' );
+		add_meta_box( 'so-panels-panels', __( 'Page Builder', 'siteorigin-panels' ), 'siteorigin_panels_metabox_render', $type, 'advanced', 'high' );
 	}
 }
 add_action( 'add_meta_boxes', 'siteorigin_panels_metaboxes' );
@@ -264,7 +267,7 @@ function siteorigin_panels_admin_enqueue_scripts($prefix) {
 
 		wp_enqueue_script( 'so-undomanager', plugin_dir_url(__FILE__) . 'js/undomanager.min.js', array( ), 'fb30d7f' );
 
-		wp_enqueue_script( 'so-panels-clonefix', plugin_dir_url(__FILE__) . 'js/jquery.fix.clone.min.js', array( 'jquery' ), SITEORIGIN_PANELS_VERSION );
+		wp_enqueue_script( 'so-panels-clone', plugin_dir_url(__FILE__) . 'js/jquery.fix.clone.min.js', array( 'jquery' ), SITEORIGIN_PANELS_VERSION );
 		wp_enqueue_script( 'so-panels-admin', plugin_dir_url(__FILE__) . 'js/panels.admin.min.js', array( 'jquery' ), SITEORIGIN_PANELS_VERSION );
 		wp_enqueue_script( 'so-panels-admin-panels', plugin_dir_url(__FILE__) . 'js/panels.admin.panels.min.js', array( 'jquery' ), SITEORIGIN_PANELS_VERSION );
 		wp_enqueue_script( 'so-panels-admin-grid', plugin_dir_url(__FILE__) . 'js/panels.admin.grid.min.js', array( 'jquery' ), SITEORIGIN_PANELS_VERSION );
@@ -278,20 +281,20 @@ function siteorigin_panels_admin_enqueue_scripts($prefix) {
 			'previewUrl' => wp_nonce_url(add_query_arg('siteorigin_panels_preview', 'true', get_home_url()), 'siteorigin-panels-preview'),
 			'i10n' => array(
 				'buttons' => array(
-					'insert' => __( 'Insert', 'so-panels' ),
-					'cancel' => __( 'cancel', 'so-panels' ),
-					'delete' => __( 'Delete', 'so-panels' ),
-					'duplicate' => __( 'Duplicate', 'so-panels' ),
-					'edit' => __( 'Edit', 'so-panels' ),
-					'done' => __( 'Done', 'so-panels' ),
-					'undo' => __( 'Undo', 'so-panels' ),
-					'add' => __( 'Add', 'so-panels' ),
+					'insert' => __( 'Insert', 'siteorigin-panels' ),
+					'cancel' => __( 'cancel', 'siteorigin-panels' ),
+					'delete' => __( 'Delete', 'siteorigin-panels' ),
+					'duplicate' => __( 'Duplicate', 'siteorigin-panels' ),
+					'edit' => __( 'Edit', 'siteorigin-panels' ),
+					'done' => __( 'Done', 'siteorigin-panels' ),
+					'undo' => __( 'Undo', 'siteorigin-panels' ),
+					'add' => __( 'Add', 'siteorigin-panels' ),
 				),
 				'messages' => array(
-					'deleteColumns' => __( 'Columns deleted', 'so-panels' ),
-					'deleteWidget' => __( 'Widget deleted', 'so-panels' ),
-					'confirmLayout' => __( 'Are you sure you want to load this layout? It will overwrite your current page.', 'so-panels' ),
-					'editWidget' => __('Edit %s Widget', 'so-panels')
+					'deleteColumns' => __( 'Columns deleted', 'siteorigin-panels' ),
+					'deleteWidget' => __( 'Widget deleted', 'siteorigin-panels' ),
+					'confirmLayout' => __( 'Are you sure you want to load this layout? It will overwrite your current page.', 'siteorigin-panels' ),
+					'editWidget' => __('Edit %s Widget', 'siteorigin-panels')
 				),
 			),
 		) );
@@ -325,8 +328,16 @@ function siteorigin_panels_admin_enqueue_scripts($prefix) {
 			wp_localize_script( 'so-panels-admin', 'panelsData', $panels_data );
 		}
 
+		// Render all the widget forms. A lot of widgets use this as a chance to enqueue their scripts
+		ob_start();
+		foreach($GLOBALS['wp_widget_factory']->widgets as $class => $widget_obj){
+			$widget_obj->form(array());
+		}
+		ob_clean();
+
 		// This gives panels a chance to enqueue scripts too, without having to check the screen ID.
 		do_action( 'siteorigin_panel_enqueue_admin_scripts' );
+		do_action( 'sidebar_admin_setup' );
 	}
 }
 add_action( 'admin_print_scripts-post-new.php', 'siteorigin_panels_admin_enqueue_scripts' );
@@ -345,7 +356,7 @@ function siteorigin_panels_admin_enqueue_styles() {
 	if ( in_array( $screen->id, siteorigin_panels_setting('post-types') ) || $screen->base == 'appearance_page_so_panels_home_page') {
 		wp_enqueue_style( 'so-panels-admin', plugin_dir_url(__FILE__) . 'css/admin.css' );
 		wp_enqueue_style( 'so-panels-chosen', plugin_dir_url(__FILE__) . 'js/chosen/chosen.css' );
-	
+
 		do_action( 'siteorigin_panel_enqueue_admin_styles' );
 	}
 }
@@ -364,7 +375,7 @@ function siteorigin_panels_add_help_tab($prefix) {
 	) {
 		$screen->add_help_tab( array(
 			'id' => 'panels-help-tab', //unique id for the tab
-			'title' => __( 'Page Builder', 'so-panels' ), //unique visible title for the tab
+			'title' => __( 'Page Builder', 'siteorigin-panels' ), //unique visible title for the tab
 			'callback' => 'siteorigin_panels_add_help_tab_content'
 		) );
 	}
@@ -399,6 +410,13 @@ function siteorigin_panels_save_post( $post_id, $post ) {
 }
 add_action( 'save_post', 'siteorigin_panels_save_post', 10, 2 );
 
+/**
+ * Filter content before we save it.
+ *
+ * @param $content
+ * @return array|mixed|string
+ * @filter content_save_pre
+ */
 function siteorigin_panels_content_save_pre($content){
 	global $post;
 
@@ -439,11 +457,12 @@ add_filter('content_save_pre', 'siteorigin_panels_content_save_pre');
 
 /**
  * Convert form post data into more efficient panels data.
- * 
+ *
  * @param $form_post
  * @return array
  */
 function siteorigin_panels_get_panels_data_from_post($form_post){
+
 	$panels_data = array();
 	$panels_data['widgets'] = array_map( 'stripslashes_deep', isset( $form_post['widgets'] ) ? $form_post['widgets'] : array() );
 	$panels_data['widgets'] = array_values( $panels_data['widgets'] );
@@ -478,7 +497,7 @@ function siteorigin_panels_get_panels_data_from_post($form_post){
 
 /**
  * Get the home page panels layout data.
- * 
+ *
  * @return mixed|void
  */
 function siteorigin_panels_get_home_page_data(){
@@ -488,7 +507,7 @@ function siteorigin_panels_get_home_page_data(){
 		$layouts = apply_filters('siteorigin_panels_prebuilt_layouts', array());
 		$panels_data = !empty($layouts['default_home']) ? $layouts['default_home'] : current($layouts);
 	}
-	
+
 	return $panels_data;
 }
 
@@ -504,7 +523,6 @@ function siteorigin_panels_css() {
 	if($_GET['post'] == 'home') $panels_data = siteorigin_panels_get_home_page_data();
 	else $panels_data = get_post_meta( $_GET['post'], 'panels_data', true );
 	$post_id = $_GET['post'];
-
 
 	header("Content-type: text/css");
 	echo siteorigin_panels_generate_css($_GET['post'], $panels_data);
@@ -846,7 +864,7 @@ function siteorigin_panels_admin_bar_menu($admin_bar){
 		
 		$admin_bar->add_node(array(
 			'id' => 'edit-home-page',
-			'title' => __('Edit Home Page', 'so-panels'),
+			'title' => __('Edit Home Page', 'siteorigin-panels'),
 			'href' => admin_url('themes.php?page=so_panels_home_page')
 		));
 	}
@@ -922,22 +940,6 @@ function siteorigin_panels_body_class($classes){
 add_filter('body_class', 'siteorigin_panels_body_class');
 
 /**
- * Add a tab that links to SiteOrigin themes.
- * 
- * @param $suffix
- */
-function siteorigin_panels_siteorigin_themes_tab($suffix){
-	if( ($suffix == 'theme-install.php' || $suffix == 'themes.php') && !wp_script_is('siteorigin-admin-tab') ){
-		wp_enqueue_script('siteorigin-themes-tab', plugin_dir_url(__FILE__) . 'js/siteorigin.tab.min.js', array('jquery'), SITEORIGIN_PANELS_VERSION);
-		wp_localize_script('siteorigin-themes-tab', 'siteoriginAdminTab', array(
-			'text' => __('SiteOrigin Themes', 'so-panels'),
-			'url' => admin_url('theme-install.php?tab=search&type=author&s=gpriday')
-		));
-	}
-}
-add_action('admin_enqueue_scripts', 'siteorigin_panels_siteorigin_themes_tab', 11);
-
-/**
  * Enqueue the required styles
  */
 function siteorigin_panels_enqueue_styles(){
@@ -964,13 +966,13 @@ function siteorigin_panels_cloned_page_layouts($layouts){
 		
 		if(empty($panels_data)) continue;
 		
-		$name =  empty($page->post_title) ? __('Untitled', 'so-panels') : $page->post_title;
-		if($page->post_status != 'publish') $name .= ' ( ' . __('Unpublished', 'so-panels') . ' )';
+		$name =  empty($page->post_title) ? __('Untitled', 'siteorigin-panels') : $page->post_title;
+		if($page->post_status != 'publish') $name .= ' ( ' . __('Unpublished', 'siteorigin-panels') . ' )';
 
 		if(current_user_can('edit_post', $page->ID)) {
 			$layouts['post-'.$page->ID] = wp_parse_args(
 				array(
-					'name' => sprintf(__('Clone Page: %s', 'so-panels'), $name )
+					'name' => sprintf(__('Clone Page: %s', 'siteorigin-panels'), $name )
 				),
 				$panels_data
 			);
@@ -983,7 +985,7 @@ function siteorigin_panels_cloned_page_layouts($layouts){
 
 		$layouts['current-home-page'] = wp_parse_args(
 			array(
-				'name' => __('Clone: Current Home Page', 'so-panels'),
+				'name' => __('Clone: Current Home Page', 'siteorigin-panels'),
 			),
 			$home_data
 		);
@@ -997,10 +999,12 @@ add_filter('siteorigin_panels_prebuilt_layouts', 'siteorigin_panels_cloned_page_
  * Add a link to recommended plugins and widgets.
  */
 function siteorigin_panels_recommended_widgets(){
+	if( ! apply_filters('siteorigin_panels_show_recommended', true) ) return;
+
 	?>
 	<p id="so-panels-recommended-plugins">
-		<a href="<?php echo admin_url('plugin-install.php?tab=favorites&user=siteorigin-pagebuilder') ?>" target="_blank"><?php _e('Recommended Plugins and Widgets', 'so-panels') ?></a>
-		<small><?php _e('Free plugins that work well with Page Builder', 'so-panels') ?></small>
+		<a href="<?php echo admin_url('plugin-install.php?tab=favorites&user=siteorigin-pagebuilder') ?>" target="_blank"><?php _e('Recommended Plugins and Widgets', 'siteorigin-panels') ?></a>
+		<small><?php _e('Free plugins that work well with Page Builder', 'siteorigin-panels') ?></small>
 	</p>
 	<?php
 }
@@ -1052,6 +1056,46 @@ function siteorigin_panels_ajax_action_prebuilt(){
 	exit();
 }
 add_action('wp_ajax_so_panels_prebuilt', 'siteorigin_panels_ajax_action_prebuilt');
+
+/**
+ * Display a widget form with the provided data
+ */
+function siteorigin_panels_ajax_widget_form(){
+	if( empty( $_GET['widget'] ) ) exit();
+
+	$_GET = array_map('stripslashes', $_GET);
+
+	global $wp_widget_factory;
+	$widget_obj = $wp_widget_factory->widgets[$_GET['widget']];
+	if ( !is_a($widget_obj, 'WP_Widget') )
+		return;
+
+	if(empty($_GET['instance'])) $instance = array();
+	else { $instance = json_decode($_GET['instance'], true); }
+
+	$widget_obj->id = 'temp';
+	$widget_obj->number = '{$id}';
+
+	ob_start();
+	$widget_obj->form($instance);
+	$form = ob_get_clean();
+
+	// Convert the widget field naming into ones that panels uses
+	$exp = preg_quote($widget_obj->get_field_name('____'));
+	$exp = str_replace('____', '(.*?)', $exp);
+	$form = preg_replace('/'.$exp.'/', 'widgets[{$id}][$1]', $form);
+
+	// Add all the extra fields
+	$form .= '<input type="hidden" data-info-field="order" name="panel_order[]" value="{$id}" />';
+	$form .= '<input type="hidden" data-info-field="class" name="widgets[{$id}][info][class]" value="' . esc_attr($_GET['widget']) . '" />';
+	$form .= '<input type="hidden" data-info-field="id" name="widgets[{$id}][info][id]" value="{$id}" />';
+	$form .= '<input type="hidden" data-info-field="grid" name="widgets[{$id}][info][grid]" value="' . ( isset( $instance['info']['grid'] ) ? $instance['info']['grid'] : '' ) . '" />';
+	$form .= '<input type="hidden" data-info-field="cell" name="widgets[{$id}][info][cell]" value="' . ( isset( $instance['info']['cell'] ) ? $instance['info']['cell'] : '' ) . '" />';
+
+	echo $form;
+	exit();
+}
+add_action('wp_ajax_so_panels_widget_form', 'siteorigin_panels_ajax_widget_form');
 
 /**
  * If we're in debug mode, display the panels data.

@@ -89,6 +89,14 @@ I've tried to ensure that Page Builder is compatible with most plugin widgets. I
 
 == Changelog ==
 
+= 1.4.0 =
+* Changed how widget forms are loaded to improve page load times.
+* Several improvements to increase compatibility with various plugins and widgets.
+* Properly handle widgets with form arrays.
+* CSS fixes.
+* Fixed compatibility issues with Black Studio TinyMCE.
+* Added more development hooks and filters.
+
 = 1.3.10 =
 * Updated to latest jPlayer.
 * Fixed issue that wasn't allowing users to disable custom home page feature.
