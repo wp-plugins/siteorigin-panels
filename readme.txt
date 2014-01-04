@@ -89,6 +89,10 @@ I've tried to ensure that Page Builder is compatible with most plugin widgets. I
 
 == Changelog ==
 
+= 1.4.1 =
+* Fixed: Issue that was removing content for widgets with a lot of data.
+* Fixed: Issue with duplicating widgets.
+
 = 1.4.0 =
 * Changed how widget forms are loaded to improve page load times.
 * Several improvements to increase compatibility with various plugins and widgets.

@@ -3,7 +3,7 @@
 Plugin Name: Page Builder by SiteOrigin
 Plugin URI: http://siteorigin.com/page-builder/
 Description: A drag and drop, responsive page builder that simplifies building your website.
-Version: 1.4
+Version: 1.4.1
 Author: Greg Priday
 Author URI: http://siteorigin.com
 License: GPL3
@@ -11,7 +11,7 @@ License URI: http://www.gnu.org/licenses/gpl.html
 Donate link: http://siteorigin.com/page-builder/donate/
 */
 
-define('SITEORIGIN_PANELS_VERSION', '1.4');
+define('SITEORIGIN_PANELS_VERSION', '1.4.1');
 define('SITEORIGIN_PANELS_BASE_FILE', __FILE__);
 
 include plugin_dir_path(__FILE__).'widgets/basic.php';
@@ -1060,18 +1060,19 @@ add_action('wp_ajax_so_panels_prebuilt', 'siteorigin_panels_ajax_action_prebuilt
 /**
  * Display a widget form with the provided data
  */
-function siteorigin_panels_ajax_widget_form(){
-	if( empty( $_GET['widget'] ) ) exit();
+function siteorigin_panels_ajax_widget_form($request = false){
 
-	$_GET = array_map('stripslashes', $_GET);
+	if(empty($request)) $request = array_map('stripslashes', $_REQUEST);
+
+	if( empty( $request['widget'] ) ) exit();
 
 	global $wp_widget_factory;
-	$widget_obj = $wp_widget_factory->widgets[$_GET['widget']];
+	$widget_obj = $wp_widget_factory->widgets[$request['widget']];
 	if ( !is_a($widget_obj, 'WP_Widget') )
 		return;
 
-	if(empty($_GET['instance'])) $instance = array();
-	else { $instance = json_decode($_GET['instance'], true); }
+	if(empty($request['instance'])) $instance = array();
+	else { $instance = json_decode($request['instance'], true); }
 
 	$widget_obj->id = 'temp';
 	$widget_obj->number = '{$id}';
@@ -1081,13 +1082,13 @@ function siteorigin_panels_ajax_widget_form(){
 	$form = ob_get_clean();
 
 	// Convert the widget field naming into ones that panels uses
-	$exp = preg_quote($widget_obj->get_field_name('____'));
+	$exp = preg_quote( $widget_obj->get_field_name('____') );
 	$exp = str_replace('____', '(.*?)', $exp);
-	$form = preg_replace('/'.$exp.'/', 'widgets[{$id}][$1]', $form);
+	$form = preg_replace( '/'.$exp.'/', 'widgets[{$id}][$1]', $form );
 
 	// Add all the extra fields
 	$form .= '<input type="hidden" data-info-field="order" name="panel_order[]" value="{$id}" />';
-	$form .= '<input type="hidden" data-info-field="class" name="widgets[{$id}][info][class]" value="' . esc_attr($_GET['widget']) . '" />';
+	$form .= '<input type="hidden" data-info-field="class" name="widgets[{$id}][info][class]" value="' . esc_attr( $request['widget'] ) . '" />';
 	$form .= '<input type="hidden" data-info-field="id" name="widgets[{$id}][info][id]" value="{$id}" />';
 	$form .= '<input type="hidden" data-info-field="grid" name="widgets[{$id}][info][grid]" value="' . ( isset( $instance['info']['grid'] ) ? $instance['info']['grid'] : '' ) . '" />';
 	$form .= '<input type="hidden" data-info-field="cell" name="widgets[{$id}][info][cell]" value="' . ( isset( $instance['info']['cell'] ) ? $instance['info']['cell'] : '' ) . '" />';

@@ -19,13 +19,16 @@
         var parts;
 
         $$.data('dialog').find( '*[name]' ).not( '[data-info-field]' ).each( function () {
-            var name = /widgets\[[0-9]+\]\[(.*)\]/.exec($(this).attr('name'));
+            var $$ = $(this);
+            var name = /widgets\[[0-9]+\]\[(.*)\]/.exec($$.attr('name'));
             name = name[1];
 
             parts = name.split('][');
             var sub = data;
             for(var i = 0; i < parts.length; i++) {
-                if(i == parts.length - 1) sub[parts[i]] = $( this ).val();
+                if(i == parts.length - 1) {
+                    sub[parts[i]] = ($$.attr('type') == 'checkbox') ? $$.is(':checked') : $$.val();
+                }
                 else {
                     if(typeof sub[parts[i]] == 'undefined') sub[parts[i]] = [];
                     sub = sub[parts[i]];
@@ -172,7 +175,7 @@
 
         // Load the widget form from the server
         dialog.addClass('ui-dialog-content-loading');
-        $.get(
+        $.post(
             ajaxurl,
             {
                 'action' : 'so_panels_widget_form',
