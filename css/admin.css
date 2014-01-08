@@ -870,7 +870,7 @@ html {
 	-moz-box-shadow: 0 0 10px rgba(0,0,0,0.3);
 	box-shadow: 0 0 10px rgba(0,0,0,0.3);
 	padding: 0 !important;
-	z-index: 80002;
+	z-index: 80002 !important;
 }
 
 .ui-dialog.panels-admin-dialog .ui-dialog-buttonpane {

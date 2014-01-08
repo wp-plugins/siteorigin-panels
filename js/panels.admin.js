@@ -307,4 +307,7 @@ jQuery( function ( $ ) {
         cloned = [];
     }
 
+    // Add a hidden field to show that the JS is complete. If this doesn't run we assume that JS is broken and the interface hasn't loaded properly
+    $('#panels').append('<input name="panels_js_complete" type="hidden" value="1" />');
+
 } );

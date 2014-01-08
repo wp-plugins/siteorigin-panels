@@ -175,34 +175,42 @@
 
         // Load the widget form from the server
         dialog.addClass('ui-dialog-content-loading');
-        $.post(
-            ajaxurl,
-            {
-                'action' : 'so_panels_widget_form',
-                'widget' : type.replace('\\\\', '\\'),
-                'instance' : JSON.stringify(data)
-            },
-            function(result){
-                // the newPanelId is defined at the top of this function.
-                result = result.replace( /\{\$id\}/g, newPanelId );
-                dialog.html(result).dialog("option", "position", "center");
-
-                panel.panelsSetPanelTitle();
-
-                // This is to refresh the dialog positions
-                $( window ).resize();
-                $( document ).trigger('panelssetup', panel, dialog);
-                $( '#panels-container .panels-container' ).trigger( 'refreshcells' );
-
-                // This gives panel types a chance to influence the form
-                dialog.removeClass('ui-dialog-content-loading').trigger( 'panelsopen', panel, dialog );
-            },
-            'html'
-        );
-
 
         // This is so we can access the dialog (and its forms) later.
         panel.data('dialog', dialog).disableSelection();
+
+        var loadForm = function (result){
+            // the newPanelId is defined at the top of this function.
+            result = result.replace( /\{\$id\}/g, newPanelId );
+            dialog.html(result).dialog("option", "position", "center");
+
+            panel.panelsSetPanelTitle();
+
+            // This is to refresh the dialog positions
+            $( window ).resize();
+            $( document ).trigger('panelssetup', panel, dialog);
+            $( '#panels-container .panels-container' ).trigger( 'refreshcells' );
+
+            // This gives panel types a chance to influence the form
+            dialog.removeClass('ui-dialog-content-loading').trigger( 'panelsopen', panel, dialog );
+        };
+
+        if(typeof data != 'undefined' && typeof data['_panels_form'] != 'undefined' ) {
+            loadForm( data['_panels_form'] );
+        }
+        else {
+            // Load the panels data
+            $.post(
+                ajaxurl,
+                {
+                    'action' : 'so_panels_widget_form',
+                    'widget' : type.replace('\\\\', '\\'),
+                    'instance' : JSON.stringify(data)
+                },
+                loadForm,
+                'html'
+            );
+        }
 
         // Add the action buttons
         panel.find('.title .actions')
@@ -243,7 +251,11 @@
     panels.addPanel = function(panel, container, position, animate){
         if(container == null) container = $( '#panels-container .cell.cell-selected .panels-container' ).eq(0);
         if(container.length == 0) container = $( '#panels-container .cell .panels-container' ).eq(0);
-        if(container.length == 0) return;
+        if(container.length == 0) {
+            // There are no containers, so lets add one.
+            panels.createGrid(1, [1]);
+            container = $( '#panels-container .cell .panels-container' ).eq(0);
+        }
 
         if (position == null) container.append( panel );
         else {

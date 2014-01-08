@@ -506,6 +506,12 @@ class SiteOrigin_Panels_Widgets_EmbeddedVideo extends WP_Widget {
 		echo $args['after_widget'];
 	}
 
+	/**
+	 * Display the embedded video form.
+	 *
+	 * @param array $instance
+	 * @return string|void
+	 */
 	function form( $instance ) {
 		$instance = wp_parse_args( $instance, array(
 			'video' => '',
@@ -514,7 +520,7 @@ class SiteOrigin_Panels_Widgets_EmbeddedVideo extends WP_Widget {
 		?>
 		<p>
 			<label for="<?php echo $this->get_field_id( 'video' ) ?>"><?php _e( 'Video', 'siteorigin-panels' ) ?></label>
-			<input type="text" class="widefat" name="<?php echo $this->get_field_name( 'video' ) ?>" id="<?php echo $this->get_field_id( 'video' ) ?>" <?php echo esc_attr( $instance['video'] ) ?>>
+			<input type="text" class="widefat" name="<?php echo $this->get_field_name( 'video' ) ?>" id="<?php echo $this->get_field_id( 'video' ) ?>" value="<?php echo esc_attr( $instance['video'] ) ?>" />
 		</p>
 	<?php
 	}

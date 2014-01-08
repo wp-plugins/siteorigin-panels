@@ -89,6 +89,15 @@ I've tried to ensure that Page Builder is compatible with most plugin widgets. I
 
 == Changelog ==
 
+= 1.4.2 =
+* All existing widget forms are loaded with the initial interface, rather than through AJAX. Improves performance.
+* Added safety check to ensure Page Builder data loaded before into the interface before saving into the database. Helps prevent content loss.
+* Small usability improvements.
+* Fixed: Embedded video widget.
+* Fixed: Conflict with GPP Slideshow plugin.
+* Fixed: Possible z-index conflicts with other plugins that have jQuery UI CSS.
+* Fixed: Constant notification about autosave being more recent than current version.
+
 = 1.4.1 =
 * Fixed: Issue that was removing content for widgets with a lot of data.
 * Fixed: Issue with duplicating widgets.
