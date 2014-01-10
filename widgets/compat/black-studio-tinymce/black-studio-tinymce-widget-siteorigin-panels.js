@@ -13,27 +13,20 @@ jQuery(function($){
     setupTinyMCE = function(e) {
         var dialog = $(e.target);
 
-        dialog.filter('.widget-dialog-wp_widget_black_studio_tinymce').find('a[id$=visual]').click();
-        var $text_area = $(e.target).find('textarea[id^=widget-black-studio-tinymce]');
-
-        // A slight hack, create a hidden field that will store the value in a way that WP wont interfere with.
-        if(dialog.find('.tinymce-hidden-field-value').length == 0) {
-            dialog.append(
-                $('<input type="hidden" class="tinymce-hidden-field-value" />')
-                    .attr('name', $text_area.attr('name'))
-                    .val($text_area.val())
-            );
+        if(dialog.data('bs_tinymce_setup') == null) {
+            dialog.filter('.widget-dialog-wp_widget_black_studio_tinymce').find('a[id$=visual]').click();
+            dialog.find('.editor_container iframe[id$="_ifr"]').css('height', 350);
+            dialog.data('bs_tinymce_setup', true);
         }
     }
 
     $(document).on('dialogopen', setupTinyMCE);
-    $(document).on('panelsopen', setupTinyMCE);
 
-    // Copy the value from the text editor to the hidden text field.
+    // Copy the value from the text editor to the text area.
     $(document).on('dialogbeforeclose', function(e) {
         var $text_area = $(e.target).find('textarea[id^=widget-black-studio-tinymce]');
-        if ($text_area.length > 0) {
 
+        if ($text_area.length > 0) {
             var editor = tinyMCE.get($text_area.attr('id'));
             if(typeof(editor) != 'undefined' && typeof( editor.getContent ) == "function") {
                 var content = editor.getContent();
@@ -41,9 +34,9 @@ jQuery(function($){
             else {
                 content = $text_area.val();
             }
-
-            $(e.target).find('.tinymce-hidden-field-value').val(content);
+            $text_area.val(content);
         }
+
     } );
 
 } );

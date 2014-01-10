@@ -43,6 +43,7 @@ function siteorigin_panels_revisions_fields( $fields ) {
 	// Prevent the autosave message.
 	// TODO figure out how to include Page Builder data into the autosave.
 	if(!function_exists('get_current_screen')) return $fields;
+
 	$screen = get_current_screen();
 	if(!empty($screen) && $screen->base == 'post') return $fields;
 

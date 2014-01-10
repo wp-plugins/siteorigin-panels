@@ -1,6 +1,49 @@
 <?php
 
 /**
+ * Get the settings
+ *
+ * @param string $key Only get a specific key.
+ * @return mixed
+ */
+function siteorigin_panels_setting($key = ''){
+	static $settings;
+
+	if(empty($settings)){
+		$display_settings = get_option('siteorigin_panels_display', array());
+
+		$settings = get_theme_support('siteorigin-panels');
+		if(!empty($settings)) $settings = $settings[0];
+		else $settings = array();
+
+		$settings = wp_parse_args( $settings, array(
+			'home-page' => false,																								// Is the home page supported
+			'home-page-default' => false,																						// What's the default layout for the home page?
+			'home-template' => 'home-panels.php',																				// The file used to render a home page.
+			'post-types' => get_option('siteorigin_panels_post_types', array('page', 'post')),									// Post types that can be edited using panels.
+
+			'bundled-widgets' => !isset( $display_settings['bundled-widgets'] ) ? true : $display_settings['bundled-widgets'],	// Include bundled widgets.
+			'responsive' => !isset( $display_settings['responsive'] ) ? true : $display_settings['responsive'],				    // Should we use a responsive layout
+			'mobile-width' => !isset( $display_settings['mobile-width'] ) ? 780 : $display_settings['mobile-width'],			// What is considered a mobile width?
+
+			'margin-bottom' => !isset( $display_settings['margin-bottom'] ) ? 30 : $display_settings['margin-bottom'],			// Bottom margin of a cell
+			'margin-sides' => !isset( $display_settings['margin-sides'] ) ? 30 : $display_settings['margin-sides'],				// Spacing between 2 cells
+			'affiliate-id' => false,																							// Set your affiliate ID
+			'copy-content' => !isset( $display_settings['copy-content'] ) ? true : $display_settings['copy-content'],			// Should we copy across content
+			'animations' => !isset( $display_settings['animations'] ) ? true : $display_settings['animations'],					// Do we need animations
+			'inline-css' => !isset( $display_settings['inline-css'] ) ? true : $display_settings['inline-css'],				    // How to display CSS
+		) );
+
+		// Filter these settings
+		$settings = apply_filters('siteorigin_panels_settings', $settings);
+		if( empty( $settings['post-types'] ) ) $settings['post-types'] = array();
+	}
+
+	if( !empty( $key ) ) return isset( $settings[$key] ) ? $settings[$key] : null;
+	return $settings;
+}
+
+/**
  * Add the options page
  */
 function siteorigin_panels_options_admin_menu() {

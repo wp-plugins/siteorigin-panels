@@ -3,7 +3,7 @@
 Plugin Name: Page Builder by SiteOrigin
 Plugin URI: http://siteorigin.com/page-builder/
 Description: A drag and drop, responsive page builder that simplifies building your website.
-Version: 1.4.2
+Version: 1.4.3
 Author: Greg Priday
 Author URI: http://siteorigin.com
 License: GPL3
@@ -11,7 +11,7 @@ License URI: http://www.gnu.org/licenses/gpl.html
 Donate link: http://siteorigin.com/page-builder/donate/
 */
 
-define('SITEORIGIN_PANELS_VERSION', '1.4.2');
+define('SITEORIGIN_PANELS_VERSION', '1.4.3');
 define('SITEORIGIN_PANELS_BASE_FILE', __FILE__);
 
 include plugin_dir_path(__FILE__).'widgets/basic.php';
@@ -40,49 +40,6 @@ function siteorigin_panels_init_lang(){
 	load_plugin_textdomain('siteorigin-panels', false, 'siteorigin-panels/lang');
 }
 add_action('admin_init', 'siteorigin_panels_init_lang');
-
-/**
- * Get the settings
- *
- * @param string $key Only get a specific key.
- * @return mixed
- */
-function siteorigin_panels_setting($key = ''){
-	static $settings;
-
-	if(empty($settings)){
-		$display_settings = get_option('siteorigin_panels_display', array());
-
-		$settings = get_theme_support('siteorigin-panels');
-		if(!empty($settings)) $settings = $settings[0];
-		else $settings = array();
-
-		$settings = wp_parse_args( $settings, array(
-			'home-page' => false,																								// Is the home page supported
-			'home-page-default' => false,																						// What's the default layout for the home page?
-			'home-template' => 'home-panels.php',																				// The file used to render a home page.
-			'post-types' => get_option('siteorigin_panels_post_types', array('page', 'post')),									// Post types that can be edited using panels.
-
-			'bundled-widgets' => !isset( $display_settings['bundled-widgets'] ) ? true : $display_settings['bundled-widgets'],	// Include bundled widgets.
-			'responsive' => !isset( $display_settings['responsive'] ) ? true : $display_settings['responsive'],				    // Should we use a responsive layout
-			'mobile-width' => !isset( $display_settings['mobile-width'] ) ? 780 : $display_settings['mobile-width'],			// What is considered a mobile width?
-
-			'margin-bottom' => !isset( $display_settings['margin-bottom'] ) ? 30 : $display_settings['margin-bottom'],			// Bottom margin of a cell
-			'margin-sides' => !isset( $display_settings['margin-sides'] ) ? 30 : $display_settings['margin-sides'],				// Spacing between 2 cells
-			'affiliate-id' => false,																							// Set your affiliate ID
-			'copy-content' => !isset( $display_settings['copy-content'] ) ? true : $display_settings['copy-content'],			// Should we copy across content
-			'animations' => !isset( $display_settings['animations'] ) ? true : $display_settings['animations'],					// Do we need animations
-			'inline-css' => !isset( $display_settings['inline-css'] ) ? true : $display_settings['inline-css'],				    // How to display CSS
-		) );
-
-		// Filter these settings
-		$settings = apply_filters('siteorigin_panels_settings', $settings);
-		if( empty( $settings['post-types'] ) ) $settings['post-types'] = array();
-	}
-
-	if( !empty( $key ) ) return isset( $settings[$key] ) ? $settings[$key] : null;
-	return $settings;
-}
 
 /**
  * Add the admin menu entries
@@ -318,13 +275,13 @@ function siteorigin_panels_admin_enqueue_scripts($prefix) {
 		}
 
 		// Render all the widget forms. A lot of widgets use this as a chance to enqueue their scripts
-		ob_start();
 		$original_post = $GLOBALS['post']; // Make sure widgets don't change the global post.
 		foreach($GLOBALS['wp_widget_factory']->widgets as $class => $widget_obj){
+			ob_start();
 			$widget_obj->form(array());
+			ob_clean();
 		}
 		$GLOBALS['post'] = $original_post;
-		ob_clean();
 
 		// This gives panels a chance to enqueue scripts too, without having to check the screen ID.
 		do_action( 'siteorigin_panel_enqueue_admin_scripts' );
@@ -495,7 +452,7 @@ function siteorigin_panels_get_panels_data_from_post($form_post){
  */
 function siteorigin_panels_get_home_page_data(){
 	$panels_data = get_option('siteorigin_panels_home_page', null);
-	if(is_null($panels_data)){
+	if( is_null( $panels_data ) ){
 		// Load the default layout
 		$layouts = apply_filters('siteorigin_panels_prebuilt_layouts', array());
 		$panels_data = !empty($layouts['default_home']) ? $layouts['default_home'] : current($layouts);
@@ -515,7 +472,7 @@ function siteorigin_panels_get_current_admin_panels_data(){
 	// Localize the panels with the panels data
 	if($screen->base == 'appearance_page_so_panels_home_page'){
 		$panels_data = get_option('siteorigin_panels_home_page', null);
-		if(is_null($panels_data)){
+		if( is_null( $panels_data ) ){
 			// Load the default layout
 			$layouts = apply_filters('siteorigin_panels_prebuilt_layouts', array());
 			$panels_data = !empty($layouts['home']) ? $layouts['home'] : current($layouts);
@@ -539,7 +496,6 @@ function siteorigin_panels_get_current_admin_panels_data(){
  * @action init
  */
 function siteorigin_panels_css() {
-	if(empty($_GET['action']) || $_GET['action'] != 'siteorigin_panels_post_css') return;
 	if(!isset($_GET['post']) || !isset($_GET['ver'])) return;
 
 	if($_GET['post'] == 'home') $panels_data = siteorigin_panels_get_home_page_data();
@@ -550,7 +506,8 @@ function siteorigin_panels_css() {
 	echo siteorigin_panels_generate_css($_GET['post'], $panels_data);
 	exit();
 }
-add_action( 'init', 'siteorigin_panels_css' );
+add_action( 'wp_ajax_siteorigin_panels_post_css', 'siteorigin_panels_css' );
+add_action( 'wp_ajax_nopriv_siteorigin_panels_post_css', 'siteorigin_panels_css' );
 
 /**
  * Generate the actual CSS.
@@ -771,11 +728,13 @@ function siteorigin_panels_render( $post_id = false, $enqueue_css = true, $panel
 
 	ob_start();
 
+	global $siteorigin_panels_inline_css;
+	if(empty($siteorigin_panels_inline_css)) $siteorigin_panels_inline_css = '';
+
 	if($enqueue_css) {
 		if( siteorigin_panels_setting('inline-css') ) {
 			wp_enqueue_style('siteorigin-panels-front');
-			// Render the CSS inline
-			?><style type="text/css" media="all"><?php echo siteorigin_panels_generate_css($post_id, $panels_data) ?></style><?php
+			$siteorigin_panels_inline_css .= siteorigin_panels_generate_css($post_id, $panels_data);
 		}
 		else {
 			// This is the CSS for the page layout.
@@ -788,7 +747,7 @@ function siteorigin_panels_render( $post_id = false, $enqueue_css = true, $panel
 						// Include this to ensure changes don't get cached by the browser
 						'layout' => substr( md5( serialize( $panels_data ) ), 0, 8)
 					),
-					site_url()
+					admin_url('admin-ajax.php')
 				),
 				array( 'siteorigin-panels-front' ),
 				SITEORIGIN_PANELS_VERSION
@@ -836,6 +795,18 @@ function siteorigin_panels_render( $post_id = false, $enqueue_css = true, $panel
 
 	return apply_filters( 'siteorigin_panels_render', $html, $post_id, !empty($post) ? $post : null );
 }
+
+function siteorigin_panels_print_inline_css(){
+	global $siteorigin_panels_inline_css;
+
+	if(!empty($siteorigin_panels_inline_css)) {
+		?><style type="text/css" media="all"><?php echo $siteorigin_panels_inline_css ?></style><?php
+	}
+
+	$siteorigin_panels_inline_css = '';
+}
+add_action('wp_head', 'siteorigin_panels_print_inline_css', 12);
+add_action('wp_footer', 'siteorigin_panels_print_inline_css');
 
 /**
  * Render the widget.
@@ -1019,8 +990,11 @@ add_filter('siteorigin_panels_prebuilt_layouts', 'siteorigin_panels_cloned_page_
 
 /**
  * Add a link to recommended plugins and widgets.
+ *
+ * @todo Have an alternative page for WordPress multi user.
  */
 function siteorigin_panels_recommended_widgets(){
+	// This filter can be used to hide the recommended plugins button.
 	if( ! apply_filters('siteorigin_panels_show_recommended', true) ) return;
 
 	?>
@@ -1091,6 +1065,13 @@ function siteorigin_panels_ajax_widget_form(){
 }
 add_action('wp_ajax_so_panels_widget_form', 'siteorigin_panels_ajax_widget_form');
 
+/**
+ * Render a form with all the Page Builder specific fields
+ *
+ * @param string $widget The class of the widget
+ * @param array $instance Widget values
+ * @return mixed|string The form
+ */
 function siteorigin_panels_render_form($widget, $instance = array()){
 
 	global $wp_widget_factory;

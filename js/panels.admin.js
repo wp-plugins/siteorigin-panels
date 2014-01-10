@@ -172,7 +172,6 @@ jQuery( function ( $ ) {
     // Handle adding a new panel
     $( '#panels-dialog .panel-type' ).click( function () {
         var panel = $('#panels-dialog').panelsCreatePanel( $( this ).attr('data-class') );
-
         panels.addPanel(panel, null, null, true);
 
         // Close the add panel dialog
