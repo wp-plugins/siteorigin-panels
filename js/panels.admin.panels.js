@@ -5,7 +5,7 @@
  * @license GPL 2.0 http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-(function($){
+( function($){
 
     var newPanelIdInit = 0;
     panels.undoManager = new UndoManager();
@@ -28,7 +28,7 @@
                 parts = name.split('][');
 
                 parts = parts.map(function(e){
-                    if(!isNaN(parseFloat(e)) && isFinite(e)) return parseInt(e);
+                    if( !isNaN(parseFloat(e)) && isFinite(e) ) return parseInt(e);
                     else return e;
                 });
 
@@ -37,7 +37,7 @@
                     if(i == parts.length - 1) {
 
                         if( $$.attr('type') == 'checkbox' ){
-                            if ( $$.is(':checked') ) sub[parts[i]] = true;
+                            if ( $$.is(':checked') ) sub[parts[i]] = $$.val() != '' ? $$.val() : true;
                         }
                         else {
                             sub[parts[i]] = $$.val();
@@ -88,6 +88,7 @@
         panel
             .attr('data-type', type)
             .append( $('<input type="hidden" name="widgets[' + newPanelId + '][data]" type="hidden">').val(JSON.stringify(data) ) )
+            .append( $('<input type="hidden" name="widgets[' + newPanelId + '][info][raw]" type="hidden">').val(0) )
             .append( $('<input type="hidden" name="widgets[' + newPanelId + '][info][grid]" type="hidden">') )
             .append( $('<input type="hidden" name="widgets[' + newPanelId + '][info][cell]" type="hidden">') )
             .append( $('<input type="hidden" name="widgets[' + newPanelId + '][info][id]" type="hidden">').val(newPanelId) )
@@ -96,7 +97,8 @@
             .data( {
                 // We need this data to update the title
                 'title-field': $$.attr( 'data-title-field' ),
-                'title':       $$.attr( 'data-title' )
+                'title': $$.attr( 'data-title' ),
+                'raw' : false
             } )
             .find( 'h4, h5' ).click( function () {
                 $(this).closest('.panel').find('a.edit').click();
@@ -172,6 +174,7 @@
 
                         panel.find('input[name$="[data]"]').val( JSON.stringify( panelData ) );
                         panel.panelsSetPanelTitle( panelData );
+                        panel.find('input[name$="[info][raw]"]').val(1);
 
                         // Change the title of the panel
                         activeDialog.dialog( 'close' );
@@ -231,17 +234,32 @@
                     panel.data('dialog', activeDialog);
 
                     // Load the widget form
+                    var widgetClass = type;
+                    try {
+                        widgetClass = widgetClass.replace('\\\\', '\\');
+                    }
+                    catch(err){
+                        return;
+                    }
+
+
                     $.post(
                         ajaxurl,
                         {
                             'action' : 'so_panels_widget_form',
-                            'widget' : type.replace('\\\\', '\\'),
-                            'instance' : panel.panelsGetPanelData()
+                            'widget' : widgetClass,
+                            'instance' : panel.panelsGetPanelData(),
+                            'raw' : panel.find('input[name$="[info][raw]"]').val()
                         },
                         function(result){
                             // the newPanelId is defined at the top of this function.
-                            result = result.replace( /\{\$id\}/g, newPanelId );
-                            activeDialog.html(result).dialog("option", "position", "center");
+                            try {
+                                result = result.replace( /\{\$id\}/g, newPanelId );
+                                activeDialog.html(result).dialog("option", "position", "center");
+                            }
+                            catch (err) {
+                                activeDialog.html(result).dialog("option", "position", "center");
+                            }
 
                             // This is to refresh the dialog positions
                             $( window ).resize();
@@ -335,7 +353,14 @@
                 }
             }
 
-            $(this ).find( 'h4' ).html( $(this ).data( 'title' ) + '<span>' + titleValue.substring(0, 80).replace(/(<([^>]+)>)/ig,"") + '</span>' );
+            try {
+                titleValue = titleValue.substring(0, 80).replace(/(<([^>]+)>)/ig,"")
+            }
+            catch(err) {
+                titleValue = '';
+            }
+
+            $(this ).find( 'h4' ).html( $(this ).data( 'title' ) + '<span>' + titleValue + '</span>' );
         });
     }
 
@@ -391,4 +416,4 @@
         } );
     }
 
-})(jQuery);
+} )( jQuery );

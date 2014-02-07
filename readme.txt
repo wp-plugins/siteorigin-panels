@@ -90,6 +90,12 @@ I've tried to ensure that Page Builder is compatible with most plugin widgets. I
 
 == Changelog ==
 
+= 1.4.5 =
+* Fixed an issue with copy content.
+* Improved handling of styles in prebuilt layouts.
+* Improved error handling in Javascript.
+* Fixed issue with checkboxes.
+
 = 1.4.4 =
 * Generating Page Builder content in admin is now generated with a separate request to properly handle fatal errors from widgets.
 * Fixed potential issue when loading home page interface.

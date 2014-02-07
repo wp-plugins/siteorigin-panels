@@ -109,6 +109,7 @@ function siteorigin_panels_style_update_data($panels_data){
 	return $panels_data;
 }
 add_filter('siteorigin_panels_data', 'siteorigin_panels_style_update_data');
+add_filter('siteorigin_panels_prebuilt_layout', 'siteorigin_panels_style_update_data');
 
 /**
  * Sanitize all the data that's come from post data
