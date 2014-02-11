@@ -73,6 +73,7 @@
      * @return {*}
      */
     $.fn.panelsCreatePanel = function ( type, data ) {
+
         var newPanelId = newPanelIdInit++;
 
         var dialogWrapper = $( this );
@@ -248,18 +249,19 @@
                         {
                             'action' : 'so_panels_widget_form',
                             'widget' : widgetClass,
-                            'instance' : panel.panelsGetPanelData(),
+                            'instance' : JSON.stringify( panel.panelsGetPanelData() ),
                             'raw' : panel.find('input[name$="[info][raw]"]').val()
                         },
                         function(result){
                             // the newPanelId is defined at the top of this function.
                             try {
                                 result = result.replace( /\{\$id\}/g, newPanelId );
-                                activeDialog.html(result).dialog("option", "position", "center");
                             }
                             catch (err) {
-                                activeDialog.html(result).dialog("option", "position", "center");
+                                result = '';
                             }
+
+                            activeDialog.html(result).dialog("option", "position", "center");
 
                             // This is to refresh the dialog positions
                             $( window ).resize();
@@ -325,7 +327,10 @@
         container.closest( '.grid-container' ).panelsResizeCells();
         if(animate) {
             if(panels.animations)
-                $( '#panels-container .panel.new-panel' ).hide().slideDown( 500 , function(){ panel.find('a.edit').click() } ).removeClass( 'new-panel' );
+                $( '#panels-container .panel.new-panel' )
+                    .hide()
+                    .slideDown( 450 , function(){ panel.find('a.edit').click() } )
+                    .removeClass( 'new-panel' );
             else {
                 $( '#panels-container .panel.new-panel').show().removeClass( 'new-panel' );
                 panel.find('a.edit').click();

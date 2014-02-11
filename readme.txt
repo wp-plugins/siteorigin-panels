@@ -90,6 +90,10 @@ I've tried to ensure that Page Builder is compatible with most plugin widgets. I
 
 == Changelog ==
 
+= 1.4.6 =
+* Widgets are now only run through their update function when modified.
+* Fixed gallery widget.
+
 = 1.4.5 =
 * Fixed an issue with copy content.
 * Improved handling of styles in prebuilt layouts.

@@ -3,7 +3,7 @@
 Plugin Name: Page Builder by SiteOrigin
 Plugin URI: http://siteorigin.com/page-builder/
 Description: A drag and drop, responsive page builder that simplifies building your website.
-Version: 1.4.5
+Version: 1.4.6
 Author: Greg Priday
 Author URI: http://siteorigin.com
 License: GPL3
@@ -11,7 +11,7 @@ License URI: http://www.gnu.org/licenses/gpl.html
 Donate link: http://siteorigin.com/page-builder/donate/
 */
 
-define('SITEORIGIN_PANELS_VERSION', '1.4.5');
+define('SITEORIGIN_PANELS_VERSION', '1.4.6');
 define('SITEORIGIN_PANELS_BASE_FILE', __FILE__);
 
 include plugin_dir_path(__FILE__).'widgets/basic.php';
@@ -1017,7 +1017,7 @@ function siteorigin_panels_ajax_widget_form(){
 	$request = array_map('stripslashes_deep', $_REQUEST);
 	if( empty( $request['widget'] ) ) exit();
 
-	echo siteorigin_panels_render_form( $request['widget'], !empty($request['instance']) ? $request['instance'] : array(), $_REQUEST['raw'] );
+	echo siteorigin_panels_render_form( $request['widget'], !empty($request['instance']) ? json_decode( $request['instance'], true ) : array(), $_REQUEST['raw'] );
 	exit();
 }
 add_action('wp_ajax_so_panels_widget_form', 'siteorigin_panels_ajax_widget_form');
@@ -1027,6 +1027,7 @@ add_action('wp_ajax_so_panels_widget_form', 'siteorigin_panels_ajax_widget_form'
  *
  * @param string $widget The class of the widget
  * @param array $instance Widget values
+ * @param bool $raw
  * @return mixed|string The form
  */
 function siteorigin_panels_render_form($widget, $instance = array(), $raw = false){
