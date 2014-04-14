@@ -88,10 +88,15 @@ I've tried to ensure that Page Builder is compatible with most plugin widgets. I
 
 == Changelog ==
 
+= 1.4.8 =
+* Updated Post Loop widget so it now accepts post__in in additional args field.
+* Added update notification.
+* Added filters for before and after the row content.
+* Removed references to legacy widgets.
+
 = 1.4.7 =
 * Fixed size problem in gallery widget.
 * Compatibility fixes with WordPress 3.9.
-* Added checks to prevent total content loss in some situations.
 
 = 1.4.6 =
 * Widgets are now only run through their update function when modified.
