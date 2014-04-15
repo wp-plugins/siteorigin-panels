@@ -3,7 +3,7 @@
 Plugin Name: Page Builder by SiteOrigin
 Plugin URI: http://siteorigin.com/page-builder/
 Description: A drag and drop, responsive page builder that simplifies building your website.
-Version: 1.4.8
+Version: 1.4.9
 Author: Greg Priday
 Author URI: http://siteorigin.com
 License: GPL3
@@ -11,7 +11,7 @@ License URI: http://www.gnu.org/licenses/gpl.html
 Donate link: http://siteorigin.com/page-builder/donate/
 */
 
-define('SITEORIGIN_PANELS_VERSION', '1.4.8');
+define('SITEORIGIN_PANELS_VERSION', '1.4.9');
 define('SITEORIGIN_PANELS_BASE_FILE', __FILE__);
 
 include plugin_dir_path(__FILE__) . 'widgets/basic.php';
@@ -310,6 +310,9 @@ function siteorigin_panels_admin_enqueue_styles() {
 		if( version_compare( $wp_version, '3.9.beta.1', '<' ) ) {
 			// Versions before 3.9 need some custom jQuery UI styling
 			wp_enqueue_style( 'so-panels-admin-jquery-ui', plugin_dir_url(__FILE__) . 'css/jquery-ui.css', array(), SITEORIGIN_PANELS_VERSION );
+		}
+		else {
+			wp_enqueue_style( 'wp-jquery-ui-dialog' );
 		}
 
 		wp_enqueue_style( 'so-panels-chosen', plugin_dir_url(__FILE__) . 'js/chosen/chosen.css', array(), SITEORIGIN_PANELS_VERSION );

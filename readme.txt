@@ -1,8 +1,8 @@
 === Page Builder by SiteOrigin ===
 Contributors: gpriday
 Tags: page builder, responsive, widget, widgets, builder, page, admin, gallery, content, cms, pages, post, css, layout, grid
-Requires at least: 3.6
-Tested up to: 3.8.1
+Requires at least: 3.7
+Tested up to: 3.9
 Stable tag: trunk
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl.html
@@ -87,6 +87,9 @@ Page Builder is actively developed and updated, so generally I'd recommend that 
 I've tried to ensure that Page Builder is compatible with most plugin widgets. It's best to just download Page Builder and test for yourself.
 
 == Changelog ==
+
+= 1.4.9 =
+* Fixed: jQuery UI dialog wasn't being enqueued properly in WordPress 3.9.
 
 = 1.4.8 =
 * Updated Post Loop widget so it now accepts post__in in additional args field.
