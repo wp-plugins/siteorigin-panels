@@ -88,6 +88,9 @@ I've tried to ensure that Page Builder is compatible with most plugin widgets. I
 
 == Changelog ==
 
+= 1.4.10 =
+* Fixed: Fixed z-indexes so that TinyMCE dropdowns (like formatting) aren't hidden.
+
 = 1.4.9 =
 * Fixed: jQuery UI dialog wasn't being enqueued properly in WordPress 3.9.
 
