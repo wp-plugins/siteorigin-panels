@@ -12,7 +12,7 @@
     var cellId = 0;
 
     /**
-     * Visually resize all the cells, this should happen after a new panel is added.
+     * Visually resize the height of all cells, this should happen after a new panel is added.
      */
     $.fn.panelsResizeCells = function(){
 

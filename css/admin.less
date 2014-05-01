@@ -863,15 +863,17 @@ html {
 	z-index: 80002 !important;
 
 	.ui-dialog-content{
+		z-index: 80002 !important;
+
 		&.ui-dialog-content-loading {
 			background: url('./images/ajax-loader-small.gif') center center no-repeat;
 		}
 
-		*:first-child{
+		> *:first-child{
 			margin-top: 0;
 		}
 
-		*:last-child{
+		> *:last-child{
 			margin-bottom: 0;
 		}
 	}

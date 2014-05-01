@@ -3,7 +3,7 @@
 Plugin Name: Page Builder by SiteOrigin
 Plugin URI: http://siteorigin.com/page-builder/
 Description: A drag and drop, responsive page builder that simplifies building your website.
-Version: 1.4.10
+Version: 1.4.11
 Author: Greg Priday
 Author URI: http://siteorigin.com
 License: GPL3
@@ -11,18 +11,17 @@ License URI: http://www.gnu.org/licenses/gpl.html
 Donate link: http://siteorigin.com/page-builder/donate/
 */
 
-define('SITEORIGIN_PANELS_VERSION', '1.4.10');
+define('SITEORIGIN_PANELS_VERSION', '1.4.11');
 define('SITEORIGIN_PANELS_BASE_FILE', __FILE__);
 
 include plugin_dir_path(__FILE__) . 'widgets/basic.php';
 
 include plugin_dir_path(__FILE__) . 'inc/options.php';
-include plugin_dir_path(__FILE__) . 'inc/aff.php';
 include plugin_dir_path(__FILE__) . 'inc/revisions.php';
 include plugin_dir_path(__FILE__) . 'inc/copy.php';
 include plugin_dir_path(__FILE__) . 'inc/styles.php';
 include plugin_dir_path(__FILE__) . 'inc/legacy.php';
-include plugin_dir_path(__FILE__) . 'inc/update.php';
+include plugin_dir_path(__FILE__) . 'inc/notice.php';
 
 if( defined('SITEORIGIN_PANELS_DEV') && SITEORIGIN_PANELS_DEV ) include plugin_dir_path(__FILE__).'inc/debug.php';
 
@@ -52,9 +51,9 @@ add_action('plugins_loaded', 'siteorigin_panels_init');
  * Initialize the language files
  */
 function siteorigin_panels_init_lang(){
-	load_plugin_textdomain('siteorigin-panels', false, 'siteorigin-panels/lang');
+	load_plugin_textdomain('siteorigin-panels', false, dirname( plugin_basename( __FILE__ ) ). '/lang/');
 }
-add_action('admin_init', 'siteorigin_panels_init_lang');
+add_action('plugins_loaded', 'siteorigin_panels_init_lang');
 
 /**
  * Add the admin menu entries
@@ -113,7 +112,10 @@ add_action('admin_init', 'siteorigin_panels_save_home_page');
  * @return string
  */
 function siteorigin_panels_filter_home_template($template){
-	if( !get_option('siteorigin_panels_home_page_enabled', siteorigin_panels_setting('home-page-default') ) ) return $template;
+	if(
+		!get_option('siteorigin_panels_home_page_enabled', siteorigin_panels_setting('home-page-default') )
+		|| !siteorigin_panels_setting('home-page')
+	) return $template;
 
 	$GLOBALS['siteorigin_panels_is_panels_home'] = true;
 	return locate_template(array(
@@ -1072,7 +1074,7 @@ function siteorigin_panels_render_form($widget, $instance = array(), $raw = fals
 	$widget_obj->form($instance);
 	$form = ob_get_clean();
 
-	// Convert the widget field naming into ones that panels uses
+	// Convert the widget field naming into ones that Page Builder uses
 	$exp = preg_quote( $widget_obj->get_field_name('____') );
 	$exp = str_replace('____', '(.*?)', $exp);
 	$form = preg_replace( '/'.$exp.'/', 'widgets[{$id}][$1]', $form );

@@ -1,0 +1,3 @@
+# A list of plugins that are incompatible with Page Builder. Please visit http://siteorigin.com/threads/plugin-page-builder/ if you have any questions.
+media-file-manager-advanced/media-relocator.php
+social-networks-auto-poster-facebook-twitter-g/NextScripts_SNAP.php

@@ -88,6 +88,12 @@ I've tried to ensure that Page Builder is compatible with most plugin widgets. I
 
 == Changelog ==
 
+= 1.4.11 =
+* Fixed: Issue with setting up a home page, switching themes, then not being able to disable the home page.
+* Updated to be compatible with latest Black Studio TinyMCE widget.
+* Added a plugin incompatibility check with an admin notice.
+* Improved bundled language files.
+
 = 1.4.10 =
 * Fixed: Fixed z-indexes so that TinyMCE dropdowns (like formatting) aren't hidden.
 

@@ -5,7 +5,7 @@
 
 jQuery(function($){
     // Set wpActiveEditor variables used when adding media from media library dialog
-    $(document).on('click', '.editor_media_buttons a', function() {
+    $(document).on('click', '.wp-media-buttons a', function() {
         var $widget_inside = $(this).closest('div.ui-dialog')
         wpActiveEditor = $('textarea[id^=widget-black-studio-tinymce]', $widget_inside).attr('id');
     });
@@ -15,8 +15,8 @@ jQuery(function($){
         if( dialog.data('widget-type') != 'WP_Widget_Black_Studio_TinyMCE' ) return;
 
         if(dialog.data('bs_tinymce_setup') == null) {
-            dialog.filter('.widget-dialog-wp_widget_black_studio_tinymce').find('a[id$=visual]').click();
-            dialog.find('.editor_container iframe[id$="_ifr"]').css('height', 350);
+            dialog.filter('.widget-dialog-wp_widget_black_studio_tinymce').find('a[id$=tmce]').click();
+            dialog.find('.wp-editor-container iframe[id$="_ifr"]').css('height', 350);
             dialog.data('bs_tinymce_setup', true);
         }
     });
@@ -27,7 +27,7 @@ jQuery(function($){
 
         if ($text_area.length > 0) {
             var editor = tinyMCE.get( $text_area.attr('id') );
-            if(typeof(editor) != 'undefined' && typeof( editor.getContent ) == "function") {
+            if( editor != null && typeof( editor.getContent ) == "function" ) {
                 var content = editor.getContent();
             }
             else {

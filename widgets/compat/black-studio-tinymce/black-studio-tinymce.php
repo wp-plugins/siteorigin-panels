@@ -31,10 +31,26 @@ add_action('admin_init', 'siteorigin_panels_black_studio_tinymce_admin_init');
 function siteorigin_panels_black_studio_tinymce_admin_enqueue($page) {
 	$screen = get_current_screen();
 	if ( ( $screen->base == 'post' && in_array( $screen->id, siteorigin_panels_setting('post-types') ) ) || $screen->base == 'appearance_page_so_panels_home_page') {
-		wp_enqueue_script('black-studio-tinymce-widget-siteorigin-panels', plugin_dir_url(SITEORIGIN_PANELS_BASE_FILE) . 'widgets/compat/black-studio-tinymce/black-studio-tinymce-widget-siteorigin-panels.min.js', array('jquery'), SITEORIGIN_PANELS_VERSION);
-		wp_enqueue_style('black-studio-tinymce-widget-siteorigin-panels', plugin_dir_url(SITEORIGIN_PANELS_BASE_FILE).'widgets/compat/black-studio-tinymce/black-studio-tinymce-widget-siteorigin-panels.css', array(), SITEORIGIN_PANELS_VERSION);
 
 		global $black_studio_tinymce_widget_version;
+		if(!isset($black_studio_tinymce_widget_version)) {
+			if(function_exists('black_studio_tinymce_get_version')) {
+				$black_studio_tinymce_widget_version = black_studio_tinymce_get_version();
+			}
+		}
+
+		if( version_compare($black_studio_tinymce_widget_version, '1.3.3', '<=') ) {
+			// Use the old compatibility file.
+			wp_enqueue_script( 'black-studio-tinymce-widget-siteorigin-panels', plugin_dir_url( SITEORIGIN_PANELS_BASE_FILE ) . 'widgets/compat/black-studio-tinymce/black-studio-tinymce-widget-siteorigin-panels.old.min.js', array( 'jquery' ), SITEORIGIN_PANELS_VERSION );
+		}
+		else {
+			// Use the new compatibility file
+			wp_enqueue_script( 'black-studio-tinymce-widget-siteorigin-panels', plugin_dir_url( SITEORIGIN_PANELS_BASE_FILE ) . 'widgets/compat/black-studio-tinymce/black-studio-tinymce-widget-siteorigin-panels.min.js', array( 'jquery' ), SITEORIGIN_PANELS_VERSION );
+		}
+
+		wp_enqueue_style('black-studio-tinymce-widget-siteorigin-panels', plugin_dir_url(SITEORIGIN_PANELS_BASE_FILE).'widgets/compat/black-studio-tinymce/black-studio-tinymce-widget-siteorigin-panels.css', array(), SITEORIGIN_PANELS_VERSION);
+
+
 		if(version_compare($black_studio_tinymce_widget_version, '1.2.0', '<=')) {
 			// We also need a modified javascript for older versions of Black Studio TinyMCE
 			wp_enqueue_script('black-studio-tinymce-widget', plugin_dir_url(SITEORIGIN_PANELS_BASE_FILE) . 'widgets/compat/black-studio-tinymce/black-studio-tinymce-widget.min.js', array('jquery'), SITEORIGIN_PANELS_VERSION);
