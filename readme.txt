@@ -88,6 +88,13 @@ I've tried to ensure that Page Builder is compatible with most plugin widgets. I
 
 == Changelog ==
 
+= 1.4.12 =
+* Improved how missing widgets are handled.
+* General code clean up.
+* Prebuilt layouts are no longer all filtered by siteorigin_panels_data. Filtered by siteorigin_panels_prebuilt_layout when fetched.
+* Added more hooks and filters.
+* Incompatible plugins now includes more link to give details about incompatibility.
+
 = 1.4.11 =
 * Fixed: Issue with setting up a home page, switching themes, then not being able to disable the home page.
 * Updated to be compatible with latest Black Studio TinyMCE widget.

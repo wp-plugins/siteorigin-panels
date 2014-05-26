@@ -33,10 +33,8 @@ function siteorigin_panels_black_studio_tinymce_admin_enqueue($page) {
 	if ( ( $screen->base == 'post' && in_array( $screen->id, siteorigin_panels_setting('post-types') ) ) || $screen->base == 'appearance_page_so_panels_home_page') {
 
 		global $black_studio_tinymce_widget_version;
-		if(!isset($black_studio_tinymce_widget_version)) {
-			if(function_exists('black_studio_tinymce_get_version')) {
-				$black_studio_tinymce_widget_version = black_studio_tinymce_get_version();
-			}
+		if( !isset($black_studio_tinymce_widget_version) && function_exists('black_studio_tinymce_get_version')) {
+			$black_studio_tinymce_widget_version = black_studio_tinymce_get_version();
 		}
 
 		if( version_compare($black_studio_tinymce_widget_version, '1.3.3', '<=') ) {

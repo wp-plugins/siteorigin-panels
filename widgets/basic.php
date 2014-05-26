@@ -559,7 +559,7 @@ class SiteOrigin_Panels_Widgets_Video extends WP_Widget {
 		));
 
 		// Enqueue jPlayer scripts and intializer
-		wp_enqueue_script( 'siteorigin-panels-video-jplayer', plugin_dir_url(SITEORIGIN_PANELS_BASE_FILE) . 'video/jplayer/jquery.jplayer.min.min.js', array('jquery'), SITEORIGIN_PANELS_VERSION, true);
+		wp_enqueue_script( 'siteorigin-panels-video-jplayer', plugin_dir_url(SITEORIGIN_PANELS_BASE_FILE).'video/jplayer/jquery.jplayer.min.js', array('jquery'), SITEORIGIN_PANELS_VERSION, true);
 		wp_enqueue_script( 'siteorigin-panels-video', plugin_dir_url(SITEORIGIN_PANELS_BASE_FILE) . 'video/panels.video.jquery.min.js', array('jquery'), SITEORIGIN_PANELS_VERSION, true);
 
 		// Enqueue the SiteOrigin jPlayer skin

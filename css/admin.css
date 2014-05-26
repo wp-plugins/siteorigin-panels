@@ -980,3 +980,23 @@ html {
 	margin-bottom: 0;
 }
 
+.ui-dialog.panels-admin-dialog .panels-missing-widget-form > *:first-child {
+	margin-top: 0;
+}
+
+.ui-dialog.panels-admin-dialog .panels-missing-widget-form > *:last-child {
+	margin-bottom: 0;
+}
+
+.ui-dialog.panels-admin-dialog .siteorigin-panels-help-link {
+	color: #666666;
+	display: block;
+	float: left;
+	margin: 3px 0 0 0 !important;
+	text-decoration: none;
+}
+
+.ui-dialog.panels-admin-dialog .siteorigin-panels-help-link:hover {
+	text-decoration: underline;
+}
+

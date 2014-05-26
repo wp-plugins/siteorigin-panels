@@ -38,7 +38,7 @@ jQuery(function($){
                         return;
                     }
 
-                    $.get(ajaxurl, {action: 'so_panels_prebuilt', layout: s.attr('data-layout-id')}, function(data){
+                    $.get( ajaxurl, {action: 'so_panels_prebuilt', layout: s.attr('data-layout-id')}, function(data){
                         dialog.removeClass('panels-ajax-loading');
 
                         if(typeof data.name != 'undefined') {
@@ -49,7 +49,7 @@ jQuery(function($){
                                 $( '#grid-prebuilt-dialog' ).dialog('close');
                             }
                         }
-                    });
+                    } );
 
                 }
             }

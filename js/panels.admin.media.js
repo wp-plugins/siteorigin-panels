@@ -104,10 +104,10 @@ jQuery(function($){
                 dialog.find('input[name$="[ids]"]' ).val(ids.join(','));
             });
 
-            frame.on('escape', function(){
+            frame.on( 'escape', function(){
                 // Reopen the dialog
                 dialog.find('.ui-dialog-content' ).dialog('open');
-            });
+            } );
 
             return false;
         }

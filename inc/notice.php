@@ -44,9 +44,18 @@ function siteorigin_panels_update_notice(){
 }
 add_action('siteorigin_panels_before_interface', 'siteorigin_panels_update_notice');
 
+/**
+ * Returns a list of incompatible plugins
+ *
+ * @return mixed
+ */
 function siteorigin_panels_get_incompatible_plugins(){
-	$incompatible = array_map('trim', (array) file( plugin_dir_path(SITEORIGIN_PANELS_BASE_FILE).'/incompatible.txt' ) );
-	return array_slice($incompatible, 1);
+	static $incompatible = null;
+	if(is_null($incompatible)) {
+		$incompatible = include( plugin_dir_path(__FILE__).'/incompatible.php' );
+	}
+
+	return $incompatible;
 }
 
 /**
@@ -55,7 +64,7 @@ function siteorigin_panels_get_incompatible_plugins(){
 function siteorigin_panels_incompatibility_notice(){
 	$active = get_option('active_plugins');
 	$incompatible = siteorigin_panels_get_incompatible_plugins();
-	$active_incompatible = array_intersect($active, $incompatible);
+	$active_incompatible = array_intersect($active, array_keys($incompatible));
 
 	if( !empty($active_incompatible) ) {
 		// Don't show this for dismissed
@@ -72,12 +81,18 @@ function siteorigin_panels_incompatibility_notice(){
 			<p>
 				<?php
 
-				_e("One or more of your active plugins are known to be incompatible with Page Builder. If you have any issues, please disable these plugins.");
+				_e("One or more of your active plugins are known to be incompatible with Page Builder.", 'siteorigin-panels');
 				?><ul><?php
 				foreach($active_incompatible as $incompatible_plugin) {
 					$data = get_plugin_data(WP_PLUGIN_DIR . '/' . $incompatible_plugin);
 					if( empty( $data['Name'] ) ) continue;
-					?><li><?php echo $data['Name'] ?></li><?php
+
+					echo '<li>';
+					echo $data['Name'];
+					if( !empty($incompatible[$incompatible_plugin]['more']) ) {
+						echo ' - <a href="' . esc_url($incompatible[$incompatible_plugin]['more']) . '" target="_blank">' . __('More', 'siteorigin-panels') . '</a>';
+					}
+					echo '</li>';
 				}
 				?></ul><?php
 
@@ -110,7 +125,7 @@ add_action('wp_ajax_siteorigin_panels_update_notice_dismiss', 'siteorigin_panels
 function siteorigin_panels_incompatibility_notice_dismiss_action(){
 	$active = get_option('active_plugins');
 	$incompatible = siteorigin_panels_get_incompatible_plugins();
-	$active_incompatible = array_intersect($active, $incompatible);
+	$active_incompatible = array_intersect($active, array_keys($incompatible) );
 
 	// Add the option for these dismissed incompatible plugins
 	$current = get_option('siteorigin_panels_incompatible_dismissed');

@@ -27,7 +27,7 @@ function siteorigin_panels_setting($key = ''){
 			'home-page' => false,																								// Is the home page supported
 			'home-page-default' => false,																						// What's the default layout for the home page?
 			'home-template' => 'home-panels.php',																				// The file used to render a home page.
-			'post-types' => get_option('siteorigin_panels_post_types', array('page', 'post')),									// Post types that can be edited using panels.
+			'post-types' => get_option('siteorigin_panels_post_types', array('page', 'post')),									// Post types that can be edited.
 
 			'bundled-widgets' => !isset( $display_settings['bundled-widgets'] ) ? true : $display_settings['bundled-widgets'],	// Include bundled widgets.
 			'responsive' => !isset( $display_settings['responsive'] ) ? true : $display_settings['responsive'],				    // Should we use a responsive layout
@@ -81,7 +81,10 @@ function siteorigin_panels_options_init() {
 		'type' => 'animations',
 		'description' => __('Disable animations to improve Page Builder interface performance', 'siteorigin-panels'),
 	) );
-	add_settings_field( 'bundled-widgets', __('Bundled Widgets', 'siteorigin-panels'), 'siteorigin_panels_options_field_display', 'siteorigin-panels', 'general', array( 'type' => 'bundled-widgets' ) );
+	add_settings_field( 'bundled-widgets', __('Bundled Widgets', 'siteorigin-panels'), 'siteorigin_panels_options_field_display', 'siteorigin-panels', 'general', array(
+		'type' => 'bundled-widgets' ,
+		'description' => __('Should the bundled widgets be loaded', 'siteorigin-panels') ,
+	) );
 
 	// The display fields
 	add_settings_field( 'post-types', __('Responsive', 'siteorigin-panels'), 'siteorigin_panels_options_field_display', 'siteorigin-panels', 'display', array( 'type' => 'responsive' ) );

@@ -18,13 +18,18 @@
         var data = {};
         var parts;
 
-        if ( typeof $$.data('dialog') != 'undefined' && !$$.data('dialog').hasClass('ui-dialog-content-loading') ) {
+
+        if( $$.data('missing') === true ) {
+            // Start by handling the special case of the widget being missing
+            data = JSON.parse( $$.find('input[name$="[data]"]').val() );
+        }
+        else if ( typeof $$.data('dialog') != 'undefined' && !$$.data('dialog').hasClass('ui-dialog-content-loading') ) {
 
             $$.data('dialog').find( '*[name]' ).not( '[data-info-field]' ).each( function () {
                 var $$ = $(this);
-                var name = /widgets\[[0-9]+\]\[(.*)\]/.exec($$.attr('name'));
-                name = name[1];
+                var name = /widgets\[[0-9]+\]\[(.*)\]/.exec( $$.attr('name') );
 
+                name = name[1];
                 parts = name.split('][');
 
                 parts = parts.map(function(e){
@@ -74,39 +79,53 @@
      */
     $.fn.panelsCreatePanel = function ( type, data ) {
 
-        var newPanelId = newPanelIdInit++;
-
-        var dialogWrapper = $( this );
-        var $$ = dialogWrapper.find('.panel-type' ).filter(function() { return $(this).data('class') === type });
-
-        if($$.length == 0) return null;
-
         // Hide the undo message
-        $('#panels-undo-message' ).fadeOut(function(){ $(this ).remove() });
+        $('#panels-undo-message' ).fadeOut( function(){ $(this ).remove() } );
+
+        var
+            activeDialog,
+            newPanelId = newPanelIdInit++,
+            dialogWrapper = $( this )
+
         var panel = $( '<div class="panel new-panel"><div class="panel-wrapper"><div class="title"><h4></h4><span class="actions"></span></div><small class="description"></small></div></div>' );
 
-        var activeDialog;
         panel
             .attr('data-type', type)
-            .append( $('<input type="hidden" name="widgets[' + newPanelId + '][data]" type="hidden">').val(JSON.stringify(data) ) )
+            .append( $('<input type="hidden" name="widgets[' + newPanelId + '][data]" type="hidden">').val( JSON.stringify(data) ) )
             .append( $('<input type="hidden" name="widgets[' + newPanelId + '][info][raw]" type="hidden">').val(0) )
             .append( $('<input type="hidden" name="widgets[' + newPanelId + '][info][grid]" type="hidden">') )
             .append( $('<input type="hidden" name="widgets[' + newPanelId + '][info][cell]" type="hidden">') )
             .append( $('<input type="hidden" name="widgets[' + newPanelId + '][info][id]" type="hidden">').val(newPanelId) )
             .append( $('<input type="hidden" name="widgets[' + newPanelId + '][info][class]" type="hidden">').val(type) )
             .append( $('<input type="hidden" name="panel_order[]" type="hidden">').val(newPanelId) )
-            .data( {
-                // We need this data to update the title
-                'title-field': $$.attr( 'data-title-field' ),
-                'title': $$.attr( 'data-title' ),
-                'raw' : false
-            } )
+            .data('raw', false)
             .find( 'h4, h5' ).click( function () {
                 $(this).closest('.panel').find('a.edit').click();
                 return false;
-            } )
-            .end().find( '.description' ).html( $$.find( '.description' ).html() )
-            .end().find( '.title h4' ).html( $$.find( 'h3' ).html() );
+            });
+
+
+        var $$ = dialogWrapper.find('.panel-type' ).filter( function() { return $(this).data('class') === type } );
+        if( $$.length != 0 ) {
+            panel
+                .data( {
+                    // We need this data to update the title
+                    'title': $$.data( 'title' )
+                } )
+                .find( '.description' ).html( $$.find( '.description' ).html() )
+                .end().find( '.title h4' ).html( $$.find( 'h3' ).html() );
+        }
+        else if(typeof panelsMissingWidgets != 'undefined' && typeof panelsMissingWidgets[type] != 'undefined') {
+            panel
+                .data( {
+                    // We need this data to update the title
+                    'title': panelsMissingWidgets[type].title,
+                    'missing' : true
+                } )
+                .find( '.description' ).html( panelsMissingWidgets[type].description )
+                .end().find( '.title h4' ).html( panelsMissingWidgets[type].title );
+        }
+        else return;
 
         // Set the title
         panel.panelsSetPanelTitle( data );
@@ -173,9 +192,12 @@
 
                         var panelData = panel.panelsGetPanelData();
 
-                        panel.find('input[name$="[data]"]').val( JSON.stringify( panelData ) );
-                        panel.panelsSetPanelTitle( panelData );
-                        panel.find('input[name$="[info][raw]"]').val(1);
+                        // If this was a missing widget form, then ignore what we get back from the form.
+                        if( activeDialog.find('.panels-missing-widget-form').length == 0 ) {
+                            panel.find('input[name$="[data]"]').val(JSON.stringify(panelData));
+                            panel.panelsSetPanelTitle(panelData);
+                            panel.find('input[name$="[info][raw]"]').val(1);
+                        }
 
                         // Change the title of the panel
                         activeDialog.dialog( 'close' );
@@ -192,7 +214,7 @@
                             modal:       false, // Disable modal so we don't mess with media editor. We'll create our own overlay.
                             draggable:   false,
                             resizable:   false,
-                            title:       panels.i10n.messages.editWidget.replace( '%s', $$.attr( 'data-title' ) ),
+                            title:       panels.i10n.messages.editWidget.replace( '%s', panel.data( 'title' ) ),
                             minWidth:    760,
                             maxHeight:   Math.min( Math.round($(window).height() * 0.875), 800),
                             create:      function(event, ui){
@@ -263,6 +285,14 @@
 
                             activeDialog.html(result).dialog("option", "position", "center");
 
+                            var $link = activeDialog.find('a.siteorigin-panels-help-link');
+                            if($link.length) {
+                                $link
+                                    .attr('target', '_blank')
+                                    .prependTo( activeDialog.closest('.ui-dialog').find('.ui-dialog-buttonpane') );
+                            }
+
+
                             // This is to refresh the dialog positions
                             $( window ).resize();
                             $( document ).trigger('panelssetup', panel, activeDialog);
@@ -309,7 +339,7 @@
         if(container == null) container = $( '#panels-container .cell.cell-selected .panels-container' ).eq(0);
         if(container.length == 0) container = $( '#panels-container .cell .panels-container' ).eq(0);
         if(container.length == 0) {
-            // There are no containers, so lets add one.
+            // There are no grids, so lets add one.
             panels.createGrid(1, [1]);
             container = $( '#panels-container .cell .panels-container' ).eq(0);
         }
