@@ -357,6 +357,7 @@ class SiteOrigin_Panels_Widgets_PostLoop extends WP_Widget{
 		}
 
 		$templates = array_unique($templates);
+		$templates = apply_filters('siteorigin_panels_postloop_templates', $templates);
 		sort($templates);
 
 		return $templates;
@@ -500,10 +501,10 @@ class SiteOrigin_Panels_Widgets_EmbeddedVideo extends WP_Widget {
 		$embed = new WP_Embed();
 
 		if(!wp_script_is('fitvids'))
-			wp_enqueue_script('fitvids', plugin_dir_url(SITEORIGIN_PANELS_BASE_FILE) . 'widgets/js/jquery.fitvids.min.js', array('jquery'), SITEORIGIN_PANELS_VERSION);
+			wp_enqueue_script('fitvids', plugin_dir_url(SITEORIGIN_PANELS_BASE_FILE).'widgets/js/jquery.fitvids.min.js', array('jquery'), SITEORIGIN_PANELS_VERSION);
 
 		if(!wp_script_is('siteorigin-panels-embedded-video'))
-			wp_enqueue_script('siteorigin-panels-embedded-video', plugin_dir_url(SITEORIGIN_PANELS_BASE_FILE) . 'widgets/js/embedded-video.min.js', array('jquery', 'fitvids'), SITEORIGIN_PANELS_VERSION);
+			wp_enqueue_script('siteorigin-panels-embedded-video', plugin_dir_url(SITEORIGIN_PANELS_BASE_FILE).'widgets/js/embedded-video.min.js', array('jquery', 'fitvids'), SITEORIGIN_PANELS_VERSION);
 
 		echo $args['before_widget'];
 		?><div class="siteorigin-fitvids"><?php echo $embed->run_shortcode( '[embed]' . $instance['video'] . '[/embed]' ) ?></div><?php
@@ -560,7 +561,7 @@ class SiteOrigin_Panels_Widgets_Video extends WP_Widget {
 
 		// Enqueue jPlayer scripts and intializer
 		wp_enqueue_script( 'siteorigin-panels-video-jplayer', plugin_dir_url(SITEORIGIN_PANELS_BASE_FILE).'video/jplayer/jquery.jplayer.min.js', array('jquery'), SITEORIGIN_PANELS_VERSION, true);
-		wp_enqueue_script( 'siteorigin-panels-video', plugin_dir_url(SITEORIGIN_PANELS_BASE_FILE) . 'video/panels.video.jquery.min.js', array('jquery'), SITEORIGIN_PANELS_VERSION, true);
+		wp_enqueue_script( 'siteorigin-panels-video', plugin_dir_url(SITEORIGIN_PANELS_BASE_FILE).'video/panels.video.jquery.min.js', array('jquery'), SITEORIGIN_PANELS_VERSION, true);
 
 		// Enqueue the SiteOrigin jPlayer skin
 		$skin = sanitize_file_name($instance['skin']);

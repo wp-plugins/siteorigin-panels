@@ -226,15 +226,10 @@ html {
 
 		    border: 1px solid;
 		    border-color: #c9c9c9 #c2c2c3 #babbbf #c1c2c3;
-		    -webkit-border-radius: 3px;
-		    -moz-border-radius: 3px;
-		    border-radius: 3px;
+			.rounded(3px);
 
 		    cursor: move;
-
-		    -webkit-box-shadow: 0 1px 1px rgba(0,0,0,0.08), inset 0 0 2px #FFF;
-		    -moz-box-shadow: 0 1px 1px rgba(0,0,0,0.08), inset 0 0 2px #FFF;
-		    box-shadow: 0 1px 1px rgba(0,0,0,0.08), inset 0 0 2px #FFF;
+			.box-shadow(~"0 1px 1px rgba(0,0,0,0.08), inset 0 0 2px #FFF");
 
 			.panel-wrapper{
 				padding: 7px 9px;
@@ -243,14 +238,11 @@ html {
 			}
 
 			h4{
-				display: inline-block;
+				display: block;
 				cursor: pointer;
-			    margin: 0 0 3px 0;
+			    margin: 0 15px 3px 0;
 			    font-weight: 600;
-			    height: 1em;
-			    line-height: 1em;
-			    overflow: hidden;
-			    margin-right: 15px;
+			    line-height: 1.25em;
 			    color: #474747;
 			    text-shadow: 0 1px 0 #FFF;
 			    white-space: nowrap;
@@ -598,7 +590,16 @@ html {
 	}
 }
 
+#panels-view-as-page {
+	display: inline-block;
+	margin-left: 30px;
+	font-size: 13px;
 
+	a {
+		text-decoration: none;
+	}
+
+}
 
 
 
@@ -897,6 +898,12 @@ html {
 
 		&:hover {
 			text-decoration: underline;
+		}
+	}
+
+	&.panels-ajax-loading {
+		.ui-dialog-buttonpane {
+			background: #F1F1F1 url(./images/ajax-loader-small-grey.gif) no-repeat 17px 25px;
 		}
 	}
 }

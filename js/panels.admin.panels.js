@@ -215,8 +215,8 @@
                             draggable:   false,
                             resizable:   false,
                             title:       panels.i10n.messages.editWidget.replace( '%s', panel.data( 'title' ) ),
-                            minWidth:    760,
-                            maxHeight:   Math.min( Math.round($(window).height() * 0.875), 800),
+                            width:   Math.round($(window).width() * 0.9),
+                            height:   Math.round($(window).height() * 0.875),
                             create:      function(event, ui){
                                 $(this ).closest('.ui-dialog' ).find('.show-in-panels' ).show();
                             },

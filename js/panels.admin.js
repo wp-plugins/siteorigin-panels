@@ -240,7 +240,7 @@ jQuery( function ( $ ) {
         .hide()
         .find( '.handlediv' ).remove()
         .end()
-        .find( '.hndle' ).html('' ).append(
+        .find( '.hndle' ).html( '' ).append(
             $('#add-to-panels')
         );
 
@@ -257,7 +257,8 @@ jQuery( function ( $ ) {
         $('#so-panels-panels .cell' ).eq(0 ).click();
     }, 150);
 
-    if($('#panels-home-page' ).length){
+    // This is only for the "home page" interface
+    if( $('#panels-home-page' ).length ){
         // Lets do some home page settings
         $('#content-tmce, #content-html' ).remove();
         $('#content-panels' ).hide();

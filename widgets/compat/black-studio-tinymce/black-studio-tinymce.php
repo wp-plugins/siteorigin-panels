@@ -51,7 +51,7 @@ function siteorigin_panels_black_studio_tinymce_admin_enqueue($page) {
 
 		if(version_compare($black_studio_tinymce_widget_version, '1.2.0', '<=')) {
 			// We also need a modified javascript for older versions of Black Studio TinyMCE
-			wp_enqueue_script('black-studio-tinymce-widget', plugin_dir_url(SITEORIGIN_PANELS_BASE_FILE) . 'widgets/compat/black-studio-tinymce/black-studio-tinymce-widget.min.js', array('jquery'), SITEORIGIN_PANELS_VERSION);
+			wp_enqueue_script('black-studio-tinymce-widget', plugin_dir_url(SITEORIGIN_PANELS_BASE_FILE).'widgets/compat/black-studio-tinymce/black-studio-tinymce-widget.min.js', array('jquery'), SITEORIGIN_PANELS_VERSION);
 		}
 	}
 }
