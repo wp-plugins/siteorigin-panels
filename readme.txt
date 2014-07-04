@@ -52,7 +52,7 @@ As well as some essential page elements widgets:
 
 Most standard widgets work with Page Builder, but here are some of our favorites.
 
-* [SiteOrigin Widget Bundle](http://wordpress.org/plugins/so-widget-bundle/) for growing collection of widgets like buttons, price tables and images.
+* [SiteOrigin Widget Bundle](http://wordpress.org/plugins/so-widgets-bundle/) for growing collection of widgets like buttons, price tables and images.
 * [Black Studio TinyMCE](http://wordpress.org/plugins/black-studio-tinymce-widget/) for a visual content editing widget.
 * [Meta Slider](http://wordpress.org/plugins/ml-slider/) for a responsive slider widget.
 
