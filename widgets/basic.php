@@ -304,6 +304,7 @@ class SiteOrigin_Panels_Widgets_PostLoop extends WP_Widget{
 			echo $args['before_title'] . $instance['title'] . $args['after_title'];
 		}
 
+		add_filter( 'siteorigin_panels_filter_content_enabled', array( 'SiteOrigin_Panels_Widgets_PostLoop', 'remove_content_filter' ) );
 		if(strpos('/'.$instance['template'], '/content') !== false) {
 			while(have_posts()) {
 				the_post();
@@ -313,11 +314,16 @@ class SiteOrigin_Panels_Widgets_PostLoop extends WP_Widget{
 		else {
 			locate_template($instance['template'], true, false);
 		}
+		remove_filter( 'siteorigin_panels_filter_content_enabled', array( 'SiteOrigin_Panels_Widgets_PostLoop', 'remove_content_filter' ) );
 
 		echo $args['after_widget'];
 
 		// Reset everything
 		wp_reset_query();
+	}
+
+	static function remove_content_filter(){
+		return false;
 	}
 
 	/**
