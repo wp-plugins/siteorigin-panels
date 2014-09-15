@@ -90,6 +90,11 @@ I've tried to ensure that Page Builder is compatible with most plugin widgets. I
 
 == Changelog ==
 
+= 1.5.2 =
+* Changed to custom settings system to fix a few settings bugs.
+* Added option to display more link in post loop widget.
+* Fixed SSL in widget images.
+
 = 1.5.1 =
 * Compatibility with WordPress 4.0 - needed to change how tabs function.
 * Compatibility with Black Studio TinyMCE Widget 2.0.
