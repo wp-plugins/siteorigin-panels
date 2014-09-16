@@ -90,6 +90,10 @@ I've tried to ensure that Page Builder is compatible with most plugin widgets. I
 
 == Changelog ==
 
+= 1.5.3 =
+* Fixed post loop widget issue.
+* Fixed settings issue.
+
 = 1.5.2 =
 * Changed to custom settings system to fix a few settings bugs.
 * Added option to display more link in post loop widget.

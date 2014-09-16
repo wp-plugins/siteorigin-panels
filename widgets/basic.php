@@ -306,8 +306,6 @@ class SiteOrigin_Panels_Widgets_PostLoop extends WP_Widget{
 
 		add_filter( 'siteorigin_panels_filter_content_enabled', array( 'SiteOrigin_Panels_Widgets_PostLoop', 'remove_content_filter' ) );
 
-		the_content();
-
 		global $more; $old_more = $more; $more = empty($instance['more']);
 
 		if(strpos('/'.$instance['template'], '/content') !== false) {
