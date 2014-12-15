@@ -5,6 +5,20 @@
  * @license GPL 3.0 http://www.gnu.org/licenses/gpl.html
  */
 
+/**
+ * Convert template into something compatible with Underscore.js templates
+ *
+ * @param s
+ * @return {*}
+ */
+String.prototype.panelsProcessTemplate = function(){
+    var s = this;
+    s = s.replace(/{{%/g, '<%');
+    s = s.replace(/%}}/g, '%>');
+    s = s.trim();
+    return s;
+};
+
 ( function( $, _, panelsOptions ){
 
     var panels = {
@@ -175,7 +189,7 @@
      * The view for a widget in the builder interface
      */
     panels.view.widget = Backbone.View.extend({
-        template: _.template( $('#siteorigin-panels-builder-widget').html().trim() ),
+        template: _.template( $('#siteorigin-panels-builder-widget').html().panelsProcessTemplate() ),
 
         // The cell view that
         cell: null,
@@ -415,7 +429,7 @@
      * The view for a cell
      */
     panels.view.cell = Backbone.View.extend( {
-        template: _.template( $('#siteorigin-panels-builder-cell').html().trim() ),
+        template: _.template( $('#siteorigin-panels-builder-cell').html().panelsProcessTemplate() ),
         events : {
             'click .cell-wrapper' : 'handleCellClick',
             'click .so-cell-actions a' : 'handleActionClick'
@@ -798,7 +812,7 @@
      * View for handling the row.
      */
     panels.view.row = Backbone.View.extend( {
-        template: _.template( $('#siteorigin-panels-builder-row').html().trim() ),
+        template: _.template( $('#siteorigin-panels-builder-row').html().panelsProcessTemplate() ),
 
         events: {
             'click .so-row-settings' : 'editSettingsHandler',
@@ -1216,7 +1230,7 @@
      * This is the main view for the Page Builder interface.
      */
     panels.view.builder = Backbone.View.extend( {
-        template: _.template( $('#siteorigin-panels-builder').html().trim() ),
+        template: _.template( $('#siteorigin-panels-builder').html().panelsProcessTemplate() ),
         dialogs: {  },
         rowsSortable: null,
         dataField : false,
@@ -1679,7 +1693,10 @@
          */
         handleContentChange: function(){
 
-            if(this.attachedToEditor) {
+            // Make sure we actually need to copy content.
+            if( this.attachedToEditor && this.$el.is(':visible') && this.model.rows.length > 0) {
+                console.log('here');
+
                 // We're going to create a copy of page builder content into the post content
                 $.post(
                     ajaxurl,
@@ -1689,6 +1706,8 @@
                         post_id : $('#post_ID').val()
                     },
                     function(content){
+
+                        if( content === '' ) return;
 
                         // Strip all the known layout divs
                         var t = $('<div />').html( content );
@@ -1735,7 +1754,7 @@
                 editorContent = $('textarea#content').val();
             }
 
-            if( this.model.get('data') === '' && editorContent !== '') {
+            if( _.isEmpty( this.model.get('data') ) && editorContent !== '') {
                 // Confirm with the user first
                 if( !confirm( panelsOptions.loc.confirm_use_builder ) ) { return; }
 
@@ -1804,8 +1823,8 @@
      * The default dialog view. This should be extended by the other views.
      */
     panels.view.dialog = Backbone.View.extend( {
-        dialogTemplate: _.template( $('#siteorigin-panels-dialog').html().trim() ),
-        dialogTabTemplate: _.template( $('#siteorigin-panels-dialog-tab').html().trim() ),
+        dialogTemplate: _.template( $('#siteorigin-panels-dialog').html().panelsProcessTemplate() ),
+        dialogTabTemplate: _.template( $('#siteorigin-panels-dialog-tab').html().panelsProcessTemplate() ),
 
         tabbed: false,
         rendered: false,
@@ -1891,7 +1910,7 @@
             args = _.extend({cid: this.cid}, args);
 
 
-            var c = $( ( _.template( html.trim() ) )( args ) );
+            var c = $( ( _.template( html.panelsProcessTemplate() ) )( args ) );
             var r = {
                 title : c.find('.title').html(),
                 buttons : c.find('.buttons').html(),
@@ -2119,8 +2138,10 @@
                 var sub = data;
                 var fieldValue = null;
 
+                var fieldType = ( typeof $$.attr('type') === 'string' ? $$.attr('type').toLowerCase() : false );
+
                 // First we need to get the value from the field
-                if( $$.attr('type') === 'checkbox' ){
+                if( fieldType === 'checkbox' ){
                     if ( $$.is(':checked') ) {
                         fieldValue = $$.val() !== '' ? $$.val() : true;
                     }
@@ -2128,7 +2149,7 @@
                         fieldValue = null;
                     }
                 }
-                else if( $$.attr('type') === 'radio' ){
+                else if( fieldType === 'radio' ){
                     if ( $$.is(':checked') ) {
                         fieldValue = $$.val();
                     }
@@ -2189,17 +2210,7 @@
                 if(fieldValue !== null) {
                     for (var i = 0; i < parts.length; i++) {
                         if (i === parts.length - 1) {
-                            if( _.isArray(sub[parts[i]]) ) {
-                                sub[parts[i]].push( fieldValue );
-                            }
-                            else if( typeof sub[parts[i]] !== 'undefined' ) {
-                                // This is so we can properly handle multi checkboxes
-                                sub[parts[i]] = [ sub[ parts[i] ] ];
-                                sub[parts[i]].push( fieldValue );
-                            }
-                            else {
-                                sub[parts[i]] = fieldValue;
-                            }
+                            sub[parts[i]] = fieldValue;
                         }
                         else {
                             if (typeof sub[parts[i]] === 'undefined') {
@@ -2266,7 +2277,7 @@
     panels.dialog.widgets = panels.view.dialog.extend( {
 
         builder: null,
-        widgetTemplate: _.template( $('#siteorigin-panels-dialog-widgets-widget').html().trim() ),
+        widgetTemplate: _.template( $('#siteorigin-panels-dialog-widgets-widget').html().panelsProcessTemplate() ),
         filter: {},
 
         dialogClass : 'so-panels-dialog-add-widget',
@@ -2432,7 +2443,7 @@
     panels.dialog.widget = panels.view.dialog.extend( {
 
         builder: null,
-        sidebarWidgetTemplate: _.template( $('#siteorigin-panels-dialog-widget-sidebar-widget').html().trim() ),
+        sidebarWidgetTemplate: _.template( $('#siteorigin-panels-dialog-widget-sidebar-widget').html().panelsProcessTemplate() ),
         dialogClass : 'so-panels-dialog-edit-widget',
         widgetView : false,
 
@@ -2632,7 +2643,7 @@
      */
     panels.dialog.prebuilt = panels.view.dialog.extend( {
 
-        entryTemplate : _.template( $('#siteorigin-panels-dialog-prebuilt-entry').html().trim() ),
+        entryTemplate : _.template( $('#siteorigin-panels-dialog-prebuilt-entry').html().panelsProcessTemplate() ),
         builder: null,
         dialogClass : 'so-panels-dialog-prebuilt-layouts',
 
@@ -2802,7 +2813,7 @@
      */
     panels.dialog.row = panels.view.dialog.extend( {
 
-        cellPreviewTemplate : _.template( $('#siteorigin-panels-dialog-row-cell-preview').html().trim() ),
+        cellPreviewTemplate : _.template( $('#siteorigin-panels-dialog-row-cell-preview').html().panelsProcessTemplate() ),
 
         events: {
             'click .so-close': 'closeDialog',
