@@ -1695,7 +1695,6 @@ String.prototype.panelsProcessTemplate = function(){
 
             // Make sure we actually need to copy content.
             if( this.attachedToEditor && this.$el.is(':visible') && this.model.rows.length > 0) {
-                console.log('here');
 
                 // We're going to create a copy of page builder content into the post content
                 $.post(
@@ -2165,7 +2164,7 @@ String.prototype.panelsProcessTemplate = function(){
                         editor = tinyMCE.get( $$.attr('id') );
                     }
 
-                    if( editor !== null && typeof( editor.getContent ) === "function" ) {
+                    if( editor !== null && typeof( editor.getContent ) === "function" && !editor.isHidden() ) {
                         fieldValue = editor.getContent();
                     }
                     else {
