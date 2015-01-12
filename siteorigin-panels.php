@@ -3,7 +3,7 @@
 Plugin Name: Page Builder by SiteOrigin
 Plugin URI: http://siteorigin.com/page-builder/
 Description: A drag and drop, responsive page builder that simplifies building your website.
-Version: 2.0.4
+Version: 2.0.5
 Author: SiteOrigin
 Author URI: http://siteorigin.com
 License: GPL3
@@ -11,7 +11,7 @@ License URI: http://www.gnu.org/licenses/gpl.html
 Donate link: http://siteorigin.com/page-builder/#donate
 */
 
-define('SITEORIGIN_PANELS_VERSION', '2.0.4');
+define('SITEORIGIN_PANELS_VERSION', '2.0.5');
 define('SITEORIGIN_PANELS_BASE_FILE', __FILE__);
 
 require_once plugin_dir_path(__FILE__) . 'widgets/basic.php';
@@ -1161,7 +1161,7 @@ function siteorigin_panels_render_form($widget, $instance = array(), $raw = fals
 				'<div class="panels-missing-widget-form"><p>' .
 				sprintf(
 					__('The widget <strong>%s</strong> is not available. Please try locate and install the missing plugin. Post on the <a href="%s" target="_blank">support forums</a> if you need help.', 'siteorigin-panels'),
-					$widget,
+					esc_html($widget),
 					'http://siteorigin.com/thread/'
 				).
 				'</p></div>';
