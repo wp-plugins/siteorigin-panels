@@ -91,6 +91,9 @@ I've tried to ensure that Page Builder is compatible with most plugin widgets. I
 
 == Changelog ==
 
+= 2.0.7 =
+* Fixed issue that prevented prebuilt layouts from showing up.
+
 = 2.0.6 =
 * Added nonce to all admin requests.
 * Fixed live editor for missing widgets.
