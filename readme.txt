@@ -97,6 +97,9 @@ I've tried to ensure that Page Builder is compatible with most plugin widgets. I
 
 == Changelog ==
 
+= 2.1.2 =
+* Removed rendered content cache introduced in 2.1.1
+
 = 2.1.1 =
 * Added translations for 16 additional languages
 * Modified strings to improve translatability.
